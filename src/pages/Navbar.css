@@ -1,0 +1,65 @@
+.linkTag {
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    text-decoration: none;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.transparent-bg {
+    background-color: transparent !important;
+  }
+  
+  .body-tertiary {
+    background-color: #172639 !important; /* Replace with your desired blue color */
+    border-bottom: 1px solid white;
+  }
+Nav .customNavLink{
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+.linkTagblack {
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    text-decoration: none;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.bg-body-tertiary {
+    background-color: #006cfa !important ;
+    border-bottom: 1px solid white;
+}
+.login-bg{
+    background-color: red;
+}
+Nav .btn {
+    background-color: #EAA637;
+    border: none;
+    font-weight: 700;
+    color: #172639;
+    /* border: 1px solid black; */
+}
+
+Nav .btn:hover {
+    background-color: #172639;
+    border: none;
+    font-weight: 700;
+    color: #EAA637;
+    /* border: 1px solid black; */
+}
+
+@media only screen and (max-width: 985px) {
+    .navbar-collapse {
+        flex-basis: 100%;
+        flex-grow: 1;
+        background-color: #5d5858;
+        padding: 20px;
+    }
+    .navbar-nav a{
+        margin-bottom: 10px;
+    }
+ }

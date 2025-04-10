@@ -1,0 +1,874 @@
+/* .custom-table-header{
+  background-color: #172639!important;
+} */
+
+/* Container */
+.table-container {
+  display: block;
+  margin: auto;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Title */
+.table-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+/* Table Wrapper */
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* Table */
+.responsive-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.responsive-table thead {
+  background-color: #172639!important;
+  color: #fff !important;
+  cursor: pointer;
+}
+.responsive-table th {
+color:#fff;
+}
+
+.responsive-table th,
+.responsive-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd; 
+  white-space: nowrap;
+}
+
+.responsive-table tbody tr:hover {
+  background-color: rgb(225, 225, 225);
+  cursor: pointer;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .table-container {
+    width: 100%;
+  }
+}
+
+
+
+.FormContainer {
+  background-color: rgba(0, 0, 0, 0.05); /* Black background with 0.5 opacity */
+  padding: 20px; /* Add some padding for spacing */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  height: 100%;
+  width: 100%;
+}
+
+
+
+.progress-bar-container {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 20px;
+  background-color: #4caf50;
+  transition: width 0.5s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+}
+
+
+
+.custBtn {
+  background-color: #1abc9c;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.custBtn:hover {
+  background-color: #16a085;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+}
+
+.disabledBtn {
+  background-color: gray;
+  cursor: not-allowed;
+  color: white; /* Optional: Change text color for better readability */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.FormContainer .custom_input {
+  background-color: #fff;
+  border: 2px solid #ccc;
+  color: #333;
+  padding: 5px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.FormContainer .custom_input:focus {
+  border-color: #0d6efd; /* Blue border on focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue shadow on focus */
+  outline: none;
+}
+
+.table-container .table {
+  width: 100%;
+}
+
+.custom_button {
+  display: inline-block;
+  padding: 7px 30px;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  /* color: var(--primary-color ); */
+  color: black;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 5px;
+  box-shadow: 7px 7px 7px -1px rgba(10, 100, 169, 0.363), -7px -7px 7px -1px rgba(255, 255, 255, 0.7);
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  cursor: pointer;
+}
+
+/* Hover Effect */
+.custom_button:hover {
+  box-shadow: 7px 7px 7px -1px rgba(10, 100, 169, 0.363), -7px -7px 7px -1px rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+  font-weight: bold;
+}
+
+/* Active Effect */
+.custom_button:active {
+  background-color: #172639;
+  box-shadow: 7px 7px 7px -1px rgba(10, 100, 169, 0.363), -7px -7px 7px -1px rgba(255, 255, 255, 0.7);
+  transform: translateY(0);
+}
+
+/* Disabled State */
+.custom_button:disabled {
+  background-color: #4d5d6a;
+  color: #b3b3b3;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+/* progress bar */
+.progress-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.progress-text {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.progress-bar-background {
+  width: 80%;
+  height: 30px;
+  background-color: #e0e0e0;
+  border-radius: 15px;
+  overflow: hidden;
+  margin: 10px auto;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #1abc9c; /* Beautiful green color */
+  transition: width 0.1s ease-in-out; /* Shorter transition duration for smoother effect */
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+
+.row1 {
+  margin: 20px;
+}
+
+.row {
+  /* padding: 0 15px; */
+}
+
+.custom_input {
+  width: 100%;
+  padding: 8px;
+}
+
+.custom_button {
+  padding: 8px 20px;
+  margin-top: 10px;
+}
+
+.customIcon{
+font-size: 50px;
+/* padding-top: 10px; */
+color: #16a085;
+}
+
+.table-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* .custom_button {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 25px;
+  margin: 0px;
+  background-color: #172639;
+  color: #ffc107;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 7px 7px 7px -1px rgba(10, 100, 169, 0.363),
+    -7px -7px 7px -1px rgba(255, 255, 255, 0.7);
+} */
+
+.custom_button1 {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 25px;
+  margin: 0px 20px;
+  background-color: #5bc0de;
+  color: #172639;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 7px 7px 7px -1px rgba(82, 171, 240, 0.363), -7px -7px 7px -1px rgba(255, 255, 255, 0.7);
+}
+
+.custom_button2 {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 25px;
+  margin: 0px 20px;
+  background-color: #4caf50;
+  color: #ffffff;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 7px 7px 7px -1px rgba(82, 171, 240, 0.363), -7px -7px 7px -1px rgba(255, 255, 255, 0.7);
+}
+
+.custom_button3 {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 25px;
+  margin: 0px 20px;
+  background-color: #f44336;
+  color: #ffffff;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 7px 7px 7px -1px rgba(82, 171, 240, 0.363), -7px -7px 7px -1px rgba(255, 255, 255, 0.7);
+}
+
+.custom_button4 {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 25px;
+  margin: 0px 20px;
+  background-color: #ff9800;
+  color: #ffffff;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 7px 7px 7px -1px rgba(82, 171, 240, 0.363), -7px -7px 7px -1px rgba(255, 255, 255, 0.7);
+}
+
+.custom_button5 {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 25px;
+  margin: 0px 20px;
+  background-color: #00bcd4;
+  color: #ffffff;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 7px 7px 7px -1px rgba(82, 171, 240, 0.363), -7px -7px 7px -1px rgba(255, 255, 255, 0.7);
+}
+
+.custom_button6 {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 25px;
+  margin: 0px 20px;
+  background-color: #dfdede;
+  color: #172639;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 10px 10px 10px -2px rgba(82, 171, 240, 0.363), -10px -10px 10px -2px rgba(255, 255, 255, 0.7);
+}
+
+.custom_button7 {
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px 25px;
+  margin: 0px 20px;
+  background-color: #333333;
+  color: #ffffff;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 7px 7px 7px -1px rgba(82, 171, 240, 0.363), -7px -7px 7px -1px rgba(255, 255, 255, 0.7);
+}
+
+.glass-button-primary {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: black;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease, border 0.3s ease;
+  cursor: pointer;
+}
+
+.glass-button-primary:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3));
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.glass-button-primary:active {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.custom_input {
+  box-shadow: 7px 7px 7px -1px lightgray;
+}
+
+.custom_anchor {
+  /* text-decoration: none; */
+  color: green;
+  font-weight: bold;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+/* .glass-button {
+  background: rgba(255, 255, 255, 0.1); 
+  border: 2px solid rgba(255, 255, 255, 0.3); 
+  color: blue;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 12px;
+  backdrop-filter: blur(8px); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+} */
+
+.glass-button:hover {
+  /* background: rgba(255, 255, 255, 0.2);  */
+  /* Lighten background on hover */
+  /* border-color: rgba(255, 255, 255, 0.5);  */
+  /* Darken border on hover */
+  /* box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);  */
+  /* Enhance shadow on hover */
+}
+
+.glass-button.red {
+  background-color: rgba(253, 10, 10, 0.8); /* Semi-transparent red */
+}
+
+.glass-button.green {
+  background-color: rgba(76, 175, 80, 0.6); /* Semi-transparent green */
+}
+
+.glass-button.blue {
+  background-color: rgba(33, 150, 243, 0.6); /* Semi-transparent blue */
+}
+
+.glass-button.yellow {
+  background-color: rgba(255, 235, 59, 0.6); /* Semi-transparent yellow */
+}
+
+.glass-button.purple {
+  background-color: rgba(156, 39, 176, 0.6); /* Semi-transparent purple */
+}
+
+.glass-button.orange {
+  background-color: rgba(255, 152, 0, 0.6); /* Semi-transparent orange */
+}
+
+.glass-button.cyan {
+  background-color: rgba(0, 188, 212, 0.6); /* Semi-transparent cyan */
+}
+
+/* Morph Effects */
+
+.button-container1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.morph-button {
+  background: #fff;
+  border: 2px solid transparent;
+  color: #333;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 12px;
+  transition: background 0.4s ease, color 0.4s ease, transform 0.4s ease, border 0.4s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.morph-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: currentColor;
+  transition: transform 0.4s ease;
+  transform: scale(0);
+  z-index: 0;
+}
+
+.morph-button:hover::before {
+  transform: scale(1);
+}
+
+.morph-button:hover {
+  color: #fff;
+  border-color: currentColor;
+  transform: scale(1.05);
+}
+
+.morph-button.red {
+  color: #ff4c4c;
+}
+
+.morph-button.green {
+  color: #4caf50;
+}
+
+.morph-button.blue {
+  color: #2196f3;
+}
+
+.morph-button.yellow {
+  color: #ffeb3b;
+}
+
+.morph-button.purple {
+  color: #9c27b0;
+}
+
+.morph-button.orange {
+  color: #ff9800;
+}
+
+.morph-button.cyan {
+  color: #00bcd4;
+}
+
+/* glass and morph effects */
+
+.button-container2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.glass-morph-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.4s ease, color 0.4s ease, transform 0.4s ease, border 0.4s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-morph-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: currentColor;
+  transition: transform 0.4s ease, background 0.4s ease;
+  transform: scale(0);
+  z-index: 0;
+}
+
+/* .glass-morph-button:hover::before {
+  transform: scale(1);
+} */
+
+.glass-morph-button:hover {
+  color: #fff;
+  border-color: transparent;
+  transform: scale(1.1);
+}
+
+.glass-morph-button.red {
+  background-color: #ff4c4c;
+  color: #ffffff;
+}
+
+.glass-morph-button.green {
+  color: #4caf50;
+}
+
+.glass-morph-button.blue {
+  color: #2196f3;
+}
+
+.glass-morph-button.yellow {
+  color: #ffeb3b;
+}
+
+.glass-morph-button.purple {
+  color: #9c27b0;
+}
+
+.glass-morph-button.orange {
+  color: #ff9800;
+}
+
+.glass-morph-button.cyan {
+  color: #00bcd4;
+}
+
+.button-container3 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.glass-button {
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  color: black;
+}
+
+/* /* .glass-button:hover {
+    opacity: 0.8;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); 
+  } */
+
+.glass-button.navy:hover {
+  background: rgba(0, 34, 102, 0.6); /* Semi-transparent navy */
+  opacity: 0.8;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); /* Enhance shadow on hover */
+}
+.glass-button.navy {
+  background: rgba(0, 34, 102, 0.6); /* Semi-transparent navy */
+}
+
+.glass-button.teal {
+  background: rgba(0, 128, 128, 0.6); /* Semi-transparent teal */
+}
+
+.glass-button.maroon {
+  background: rgba(128, 0, 0, 0.6); /* Semi-transparent maroon */
+}
+
+.glass-button.olive {
+  background: rgba(85, 107, 47, 0.6); /* Semi-transparent olive */
+}
+
+.glass-button.charcoal {
+  background: rgba(54, 69, 79, 0.6); /* Semi-transparent charcoal */
+}
+
+.glass-button.purple {
+  background: rgba(75, 0, 130, 0.6); /* Semi-transparent purple */
+}
+
+.glass-button.slate {
+  background: rgba(112, 128, 144, 0.6); /* Semi-transparent slate */
+}
+
+.button-container1 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.glass-button1 {
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 12px;
+  backdrop-filter: blur(8px); /* Frosted glass effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  color: #fff; /* Text color */
+}
+
+.glass-button1::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glass-button1:hover::before {
+  opacity: 1;
+}
+
+.glass-button1.primary {
+  background: linear-gradient(135deg, rgba(23, 38, 57, 0.8), rgba(23, 38, 57, 0.6));
+}
+
+.glass-button1.secondary {
+  background: linear-gradient(135deg, rgba(234, 166, 55, 0.8), rgba(234, 166, 55, 0.6));
+}
+
+.glass-button1.accent-1 {
+  background: linear-gradient(135deg, rgba(23, 38, 57, 0.8), rgba(234, 166, 55, 0.6));
+}
+
+.glass-button1.accent-2 {
+  background: linear-gradient(135deg, rgba(234, 166, 55, 0.8), rgba(23, 38, 57, 0.6));
+}
+
+.glass-button1.accent-3 {
+  background: linear-gradient(135deg, rgba(23, 38, 57, 0.8), rgba(234, 166, 55, 0.4));
+}
+
+.glass-button1.accent-4 {
+  background: linear-gradient(135deg, rgba(234, 166, 55, 0.8), rgba(23, 38, 57, 0.4));
+}
+
+.glass-button1.accent-5 {
+  background: linear-gradient(135deg, rgba(23, 38, 57, 0.8), rgba(234, 166, 55, 0.8));
+}
+
+/* for crud combination */
+
+.button-container_crud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 30px 20px;
+}
+
+.glass-button_crud {
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 12px;
+  backdrop-filter: blur(5px); /* Frosted glass effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  color: #fff; /* Text color */
+}
+
+.glass-button_crud::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glass-button_crud:hover::before {
+  opacity: 1;
+}
+
+.glass-button_crud.create {
+  background-color: #eaa637; /* Gold */
+}
+
+.glass-button_crud.create:hover {
+  background-color: #d68910; /* Medium Amber */
+}
+
+.glass-button_crud.read {
+  background-color: #3498db; /* Light Blue */
+}
+
+.glass-button_crud.read:hover {
+  background-color: #2874a6; /* Medium Blue */
+}
+
+.glass-button_crud.update {
+  background-color: #172639; /* Dark Blue */
+}
+
+.glass-button_crud.update:hover {
+  background-color: #1b4f72; /* Dark Teal */
+}
+
+.glass-button_crud.delete {
+  background-color: #c70039; /* Crimson */
+}
+
+.glass-button_crud.delete:hover {
+  background-color: #a93226; /* Dark Crimson */
+}
+
+/* prfessional look */
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 30px 0;
+}
+
+.button {
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.button.primary {
+  background-color: #172639;
+  color: #fff;
+}
+
+.button.primary:hover {
+  background-color: #1b4f72;
+}
+
+.button.secondary {
+  background-color: #eaa637;
+  color: #fff;
+}
+
+.button.secondary:hover {
+  background-color: #d68910;
+}
+
+.button.outlined {
+  background-color: transparent;
+  border: 2px solid #172639;
+  color: #172639;
+}
+
+.button.outlined:hover {
+  background-color: #172639;
+  color: #fff;
+}
+
+.button.ghost {
+  background-color: transparent;
+  border: 1px solid #eaa637;
+  color: #eaa637;
+}
+
+.button.ghost:hover {
+  background-color: #eaa637;
+  color: #fff;
+}
+
+/* From Reference Draft */
+
+.cust_label {
+  visibility: hidden;
+  width: 100%;
+}
+
+/* for modal on the refrence draft */
+.modalIcon {
+  cursor: pointer;
+}
+.clip-path {
+  /* clip-path: polygon(90% 0%, 100% 50%, 90% 100%, 0% 100%, 5% 50%, 0% 0%);
+  background-color: var(--primary-color);
+  color: white; */
+}

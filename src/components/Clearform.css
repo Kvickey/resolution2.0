@@ -1,0 +1,91 @@
+/* Clearform.css */
+
+.payment-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 20px;
+    /* background-color: #f0f0f0; */
+    /* background-color: #f4f4f4; */
+  }
+  
+  .processing {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .loading-spinner {
+    font-size: 30px;
+    animation: spin 1s linear infinite;
+    color: #4099e1;
+    border: 3px solid #fff;
+    border-radius: 50%;
+  }
+  
+  @keyframes spin {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .circular-button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    background-color: #4099e1;
+  }
+  
+  .success-icon {
+    font-size: 300px;
+    color: #fff;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(0.8);
+    }
+    50% {
+      transform: scale(1.8);
+    }
+    100% {
+      transform: scale(0.8);
+    }
+  }
+  
+  .success-message {
+    font-size: 20px;
+    color: #14c4eb;
+    font-weight: bold;
+    margin-top: 18px;
+    opacity: 0;
+    animation: bounceSuccess 0.8s ease-in-out forwards;
+  }
+  
+  @keyframes bounceSuccess {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  

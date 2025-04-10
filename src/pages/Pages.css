@@ -1,0 +1,696 @@
+.hero-section {
+    position: relative;
+    overflow: hidden;
+    width: 100vw;
+    --bs-gutter-x: 0;
+  }
+  
+  .video-container {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  #video-background {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    margin: 0 !important;
+    /* Use !important to override Bootstrap styles */
+    padding: 0 !important;
+    /* Use !important to override Bootstrap styles */
+  }
+
+  .bottomNavbar{
+    background-color: #172639;
+    width: 100%;
+  }
+
+
+  .customCard1{
+    border: 1px solid rgb(224, 224, 224);
+    border-radius: 10px;
+    box-shadow: 1px 10px 20px rgba(148, 148, 148, 0.5);
+    padding: 0!important;
+  }
+
+  .customCard{
+    border: 1px solid rgb(224, 224, 224);
+    border-radius: 10px;
+    box-shadow: 1px 10px 20px rgba(148, 148, 148, 0.5);
+    padding: 0!important;
+  }
+
+
+  .customAnchor{
+    text-decoration: none;
+    color: blue;
+    cursor: default;
+  }
+  .customAnchor1{
+    text-decoration: none;
+    color: blue;
+    cursor: pointer;
+  }
+
+  .customHeader{
+    background-color: #172639;
+    color: #eaa637;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 10px 0;
+  }
+  
+  /* Responsive Styles */
+  
+  @media (max-width: 1200px) {
+    .video-container {
+      height: 80vh;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .video-container {
+      height: 90vh;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .video-container {
+      height: 80vh;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .video-container {
+      height: 80vh;
+    }
+  }
+  
+  @media (max-width: 390px) {
+    .video-container {
+      height: 100vh;
+    }
+  }
+  
+  .hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    margin: 0 !important;
+    z-index: 999;
+    width: 100%;
+  }
+  
+  .hero-content .hero_Illustration {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .hero-content button {
+    box-sizing: border-box;
+    background-color: #eaa637;
+    border: none;
+    font-weight: 700;
+    color: #172639;
+    transition: background-color 0.2s, color 0.2s, border 0.2s;
+    /* border: 1px solid black; */
+  }
+  
+  .hero-content button:hover {
+    background-color: #172639;
+    color: #eaa637;
+  }
+  
+  .consent {
+    font-weight: bold;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .hero-content {
+      padding: 0 20px; /* Add padding to the sides */
+    }
+  
+    .hero-content button {
+      font-size: 14px; /* Decrease font size */
+      padding: 8px 16px; /* Adjust padding */
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .hero-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      margin: 0 !important;
+      z-index: 999;
+      width: 100%;
+    }
+  
+    .hero-content h1 {
+      font-size: 1.2rem;
+    }
+  
+    .hero-content button {
+      font-size: 12px; /* Further decrease font size */
+      padding: 6px 12px; /* Further adjust padding */
+    }
+  }
+  
+  .round-shape-one,
+  .round-shape-two,
+  .round-shape-three,
+  .round-shape-four {
+    border-radius: 50%;
+    position: absolute;
+    z-index: 199;
+  }
+  
+  .round-shape-one {
+    width: 20px;
+    height: 20px;
+    border: 4px solid rgb(64, 172, 214);
+    top: 35%;
+    left: 66%;
+    animation: moveAnimation 35s infinite linear;
+  }
+  
+  .round-shape-two {
+    width: 25px;
+    height: 25px;
+    border: 4px solid rgb(255, 0, 81);
+    top: 25%;
+    left: 36%;
+    animation: moveAnimation 30s infinite linear;
+  }
+  
+  .round-shape-three {
+    width: 20px;
+    height: 20px;
+    border: 4px solid rgb(64, 172, 214);
+    top: 45%;
+    left: 6%;
+    animation: moveAnimation 20s infinite linear;
+  }
+  
+  .round-shape-four {
+    width: 25px;
+    height: 25px;
+    border: 4px solid rgb(255, 0, 81);
+    top: 45%;
+    left: 75%;
+    animation: moveAnimation 25s infinite linear;
+  }
+
+
+
+  
+  
+  @keyframes moveAnimation {
+    0% {
+      transform: translate(-50%, -50%);
+    }
+  
+    25% {
+      transform: translate(calc(-50% + 50px), calc(-50% + 50px));
+    }
+  
+    50% {
+      transform: translate(calc(-50% + 100px), calc(-50% - 50px));
+    }
+  
+    75% {
+      transform: translate(calc(-50% - 50px), calc(-50% - 50px));
+    }
+  
+    100% {
+      transform: translate(-50%, -50%);
+    }
+  }
+  
+  .triangle {
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 60%;
+    left: 10%;
+    border-left: 12px solid transparent;
+    border-right: 16px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-bottom-color: #eaa637;
+    animation: rotateTriangle 20s linear infinite;
+  }
+  
+  .triangle1 {
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 55%;
+    left: 90%;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-bottom-color: #eaa637;
+    animation: rotateTriangle 20s linear infinite;
+  }
+  
+  @media only screen and (max-width: 1000px) {
+    .triangle {
+      top: 30%;
+    }
+  
+    .triangle1 {
+      top: 40%;
+    }
+  }
+  
+  @keyframes rotateTriangle {
+    0% {
+      transform: rotate(0deg);
+    }
+  
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* @media (max-width: 767px) {
+    .hero-content {
+      top: 30%;
+    }
+  
+    .video-container {
+      height: 60vh;
+      
+    }
+  
+    #video-background {
+      height: 60vh;
+    }
+  } */
+  
+  /*Sliding Text ANimation CSS Starts */
+  @keyframes showTopText {
+    0% {
+      transform: translate3d(0, 100%, 0);
+    }
+  
+    40%,
+    60% {
+      transform: translate3d(0, 50%, 0);
+    }
+  
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  @keyframes showBottomText {
+    0% {
+      transform: translate3d(0, -100%, 0);
+    }
+  
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  .Access {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+  
+    & > h2,
+    span {
+      font-size: 3.5rem;
+      font-weight: bold;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .Access {
+      margin-top: 5rem;
+  
+      & > h2,
+      span {
+        font-size: 2.8rem;
+        font-weight: bold;
+      }
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .Access {
+      flex-direction: column;
+      gap: 1px;
+    }
+  }
+  
+  @media (max-width: 390px) {
+    .Access {
+      & > h2,
+      span {
+        font-size: 2.8rem;
+        font-weight: bold;
+      }
+    }
+  }
+  
+  .hero-content .fadeinDown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .hero-content .fadeinDown h1 {
+    font-size: 3.8rem;
+    color: #fff;
+    font-weight: bolder;
+    width: auto;
+    height: auto;
+    text-align: center;
+    line-height: 80px;
+    opacity: 0;
+    animation: fadeIn 2s ease-in-out both;
+    animation-delay: 0.3s;
+  }
+  
+  .hero-content .fadeinDown .animated {
+    color: #fff;
+    font-weight: 500;
+    animation-duration: 0.3s;
+    animation-fill-mode: both;
+    -webkit-animation-duration: 3s;
+    -webkit-animation-fill-mode: both;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -100%, 0);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      transform: translate3d(0, 40px, 0);
+    }
+  
+    to {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+    }
+  }
+  
+  .hero-content .fadeinDown .animatedFadeInUp {
+    opacity: 0;
+  }
+  
+  .hero-content .fadeinDown .fadeInUp {
+    opacity: 0;
+    animation-name: fadeInUp;
+    -webkit-animation-name: fadeInUp;
+  }
+  
+  /* Media Queries for Responsive Design */
+  
+  @media (max-width: 576px) {
+    .hero-content .fadeinDown h1 {
+      font-size: 2rem; /* Adjust font size for smaller screens */
+      line-height: 1.3; /* Adjust line height for smaller screens */
+    }
+  }
+  
+  @media (min-width: 577px) and (max-width: 768px) {
+    .hero-content .fadeinDown {
+      padding: 12px; /* Adjust padding for medium-sized screens */
+    }
+  
+    .hero-content .fadeinDown h1 {
+      font-size: 2.5rem; /* Adjust font size for medium-sized screens */
+      line-height: 1.4; /* Adjust line height for medium-sized screens */
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 992px) {
+    .hero-content .fadeinDown {
+      padding: 30px; /* Adjust padding for large screens */
+    }
+  
+    .hero-content .fadeinDown h1 {
+      font-size: 3.5rem; /* Adjust font size for large screens */
+      line-height: 1.5; /* Adjust line height for large screens */
+    }
+  }
+  
+  @media (min-width: 993px) {
+    .hero-content .fadeinDown {
+      padding: 40px; /* Adjust padding for extra large screens */
+    }
+  
+    .hero-content .fadeinDown h1 {
+      font-size: 3.8rem; /* Maintain font size for extra large screens */
+      line-height: 1.6; /* Adjust line height for extra large screens */
+    }
+  }
+  
+  /* Ensuring text visibility on all screen sizes */
+  .hero-content h1,
+  .hero-content p {
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  }
+  
+  @media (max-width: 576px) {
+    .hero-content h1,
+    .hero-content p {
+      width: 100vw;
+    }
+  }
+  
+  /* Sliding Text Animation */
+  .fadeinDown {
+    animation: fadeinDown 2s;
+  }
+  
+  @keyframes fadeinDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animatedFadeInUp {
+    opacity: 0;
+    animation: fadeInUp 1.5s ease-in-out forwards;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .btn1 {
+    border-radius: 5px;
+    padding: 4px 12px;
+    box-shadow: 1px 2px orange;
+    margin-top: 10px;
+  }
+  
+  
+  
+  /* SVG Animation Start */
+  .hero-content .svganimate svg {
+    /* font-family: 'Poppins', sans-serif; */
+    font-family: "Poppins", sans-serif !important;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    /* Initial opacity set to 0 for fade-in effect */
+    animation: fadeInDown 5s forwards;
+    /* Adjust the duration as needed */
+  }
+  
+  .hero-content .svganimate svg text {
+    /* text-transform: uppercase; */
+    font-weight: bold;
+    animation: stroke 15s infinite alternate;
+    stroke-width: 2;
+    stroke: #ffffff;
+    font-size: 3.5rem;
+    /* font-family: 'Poppins', sans-serif !important; */
+  }
+  
+  @keyframes stroke {
+    0% {
+      fill: #ffffff;
+      stroke: rgb(255, 255, 255);
+      /* stroke: rgba(54, 95, 160, 1); */
+      stroke-dashoffset: 25%;
+      stroke-dasharray: 0 50%;
+      stroke-width: 1;
+    }
+  
+    70% {
+      fill: #ffffff;
+      stroke: #000000;
+    }
+  
+    80% {
+      fill: #ffffff;
+      stroke: #353333;
+      stroke-width: 2;
+    }
+  
+    100% {
+      fill: #ffffff;
+      stroke: black;
+      stroke-dashoffset: -25%;
+      stroke-dasharray: 50% 0;
+      stroke-width: 0;
+    }
+  }
+  
+  @keyframes fadeInDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-100%);
+      /* Move the element up initially, equivalent to translateY(0) */
+    }
+  
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* SVG Animation End */
+  
+  /* Revealing Text Animation CSS Starts */
+  
+  .hero-content .revealingTextAnimation div {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  
+  .hero-content .revealingTextAnimation div:first-of-type {
+    /* For increasing performance 
+      ID/Class should've been used. 
+      For a small demo 
+      it's okaish for now */
+    animation: showup 7s infinite;
+  }
+  
+  .hero-content .revealingTextAnimation div:last-of-type {
+    /* For increasing performance 
+      ID/Class should've been used. 
+      For a small demo 
+      it's okaish for now */
+    animation: showup 7s infinite;
+  }
+  
+  .hero-content .revealingTextAnimation div:last-of-type span {
+    /* For increasing performance 
+      ID/Class should've been used. 
+      For a small demo 
+      it's okaish for now */
+    animation: showup 7s infinite;
+  }
+  
+  @keyframes showup {
+    0% {
+      opacity: 0;
+    }
+  
+    20% {
+      opacity: 1;
+    }
+  
+    80% {
+      opacity: 1;
+    }
+  
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  @keyframes slidein {
+    0% {
+      margin-left: -800px;
+    }
+  
+    20% {
+      margin-left: -800px;
+    }
+  
+    35% {
+      margin-left: 0px;
+    }
+  
+    100% {
+      margin-left: 0px;
+    }
+  }
+  
+  @keyframes reveal {
+    0% {
+      opacity: 0;
+      width: 0px;
+    }
+  
+    20% {
+      opacity: 1;
+      width: 0px;
+    }
+  
+    30% {
+      width: 355px;
+    }
+  
+    80% {
+      opacity: 1;
+    }
+  
+    100% {
+      opacity: 0;
+      width: 355px;
+    }
+  }
+  
+  /* Revealing Text Animation CSS End */
+  
+  .customList {
+    list-style: none;
+  }
+  

@@ -1,0 +1,18 @@
+.statusSend{
+    color:green;
+    font-weight: bold;
+}
+.statusDelivered{
+    color:green;
+    font-weight: bold;
+}
+
+.statusPending{
+    color:red;
+    /* font-weight: bold; */
+}
+
+.statusNotRead{
+    color:red;
+    /* font-weight: bold; */
+}

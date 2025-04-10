@@ -1,0 +1,145 @@
+/* FileUploadForm.css */
+
+.form-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  
+  .textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  .flex-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .custBtn {
+    background-color: #1abc9c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .custBtn:hover {
+    background-color: #16a085;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  
+  .upload-button {
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .hidden-input {
+    display: none;
+  }
+  
+  .file-list {
+    margin-bottom: 20px;
+  }
+  
+  .file-item {
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .remove-button {
+    background-color: transparent;
+    border: none;
+    color: #ff0000;
+    cursor: pointer;
+  }
+  
+  .submit-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #1abc9c;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+    font-weight: bold
+  }
+  
+  /* background-color: #1abc9c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s; */
+
+    /* Parent container for file items */
+
+    .form-container{
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+      border-radius: 10px;
+    }
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%; /* Ensures the container fits the parent */
+  box-sizing: border-box;
+}
+
+/* Progress bar container */
+.progress-barr {
+  width: 100%;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 10px;
+  margin-left: 10px;
+  flex-grow: 1;
+}
+
+/* Progress bar fill */
+.progress-bar-fill {
+  height: 100%;
+  background-color: #4caf50;
+  width: 0%; /* This will be dynamically set */
+  border-radius: 5px;
+  transition: width 0.2s ease-in-out;
+  text-align: center;
+  color: white;
+  font-size: 10px;
+  line-height: 10px;
+  white-space: nowrap;
+}

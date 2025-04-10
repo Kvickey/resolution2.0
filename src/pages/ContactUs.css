@@ -1,0 +1,122 @@
+.contactUsContainer .sectionHeading {
+  width: 100%;
+    font-weight: 900;
+    color: white;
+    letter-spacing: 1.5px;
+  }
+  
+  .contactUsContainer .contactUsBG {
+    /* width: 100%; */
+    background-color: #172639;
+    padding: 10px 0;
+    height: auto;
+    color: white;
+    opacity: 0.8;
+    padding-bottom: 50px;
+    /* box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease-in-out; */
+  }
+  
+  .contactUsContainer .contactUsBG .introText {
+    font-size: 16px;
+    color: #dddddd;
+    line-height: 1.6;
+  }
+  
+  .contactUsContainer .contactDetails p {
+    font-size: 14px;
+    color: #bbbbbb;
+    margin: 30px 0;
+    width: 100%;
+    
+  }
+  
+  .contactUsContainer .contactDetails b {
+    color: #eaa627;
+  }
+  
+  .contactUsContainer .contactUsBG .contactUsForm {
+    background: transparent;
+    border: 2px solid #eaa627;
+    padding: 30px;
+    border-radius: 3px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease-in-out;
+    width: 100%;
+    max-width: 36vw;
+    margin: auto;
+  }
+  
+  .contactUsContainer .contactUsBG .contactUsForm:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.8);
+  }
+  
+  .contactUsContainer .contactUsForm .form-label {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  
+  .contactUsContainer .contactUsForm .form-control {
+    background: white;
+    color: black;
+    border-radius: 3px;
+    border: none;
+    margin-bottom: 20px;
+    font-size: 14px;
+    opacity: 0.8;
+  }
+  
+  .contactUsContainer .contactUsForm .form-control:focus {
+    box-shadow: 0 0 5px #eaa627;
+    border-color: #eaa627;
+  }
+  
+  .contactUsContainer .contactUsForm .submitBtn {
+    background-color: #eaa627;
+    border: none;
+    padding: 5px 24px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .contactUsContainer .contactUsForm .submitBtn:hover {
+    background-color: #ea8f27;
+    color: black;
+    box-shadow: 0 0 10px #eaa627;
+  }
+  
+  .contactUsContainer .socialLinks a {
+    color: #eaa627;
+    margin-right: 10px;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .contactUsContainer .socialLinks a:hover {
+    color: #ea8f27;
+  }
+  
+  @media (max-width: 768px) {
+    .contact {
+      text-align: center;
+    }
+    .contactUsContainer .contactUsBG .contactUsForm {
+      max-width: 95%;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .contactUsContainer .contactUsBG {
+      padding: 30px 0;
+    }
+    .contact {
+      text-align: center;
+    }
+    .contactUsContainer .contactUsBG .contactUsForm {
+      max-width: 95%;
+    }
+    .contactUsContainer .contactDetails p {
+      margin: 0 0 40px 0;
+    }
+  }
+  

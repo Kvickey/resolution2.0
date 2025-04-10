@@ -1,0 +1,106 @@
+.missionContainer .sectionHeading {
+    font-weight: 800;
+    color: white;
+    letter-spacing: 1px;
+  }
+  
+  .missionContainer .sectionHeading:hover {
+    letter-spacing: 2px;
+    transition: 0.45s ease-in-out;
+    color: #eaa637;
+    cursor: pointer;
+  }
+  
+  .missionContainer .missionText {
+    text-align: justify;
+    font-weight: 500;
+  }
+  
+  .missionContainer .ourMissionRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 0 5rem 0 0;
+    gap: 10px;
+  }
+  
+  .missionContainer .ourMissionImage {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    margin: 0 auto;
+  }
+  
+  .missionContainer .ourMissionImage:hover {
+    transform: scale(1.05);
+    transition: 1s ease-in-out;
+  }
+  
+  .missionContainer .missionText p {
+    padding: 0px 5px;
+  }
+  
+  .missionContainer .missionText .missionTextCard {
+    background-color: #ffffff;
+    border: 2px solid #eaa637;
+    color: rgb(0, 0, 0);
+    font-size: 16px;
+    margin: 5px auto;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 1200px) {
+    .missionContainer .ourMissionRow {
+      gap: 20px;
+      margin: 0 2rem 0 0;
+    }
+    .missionContainer .sectionHeading {
+      font-size: 1.75rem;
+    }
+    .missionContainer .missionText .missionTextCard {
+      font-size: 18px;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .missionContainer .ourMissionRow {
+      gap: 20px;
+    }
+    .missionContainer .sectionHeading {
+      font-size: 1.5rem;
+    }
+    .missionContainer .missionText .missionTextCard {
+      font-size: 16px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .missionContainer .ourMissionRow {
+      gap: 20px;
+      margin: 0;
+    }
+    .missionContainer .ourMissionImage {
+      width: 100%;
+    }
+    .missionContainer .missionText .missionTextCard {
+      font-size: 16px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .missionContainer .ourMissionRow {
+      gap: 20px;
+      margin: 0;
+    }
+    .missionContainer .sectionHeading {
+      font-size: 1.25rem;
+    }
+    .missionContainer .ourMissionImage {
+      width: 100%;
+    }
+    .missionContainer .missionText .missionTextCard {
+      font-size: 14px;
+    }
+  }
+  

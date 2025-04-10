@@ -1,0 +1,161 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+* {
+  font-family: Poppins, sans-serif;
+  box-sizing: border-box;
+}
+
+.expertiseContainer {
+  width: 100%;
+  background: url("../assets/images/Experties_Bak_Final.jpg") no-repeat center;
+  /* background: url("../img/Experties_Bak_Final.jpg") no-repeat center; */
+  background-size: cover;
+  height: auto;
+  padding-bottom: 40px;
+  padding-top: 15px;
+}
+
+.expertiseContainer .sectionHeading {
+  font-weight: 900;
+  color: white;
+  text-shadow: 0.5px 0.5px 1px black;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.expertiseContainer .sectionHeading:hover {
+  letter-spacing: 2px;
+  transition: 0.45s ease-in-out;
+  color: #eaa627;
+}
+
+.myCard {
+  display: block;
+  margin: 32px auto;
+  text-align: center;
+  width: 100%;
+  max-width: 460px;
+}
+
+.myCard .cardTitle {
+  font-weight: bold;
+  line-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.myCard .CardHeader {
+  font-weight: bold;
+  line-height: 40px;
+  background-color: #eaa637;
+  cursor: pointer;
+}
+
+.myCard .CardHeader:hover {
+  background-color: rgb(236, 156, 26);
+  letter-spacing: 2px;
+  transition: 0.5s ease-in-out;
+}
+
+.myCard .cardTitleFlex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.myCard .cardTitleFlex img {
+  height: 40px;
+  width: auto;
+  margin-right: 10px;
+}
+
+.myCard button {
+  font-weight: 900;
+  background-color: rgb(236, 156, 26);
+  border: none;
+}
+
+.myCard button:hover {
+  font-weight: 900;
+  background-color: #172639;
+  border: none;
+  color: white;
+}
+
+.myCard p {
+  padding: auto;
+  text-align: justify;
+  font-weight: 400;
+}
+
+.myCard .myCardHover:hover {
+  transform: scale(1.06);
+  transition: 0.25s ease-in-out;
+}
+
+/* Media Queries for Responsiveness */
+
+@media (max-width: 1200px) {
+  .expertiseContainer .sectionHeading {
+    font-size: 2rem;
+  }
+
+  .myCard {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 992px) {
+  .myCard {
+    max-width: 350px;
+  }
+
+  .expertiseContainer .sectionHeading {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .expertiseContainer .sectionHeading {
+    font-size: 1.6rem;
+  }
+
+  .myCard {
+    max-width: 95%;
+  }
+}
+
+@media (max-width: 576px) {
+  .expertiseContainer {
+    padding: 20px auto;
+  }
+
+  .expertiseContainer .sectionHeading {
+    font-size: 1.4rem;
+  }
+
+  .myCard {
+    margin: 20px auto;
+    max-width: 92%;
+  }
+
+  .myCard .CardHeader {
+    font-size: 0.9rem;
+    padding: 10px auto;
+  }
+
+  .myCard .CardHeader img,
+  .myCard .CardHeader i {
+    height: 20px;
+    font-size: 20px;
+  }
+
+  .myCard .CardHeader h5 {
+    font-size: 1rem;
+  }
+
+  .myCard p {
+    font-size: 0.9rem;
+  }
+}

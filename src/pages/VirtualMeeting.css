@@ -1,0 +1,46 @@
+.custBtn {
+    background-color: #1abc9c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .custBtn:hover {
+    background-color: #16a085;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .customModal{
+    background-color: #172639;
+    color: white;
+  }
+
+  .cstmIcon{
+    background-color: #16a085;
+    color: white;
+    border-radius: 20px;
+  }
+
+  /* customModal.css */
+.customModal .close {
+  color: orange!important;
+}
+
+.customModal .close:hover {
+  color: darkorange!important;
+}
+
+.customBorder {
+  border: 1px solid lightgray;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.small-font {
+  font-size: 12px; /* Adjust the size as needed */
+}
+
+ 

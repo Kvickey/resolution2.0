@@ -1,0 +1,149 @@
+
+.login-container {
+    height: 60vh;
+    margin: 8rem auto;
+}
+
+.logo img{
+    width: 150px;
+    height: 150px;
+    position: absolute;
+    /* top: 15px;
+    left: 600px;    */
+    top: -150px;
+    left: -30px;   
+}
+
+.login-form {
+    height: 60vh;
+    width: 100%;
+   
+    max-width: 350px; 
+    padding: 5rem;
+    box-sizing: border-box;
+    background: linear-gradient(rgb(253, 252, 252), #fffefe) padding-box, linear-gradient(105deg, transparent 55%, #f0ca4d, #f435de) border-box;
+    border: 4px solid transparent;
+    border-radius: 10px;
+    box-shadow: 5px 10px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+
+   
+   
+}
+
+.login-form h2 {
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: rgb(5, 5, 5);
+}
+
+.login-form .form-control {
+    padding-left: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.login-button,
+.cancel-button {
+    font-weight: bolder;
+    color: white;
+    transition: all 0.3s ease;
+    width: 8vw;
+    min-width: 100px;
+}
+
+.btn.login-button {
+    background-color: rgb(244, 187, 82);
+    font-weight: bolder;
+}
+
+.btn.login-button:hover {
+    background-color: orange;
+    font-weight: bolder;
+    border: 1px solid rgb(35, 35, 50);
+}
+
+.btn.cancel-button {
+    background-color: rgb(65, 58, 58);
+    color: rgb(250, 246, 246);
+}
+
+.btn.cancel-button:hover {
+    opacity: 0.8;
+    background-color: black;
+    color: rgb(247, 243, 243);
+    border: 1px solid white;
+}
+
+.input-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+button[disabled] {
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .login-form {
+        padding: 1.5rem;
+        height: 50vh;
+        width: 80%;
+    }
+
+    .login-container {
+        margin: 10rem auto;
+    }
+
+    .login-button,
+    .cancel-button {
+        width: auto;
+    }
+
+    .logo img{
+        width: 150px;
+        height: 150px;
+        position: absolute;
+        top: -150px;
+        left: -30px;
+       
+    
+    }
+}
+
+@media (max-width: 576px) {
+    .row.login-form {
+        padding: 1rem;
+        width: 80%;
+        height: 70vh;
+    }
+
+    .row.login-container {
+        height: 100%;
+        margin: 8rem auto;
+       
+    }
+
+    .login-button,
+    .cancel-button {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .logo img{
+        width: 150px;
+        height: 150px;
+        position: absolute;
+        top: -150px;
+        left: -30px;
+       
+    
+    }
+
+}

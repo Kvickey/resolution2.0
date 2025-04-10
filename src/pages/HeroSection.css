@@ -1,0 +1,231 @@
+#HeroSection{
+    overflow-x: hidden;
+}
+.BG_Hero_Section {
+    width: 100%;
+    /* padding-top: 40%; */
+    padding: 24% 0%;
+    background: url('../assets//images/Hero_BG_Digital.jpg')no-repeat center;
+    /* background: url('../img/Hero_BG_Digital.jpg')no-repeat center; */
+
+    background-size: cover;
+    height: 50vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+@media only screen and (max-width: 415px) {
+    .BG_Hero_Section {
+        padding: 60% 0%;
+    }
+
+    .heading_Hero {
+        margin-top: 20px;
+
+    }
+}
+
+
+.round-shape-one {
+    width: 20px;
+    height: 20px;
+    border: 4px solid rgb(64, 172, 214);
+    border-radius: 50%;
+    position: absolute;
+    top: 35%;
+    left: 66%;
+    z-index: 199;
+    animation: moveAnimation 35s infinite linear;
+}
+
+.round-shape-two {
+    width: 25px;
+    height: 25px;
+    border: 4px solid blue;
+    border-radius: 50%;
+    position: absolute;
+    top: 25%;
+    left: 36%;
+    z-index: 199;
+    animation: moveAnimation 30s infinite linear;
+}
+
+.round-shape-three {
+    width: 20px;
+    height: 20px;
+    border: 4px solid rgb(64, 172, 214);
+    border-radius: 50%;
+    position: absolute;
+    top: 45%;
+    left: 6%;
+    z-index: 199;
+    animation: moveAnimation 20s infinite linear;
+}
+
+.round-shape-four {
+    width: 25px;
+    height: 25px;
+    border: 4px solid blue;
+    border-radius: 50%;
+    position: absolute;
+    top: 45%;
+    left: 75%;
+    z-index: 199;
+    animation: moveAnimation 25s infinite linear;
+}
+
+@keyframes moveAnimation {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+
+    25% {
+        transform: translate(calc(-50% + 50px), calc(-50% + 50px));
+    }
+
+    50% {
+        transform: translate(calc(-50% + 100px), calc(-50% - 50px));
+    }
+
+    75% {
+        transform: translate(calc(-50% - 50px), calc(-50% - 50px));
+    }
+
+    100% {
+        transform: translate(-50%, -50%);
+    }
+}
+
+.triangle {
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 60%;
+    left: 10%;
+    border-left: 12px solid transparent;
+    border-right: 16px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-bottom-color: #EAA637;
+    animation: rotateTriangle 20s linear infinite;
+}
+
+.triangle1 {
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 55%;
+    left: 90%;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-bottom-color: #EAA637;
+    animation: rotateTriangle 20s linear infinite;
+}
+
+@media only screen and (max-width: 1000px) {
+    .triangle {
+        top: 30%;
+    }
+
+    .triangle1 {
+        top: 40%;
+
+    }
+
+}
+
+@keyframes rotateTriangle {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+
+.cloud-white {
+    position: relative;
+    z-index: 99;
+    /* -webkit-animation: upDown 1s infinite alternate; */
+    animation: upDown 3s linear infinite;
+}
+
+.cloud {
+    width: 100vw;
+    height: auto;
+}
+
+@keyframes upDown {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-10px);
+    }
+}
+
+.heading_Hero {
+    z-index: 999;
+    /* position: absolute;
+    top: 250px; */
+
+}
+
+.heading_Hero h3{
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 2px 2px black;
+    font-family: 'Poppins', sans-serif;
+}
+.heading_Hero{
+    margin-top: 500px;
+}
+.heading_Hero p {
+    padding: 15px 5px;
+    /* color: #EAA637; */
+    color: white;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+@media all and (max-width: 600px) {
+    .heading_Hero h1 {
+        font-size: 2rem;
+    }
+}
+
+@media all and (max-width: 600px) {
+    .heading_Hero p {
+        font-size: 1rem;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+.BG_Hero_Section button {
+    background-color: #EAA637;
+    border: none;
+    font-weight: 700;
+    color: #172639;
+    /* border: 1px solid black; */
+}
+
+.BG_Hero_Section button:hover {
+    background-color: #172639;
+    color: #EAA637;
+    /* font-weight: bold; */
+    border: 1px solid white;
+    margin-bottom: 2px;
+    /* transition: 0.2s; */
+
+}

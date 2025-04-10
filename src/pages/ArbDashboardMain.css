@@ -1,0 +1,184 @@
+.stats1 {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  @media (max-width: 576px) {
+    .stats1 {
+      flex-direction: column;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .stats1 {
+      flex-direction: column;
+    }
+  }
+  
+  .statsItem1 {
+    flex: 1;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: white;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0, 0, 0, 0.15), 0 1px 18px rgba(0, 0, 0, 0.2);
+    border-left: 6px solid var(--primary-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .statsItem1:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 12px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .statsTitle1 {
+    font-size: 36px;
+    font-weight: 700;
+    border-bottom: 2px solid grey;
+    margin-bottom: 10px;
+  }
+  
+  .complete1 {
+    color: rgb(10, 85, 10);
+  }
+  
+  .progress1 {
+    color: orange;
+  }
+  
+  .pending1 {
+    color: rgb(235, 55, 55);
+  }
+  
+  .statsContainer1 {
+    text-align: right;
+    font-size: 18px;
+  }
+  
+  /* Dashboard Content Container */
+  
+  .dashboard-content1 {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .dashboard-content1 {
+      flex-wrap: wrap;
+    }
+    .chart-area1 {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .dashboard-content1 {
+      flex-wrap: wrap;
+    }
+    .chart-area1 {
+      width: 100%;
+    }
+  }
+  
+  .dashboard-items {
+    display: flex;
+    flex: 1;
+    gap: 20px;
+  }
+  
+  /* Equal Size for Dashboard Items with different flex values */
+  
+  .arb-panel1 {
+    flex: 1;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0, 0, 0, 0.15), 0 1px 18px rgba(0, 0, 0, 0.2);
+    border-left: 6px solid var(--primary-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 20px;
+    flex-basis: 40%; /* Adjust the width */
+    cursor: pointer;
+  }
+  
+  .arb-panel1:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 12px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .chart-area1 {
+    flex: 1;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0, 0, 0, 0.15), 0 1px 18px rgba(0, 0, 0, 0.2);
+    border-left: 6px solid var(--primary-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 20px;
+    flex-basis: 60%; /* Adjust the width */
+    cursor: pointer;
+  }
+  
+  .chart-area1:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 12px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .arb-header1 {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    padding: 15px;
+    text-align: center;
+    font-size: 22px;
+    border-top-right-radius: 10px;
+  }
+  
+  .arb-list1 {
+    padding: 10px;
+  }
+  
+  .list-item1 {
+    border-bottom: 1px solid #da8c0e9d;
+  }
+  
+  .list-item1 p {
+    margin: 0;
+    /* padding: 10px; */
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .list-item1:hover {
+    background-color: var(--secondary-color);
+    color: white;
+  }
+  
+  .list-item1 span {
+    background: white;
+    border-radius: 50px;
+    padding: 5px;
+    color: var(--primary-color);
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  /* Chart Area */
+  
+  .chart-header1 {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    border-bottom: 2px solid grey;
+  }
+  
+  .chart-header1 h2 {
+    margin: 0;
+    font-size: 22px;
+    text-align: center;
+  }
+  

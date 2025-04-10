@@ -1,0 +1,162 @@
+.topbar {
+    width: 100%; /* Ensure it takes the full width of the parent container */
+    background-color: white;
+    transition: margin-left 0.5s;
+    box-shadow: 0 3px 5px -1px #0003, 0 6px 10px #00000024, 0 1px 18px #0000001f;
+    position: fixed;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .top-bar {
+    box-shadow: 0 3px 5px -1px #0003, 0 6px 10px #00000024, 0 1px 18px #0000001f;
+    background-color: white;
+    transition: margin-left 0.5s;
+    /* border-bottom: 1px solid#EAA637; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .rightBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 22rem;
+  }
+  
+  .TopNav {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    margin: 8px 40px;
+  }
+  
+  .topRight {
+    align-items: center;
+  }
+  .topbarwrapper {
+    height: 100%;
+    padding: 0px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+    padding: 0px 5px;
+    position: relative;
+    top: -5px;
+  }
+  
+  .topbarIconContainer {
+    position: relative;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-left: 5px;
+  }
+  
+  .topbarIconContainer a {
+    text-decoration: none;
+    color: white;
+    font-size: large;
+    align-items: center;
+  }
+  
+  .topIconBadge {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    top: -5px;
+    right: 0px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+  }
+  
+  .material-icons.md-light {
+    color: rgba(255, 255, 255, 1);
+  }
+  
+  .search-container {
+    display: flex;
+  }
+  
+  .search-wrapper {
+    position: relative;
+    display: flex;
+  }
+  
+  .search-bar {
+    padding: 6px 20px; /* Add padding to the left for the icon */
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    width: 25vw;
+    outline: none;
+    font-size: 14px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s;
+  }
+  
+  @media (max-width: 768px) {
+    .search-bar {
+      width: 40vw;
+      margin-left: 1rem;
+    }
+    .rightBox {
+      margin-left: 4rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .search-bar {
+      width: 50vw;
+      margin-left: 0.5rem;
+    }
+    .icon {
+      display: none;
+    }
+    .rightBox {
+      margin: 0;
+    }
+  }
+  
+  .search-bar:focus {
+    border-color: var(--primary-color);
+  }
+  
+  .search-icon {
+    position: absolute;
+    right: 10px; /* Position the icon within the input field */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 15px;
+    color: #ccc; /* Light color for the icon */
+    pointer-events: none; /* Prevent clicking on the icon */
+  }
+  
+  .button1 {
+    background-color: white;
+    color: #dc3545;
+    border: 2px solid #dc3545;
+    border-radius: 5px;
+    padding: 4px 20px;
+    font-weight: bold;
+  }
+  
+  .button1:hover {
+    background-color: #dc3545;
+    font-weight: bold;
+    color: white;
+  }
+  

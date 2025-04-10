@@ -1,0 +1,113 @@
+.mainContainer {
+    margin: 40px 0;
+  }
+  
+  .sectionHeading {
+    font-weight: 900;
+    color: white;
+    margin: 20px 0;
+  }
+  
+  .sectionHeading:hover {
+    letter-spacing: 2px;
+    transition: 0.45s ease-in-out;
+    color: #eaa637;
+    cursor: pointer;
+  }
+  
+  .item {
+    padding: 5px;
+  }
+  
+  .item .custom_Card .cardImage:hover {
+    transition: transform 2s;
+    transform: scale(1.13);
+  }
+  
+  .owl-theme .cardFooter {
+    background-color: #eaa637;
+    color: black;
+  }
+  
+  .owl-theme .custom_Card:hover {
+    border: 1px solid #000000;
+    transition: transform 1s;
+    transform: scale(1.02);
+    cursor: pointer;
+  }
+  
+  .cardFooter:hover {
+    background-color: black;
+    color: white;
+    transition: 0.3s;
+  }
+  
+  .owl-theme .custom_Card {
+    width: 16rem;
+  }
+  
+  /* Media Queries for Responsiveness */
+  @media (max-width: 1200px) {
+    .owl-theme .custom_Card {
+      width: 14rem;
+    }
+  
+    .sectionHeading {
+      font-size: 1.75rem;
+    }
+  
+    .cardFooter {
+      font-size: 0.9rem;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .owl-theme .custom_Card {
+      width: 14rem;
+    }
+  
+    .sectionHeading {
+      font-size: 1.5rem;
+    }
+  
+    .cardFooter {
+      font-size: 0.85rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .owl-theme .custom_Card {
+      width: 18rem;
+    }
+  
+    .sectionHeading {
+      font-size: 1.4rem;
+    }
+  
+    .cardFooter {
+      font-size: 1rem;
+    }
+  
+    .item .custom_Card .cardImage:hover {
+      transform: scale(1.1);
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .owl-theme .custom_Card {
+      width: 95%;
+    }
+  
+    .sectionHeading {
+      font-size: 1rem;
+    }
+  
+    .cardFooter {
+      font-size: 1rem;
+    }
+  
+    .item .custom_Card .cardImage:hover {
+      transform: scale(1.08);
+    }
+  }
+  
