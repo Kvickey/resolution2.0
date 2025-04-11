@@ -64,7 +64,7 @@ const AssignArbitrator = () => {
     // setFirm(selectedID);
   };
 
-  console.log(selectedFirm);
+
 
   // To fetch the arbitrators based on firm
   useEffect(() => {
@@ -95,7 +95,7 @@ const AssignArbitrator = () => {
     fetchArbitrators();
   }, [selectedFirm]);
 
-  console.log(selectedArbitrators);
+  
 
   // unassignedLots Fetch Code
   useEffect(() => {
@@ -122,7 +122,7 @@ const AssignArbitrator = () => {
     fetchUnassignedLots();
   }, []);
 
-  console.log(unassignedLots);
+  
 
   if (loading) return <LoadingSpinner />;
 
