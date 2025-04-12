@@ -56,7 +56,9 @@
   margin-top: 20px; /* Add space above the pagination */
   display: flex;
   justify-content: center; /* Center the pagination */
+  
 }
+
 
 /* Responsive Styles */
 @media (max-width: 768px) {
@@ -64,3 +66,4 @@
     width: 100%;
   }
 }
+

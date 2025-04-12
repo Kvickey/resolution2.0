@@ -132,8 +132,8 @@ const CaseTrackingLotWise = () => {
               onChange={(e)=> e.target.value > 0 && handleChange(e)}
             />
           </div>
-          <div className="col-md col-12">
-            <button className="custBtn">Show Data</button>
+          <div className="col-md col-12 text-center text-md-start">
+            <button className="custBtn text-nowrap">Show Data</button>
           </div>
         </div>
       </form>

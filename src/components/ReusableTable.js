@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Pagination from "react-bootstrap/Pagination";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "./ReusableTable.css";
+import { FaSearch } from "react-icons/fa";
 
 const ReusableTable = ({
   data = [],
@@ -12,30 +13,31 @@ const ReusableTable = ({
   // Use the keys of the first object in data as headers if data is an array of objects
   const [searchText, setSearchText] = useState("");
   const [tableData, setTableData] = useState(data);
-  let [headers , setHeaders] = useState([]);
-  let [newheaders , setNewHeader] = useState([]);
+  let [headers, setHeaders] = useState([]);
+  let [newheaders, setNewHeader] = useState([]);
 
-  // Used to make Some Columns in the start 
+  // Used to make Some Columns place in the start
 
   useEffect(() => {
     data = data.map((row) => ({
-      Lot_no: row.Lot_no,
-      Reference_no: row.Reference_no,
-      Cust_id : row.Cust_id,
-      Cust_name :row.Cust_name,
+      Lot_no: row?.Lot_no,
+      Reference_no: row?.Reference_no,
+      Cust_id: row?.Cust_id,
+      Cust_name: row?.Cust_name,
       ...row,
     }));
-    
-     let tempheaders =
-    data.length > 0 && typeof data[0] === "object"
-      ? ["Sr", ...Object.keys(data[0])]
-      : [];
-   let tempnewheaders = tempheaders.map((header) => newKeys[header] || header);
-   setHeaders(tempheaders);
-   setNewHeader(tempnewheaders);
+
+    let tempheaders =
+      data.length > 0 && typeof data[0] === "object"
+        ? ["Sr", ...Object.keys(data[0])]
+        : [];
+    let tempnewheaders = tempheaders.map((header) => newKeys[header] || header);
+    setHeaders(tempheaders);
+    setNewHeader(tempnewheaders);
   }, [data]);
   let SerialNumber = 1;
-  // Rename Keys to show in the table Headers 
+
+  // Rename Keys to show in the table Headers
 
   const newKeys = {
     Case_id: "Case Id",
@@ -81,7 +83,7 @@ const ReusableTable = ({
     Remark: "Remark",
     Termination_date: "Termination Date",
   };
-  
+
   // Filtering Logic Search box
 
   useEffect(() => {
@@ -89,12 +91,14 @@ const ReusableTable = ({
     if (searchText !== "") {
       let filterHeaders = ["Cust_name", "Cust_id" ,];
       const filterFunction = (columnName) => {
-        const filteredData = backupData.filter((row) =>
-         row[columnName] && row[columnName]
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, "")
-            .includes(searchText)
+        const filteredData = backupData.filter(
+          (row) =>
+            row[columnName] &&
+            String(row[columnName])
+              .toLowerCase()
+              .trim()
+              .replace(/\s+/g, "")
+              .includes(searchText)
         );
         return filteredData;
       };
@@ -141,58 +145,71 @@ const ReusableTable = ({
       <div className="table-container mt-3 pt-0">
         <div className="row justify-content-end w-100 mt-2">
           <div className="col-12 col-md-6 col-lg-4 ">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="form-control py-2 border-2 rounded-pill border-dark-subtle focus-ring focus-ring-light"
-              onChange={(e) =>
-                setSearchText(
-                  e.target.value.toLowerCase().trim().replace(/\s+/g, "")
-                )
-              }
-              value={searchText}
-            />
+            <div className="row border border-secondary-subtle rounded-pill onFocusBorder">
+              <div className="col-11 ">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="form-control py-2  focus-ring focus-ring-light border-0"
+                  onChange={(e) =>
+                    setSearchText(
+                      e.target.value.toLowerCase().trim().replace(/\s+/g, "")
+                    )
+                  }
+                  value={searchText}
+                />
+              </div>
+              <div className="col-1 p-0">
+                <div className="row h-100 justify-content-center align-items-center">
+                  <div className="col p-0" style={{ color: "#c1c1c1" }}>
+                    <FaSearch />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div className="table-wrapper">
           <table className="responsive-table my-3">
             <thead>
               <tr>
-                {newheaders && newheaders.map((header, index) => (
-                  <th
-                    key={index}
-                    style={{ textAlign: "center", padding: "5px 20px" }}
-                  >
-                    {header}
-                  </th>
-                ))}
+                {newheaders &&
+                  newheaders.map((header, index) => (
+                    <th
+                      key={index}
+                      style={{ textAlign: "center", padding: "5px 20px" }}
+                    >
+                      {header}
+                    </th>
+                  ))}
               </tr>
             </thead>
             <tbody>
               {tableData &&
                 tableData.map((row, rowIndex) => (
                   <tr key={rowIndex} className="text-center custom_fz">
-                    {headers && headers.map((header, cellIndex) => (
-                      <td
-                        key={cellIndex}
-                        style={{
-                          textAlign:
-                            header === "CUST_NAME" ||
-                            header === "assignedArbitrator"
-                              ? "left"
-                              : "center",
-                          whiteSpace: "nowrap",
-                          wordBreak: "break-word",
-                          padding: "5px 20px",
-                        }}
-                      >
-                        {header === "Sr"
-                          ? SerialNumber++
-                          : row[header]
-                          ? row[header]
-                          : "Not provided"}
-                      </td>
-                    ))}
+                    {headers &&
+                      headers.map((header, cellIndex) => (
+                        <td
+                          key={cellIndex}
+                          style={{
+                            textAlign:
+                              header === "CUST_NAME" ||
+                              header === "assignedArbitrator"
+                                ? "left"
+                                : "center",
+                            whiteSpace: "nowrap",
+                            wordBreak: "break-word",
+                            padding: "5px 20px",
+                          }}
+                        >
+                          {header === "Sr"
+                            ? SerialNumber++
+                            : row[header]
+                            ? row[header]
+                            : "Not provided"}
+                        </td>
+                      ))}
                   </tr>
                 ))}
             </tbody>
