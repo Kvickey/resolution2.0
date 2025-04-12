@@ -65,6 +65,7 @@ import AssignArbitratorByIntent from "./pages/AssignArbitratorByIntent";
 import IntentLetterGenerate from "./pages/IntentLetterGenerate";
 import IntentLetterServices from "./pages/IntentLetterServices";
 import IntentLetterReports from "./pages/IntentLetterReports";
+import ArbitratorList from "./components/ArbitratorList";
 
 const App = () => {
   // useEffect(() => {
@@ -113,6 +114,7 @@ const App = () => {
         <Route path="/instdashboard" element={<InstDashboard />}>
           <Route index element={<InstDashboardMain />} />
           <Route path="dashboard" element={<InstDashboardMain />} />
+          <Route path="arbitrator" element={<ArbitratorList />} />
           <Route path="uploadalot" element={<UploadExcel />} />
           <Route path="intentletter">
             <Route path="generateintentletter" element={<IntentLetterGenerate />} />

@@ -12,6 +12,11 @@ const ReusableTable = ({ data, currentPage, pageNumbers, setCurrentPage }) => {
     : [];
   // console.log(data);
   // console.log(headers);
+  const displayHeaders = headers.map((key) => {
+    if (key === "Lot_no") return "Lot No";
+    if (key === "Cust_name") return "Customer Name";
+    return key;
+  });
   
   
   // Pagination logic to show only 5 buttons at a time
@@ -48,7 +53,7 @@ const ReusableTable = ({ data, currentPage, pageNumbers, setCurrentPage }) => {
         <table className="responsive-table my-3">
           <thead>
             <tr>
-              {headers.map((header, index) => (
+              {displayHeaders.map((header, index) => (
                 <th
                   key={index}
                   style={{ textAlign: "center", padding: "5px 20px" }}

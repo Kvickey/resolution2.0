@@ -131,7 +131,7 @@ const IntentLetterReports = () => {
     <div className="container">
       {!clearForm && !showTable && (
         <>
-          <h3 className="ps-3 pt-3">Appointment Letter Report</h3>
+          <h3 className="ps-3 pt-3">Intent Letter Report</h3>
           <div className="row align-items-center justify-content-evenly my-3">
             {/* To Select The Client Bank */}
             <div className="col-md-3">
@@ -151,7 +151,7 @@ const IntentLetterReports = () => {
               </Form.Select>
             </div>
 
-            {/* To Select The pRoduct Of the Bank */}
+            {/* To Select The product Of the Bank */}
             <div className="col-md-3">
               <Form.Select
                 aria-label="Default select example"

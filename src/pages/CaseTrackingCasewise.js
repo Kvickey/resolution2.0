@@ -152,10 +152,10 @@ const CaseTrackingCaseWise = () => {
   return (
     <div className="container">
       <div className="row align-items-center">
-        <div className="col-md-3">
-          <h4 className="my-3 ms-4">Terminate Case</h4>
+        <div className="col-md-5">
+          <h4 className="my-3 ms-4">Tracking CaseWise</h4>
         </div>
-        <div className="col-md-6"></div>
+        <div className="col-md-2"></div>
         <div className="col-md-3"></div>
       </div>
 
