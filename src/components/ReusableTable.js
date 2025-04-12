@@ -12,44 +12,30 @@ const ReusableTable = ({
   // Use the keys of the first object in data as headers if data is an array of objects
   const [searchText, setSearchText] = useState("");
   const [tableData, setTableData] = useState(data);
-  let [headers , setHeaders] = useState([]);
-  let [newheaders , setNewHeader] = useState([]);
+  let [headers, setHeaders] = useState([]);
+  let [newheaders, setNewHeader] = useState([]);
 
-<<<<<<< HEAD
-  const headers = 
-  data.length > 0 && typeof data[0] === "object"
-    ? Object.keys(data[0])
-    : [];
-  // console.log(data);
-  // console.log(headers);
-  const displayHeaders = headers.map((key) => {
-    if (key === "Lot_no") return "Lot No";
-    if (key === "Cust_name") return "Customer Name";
-    return key;
-  });
-  
-=======
-  // Used to make Some Columns in the start 
+  // Used to make Some Columns in the start
 
   useEffect(() => {
     data = data.map((row) => ({
       Lot_no: row.Lot_no,
       Reference_no: row.Reference_no,
-      Cust_id : row.Cust_id,
-      Cust_name :row.Cust_name,
+      Cust_id: row.Cust_id,
+      Cust_name: row.Cust_name,
       ...row,
     }));
-    
-     let tempheaders =
-    data.length > 0 && typeof data[0] === "object"
-      ? ["Sr", ...Object.keys(data[0])]
-      : [];
-   let tempnewheaders = tempheaders.map((header) => newKeys[header] || header);
-   setHeaders(tempheaders);
-   setNewHeader(tempnewheaders);
+
+    let tempheaders =
+      data.length > 0 && typeof data[0] === "object"
+        ? ["Sr", ...Object.keys(data[0])]
+        : [];
+    let tempnewheaders = tempheaders.map((header) => newKeys[header] || header);
+    setHeaders(tempheaders);
+    setNewHeader(tempnewheaders);
   }, [data]);
   let SerialNumber = 1;
-  // Rename Keys to show in the table Headers 
+  // Rename Keys to show in the table Headers
 
   const newKeys = {
     Case_id: "Case Id",
@@ -95,21 +81,22 @@ const ReusableTable = ({
     Remark: "Remark",
     Termination_date: "Termination Date",
   };
->>>>>>> 2c4fe60b29fd020fe8324f0e27aaf204184ac134
-  
+
   // Filtering Logic Search box
 
   useEffect(() => {
     let backupData = data;
     if (searchText !== "") {
-      let filterHeaders = ["Cust_name", "Cust_id" ,];
+      let filterHeaders = ["Cust_name", "Cust_id"];
       const filterFunction = (columnName) => {
-        const filteredData = backupData.filter((row) =>
-         row[columnName] && row[columnName]
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, "")
-            .includes(searchText)
+        const filteredData = backupData.filter(
+          (row) =>
+            row[columnName] &&
+            row[columnName]
+              .toLowerCase()
+              .trim()
+              .replace(/\s+/g, "")
+              .includes(searchText)
         );
         return filteredData;
       };
@@ -152,39 +139,6 @@ const ReusableTable = ({
     }
   };
   return (
-<<<<<<< HEAD
-    <div className="table-container mt-3">
-      <div className="table-wrapper">
-        <table className="responsive-table my-3">
-          <thead>
-            <tr>
-              {displayHeaders.map((header, index) => (
-                <th
-                  key={index}
-                  style={{ textAlign: "center", padding: "5px 20px" }}
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, rowIndex) => (
-              <tr key={rowIndex} className="text-center custom_fz">
-                {headers.map((header, cellIndex) => (
-                  <td
-                    key={cellIndex}
-                    style={{
-                      textAlign:
-                        header === "CUST_NAME" ||
-                        header === "assignedArbitrator"
-                          ? "left"
-                          : "center",
-                      whiteSpace: "nowrap",
-                      wordBreak: "break-word",
-                      padding: "5px 20px",
-                    }}
-=======
     <>
       <div className="table-container mt-3 pt-0">
         <div className="row justify-content-end w-100 mt-2">
@@ -206,42 +160,43 @@ const ReusableTable = ({
           <table className="responsive-table my-3">
             <thead>
               <tr>
-                {newheaders && newheaders.map((header, index) => (
-                  <th
-                    key={index}
-                    style={{ textAlign: "center", padding: "5px 20px" }}
->>>>>>> 2c4fe60b29fd020fe8324f0e27aaf204184ac134
-                  >
-                    {header}
-                  </th>
-                ))}
+                {newheaders &&
+                  newheaders.map((header, index) => (
+                    <th
+                      key={index}
+                      style={{ textAlign: "center", padding: "5px 20px" }}
+                    >
+                      {header}
+                    </th>
+                  ))}
               </tr>
             </thead>
             <tbody>
               {tableData &&
                 tableData.map((row, rowIndex) => (
                   <tr key={rowIndex} className="text-center custom_fz">
-                    {headers && headers.map((header, cellIndex) => (
-                      <td
-                        key={cellIndex}
-                        style={{
-                          textAlign:
-                            header === "CUST_NAME" ||
-                            header === "assignedArbitrator"
-                              ? "left"
-                              : "center",
-                          whiteSpace: "nowrap",
-                          wordBreak: "break-word",
-                          padding: "5px 20px",
-                        }}
-                      >
-                        {header === "Sr"
-                          ? SerialNumber++
-                          : row[header]
-                          ? row[header]
-                          : "Not provided"}
-                      </td>
-                    ))}
+                    {headers &&
+                      headers.map((header, cellIndex) => (
+                        <td
+                          key={cellIndex}
+                          style={{
+                            textAlign:
+                              header === "CUST_NAME" ||
+                              header === "assignedArbitrator"
+                                ? "left"
+                                : "center",
+                            whiteSpace: "nowrap",
+                            wordBreak: "break-word",
+                            padding: "5px 20px",
+                          }}
+                        >
+                          {header === "Sr"
+                            ? SerialNumber++
+                            : row[header]
+                            ? row[header]
+                            : "Not provided"}
+                        </td>
+                      ))}
                   </tr>
                 ))}
             </tbody>
