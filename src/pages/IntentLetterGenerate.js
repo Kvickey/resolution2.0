@@ -15,6 +15,7 @@ const IntentLetterGenerate = () => {
     fetchData,
   } = useFetch();
   const [unassignedLots, setUnassignedLots] = useState([]);
+  const [intentData, setIntentData] = useState([]);
   const [receivedData, setReceivedData] = useState([]);
   const [selectedLotNo, setSelectedLotNo] = useState([]);
   const [selectedClientID, setSelectedClientID] = useState([]);
@@ -32,8 +33,8 @@ const IntentLetterGenerate = () => {
 
   //   for pagination of reusable table starts
   const [getData, setGetData] = useState([]);
-  const [currentPage1, setCurrentPage1] = useState(1); // Current page for ReusableTable
-  const [itemsPerPage] = useState(10); // Number of items per page
+  const [currentPage1, setCurrentPage1] = useState(1);
+  const [itemsPerPage] = useState(10);
   const totalItems1 = getData.length;
   const totalPages1 = Math.ceil(totalItems1 / itemsPerPage);
   const startIndex1 = (currentPage1 - 1) * itemsPerPage;
@@ -44,8 +45,8 @@ const IntentLetterGenerate = () => {
   // for pagination of reusabletableFixed
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(unassignedLots.length / 10); // Example calculation
-  const displayedPages = Array.from({ length: totalPages }, (_, i) => i + 1); // Example pagination logic
+  const totalPages = Math.ceil(unassignedLots.length / 10);
+  const displayedPages = Array.from({ length: totalPages }, (_, i) => i + 1);
   const startIndex = (currentPage - 1) * 10;
 
   // for pagination of reusabletableFixed
@@ -53,7 +54,7 @@ const IntentLetterGenerate = () => {
   useEffect(() => {
     const fetchUnassignedLots = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/unassignLots`);
+        const response = await fetch(`${API_BASE_URL}/api/pendingIntent`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -61,7 +62,7 @@ const IntentLetterGenerate = () => {
         const parsedNotServedLots = Array.isArray(result)
           ? result
           : JSON.parse(result); // Ensure parsedArbitrators is an array
-          setUnassignedLots(parsedNotServedLots);
+        setUnassignedLots(parsedNotServedLots);
       } catch (error) {
         // setError1(error.message);
       }
@@ -73,8 +74,8 @@ const IntentLetterGenerate = () => {
   console.log(unassignedLots);
 
   useEffect(() => {
-    if (draftNotCreatedData.length > 0) {
-      const updatedData = draftNotCreatedData.map((item, index) => {
+    if (intentData.length > 0) {
+      const updatedData = intentData.map((item, index) => {
         const {
           SR_No,
           assign_id,
@@ -94,34 +95,59 @@ const IntentLetterGenerate = () => {
       });
 
       console.log(updatedData);
-      setReceivedData(draftNotCreatedData);
+      setReceivedData(intentData);
       setGetData(updatedData);
       setShowTable(true);
       //   handleStepChange(1);
     }
-  }, [draftNotCreatedData]); // Watch for changes in draftNotCreatedData
+  }, [intentData]); // Watch for changes in draftNotCreatedData
 
   //   console.log(getData);
 
   //   for the getting data of selected lot to create refernce Draft starts
 
+  // const handleRowAction = async (item) => {
+  //   console.log(item);
+  // setSelectedLotNo(item.Lot_no);
+  // setSelectedClientID(item.Client_id);
+  // setSelectedProductID(item.Product_id);
+  // setSelectedArbitratorID(item.Arb_id);
+  //   const url = `${API_BASE_URL}/api/unassignLots?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`;
+  //   setLoading(true);
+  //   try {
+  //     await fetchData(url);
+  //     handleStepChange(1);
+  //   } catch (error) {
+  //     setError(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleRowAction = async (item) => {
-    console.log(item);
     setSelectedLotNo(item.Lot_no);
     setSelectedClientID(item.Client_id);
     setSelectedProductID(item.Product_id);
     setSelectedArbitratorID(item.Arb_id);
-    const url = `${API_BASE_URL}/api/unassignLots?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`;
-    setLoading(true);
     try {
-      await fetchData(url);
-      handleStepChange(1);
+      const response = await fetch(
+        `${API_BASE_URL}/api/unassignLots?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const result = await response.json();
+      console.log(result);
+      const parsedIntentData = Array.isArray(result)
+        ? result
+        : JSON.parse(result); // Ensure parsedArbitrators is an array
+      setIntentData(parsedIntentData);
     } catch (error) {
-      setError(error);
-    } finally {
-      setLoading(false);
+      // setError1(error.message);
     }
   };
+
+  console.log(intentData);
 
   //   for the getting data of selected lot to create refernce Draft ends
 
@@ -148,7 +174,7 @@ const IntentLetterGenerate = () => {
       // setPdfUrl(pdfUrl);
       setShowPDF(true);
       setUpload(true);
-      
+
       handleStepChange(2);
     } catch (error) {
       console.error("Error fetching and displaying the PDF:", error);
@@ -158,54 +184,8 @@ const IntentLetterGenerate = () => {
   };
   // for the generation of draft function ends
 
-  //   function to upload the reference Drafts Starts Here
-  // const handleSaveIntent = async () => {
-  //   setLoading(true);
-
-  //   try {
-  //     // First API call
-  //     const firstResponse = await fetch(
-  //       `${API_BASE_URL}/api/SaveIntent?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}`
-  //       // `${API_BASE_URL}/api/SaveIntentCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}`
-  //     );
-
-  //     if (!firstResponse.ok) {
-  //       const errorText = await firstResponse.text();
-  //       throw new Error(
-  //         `Failed to upload data to SaveRef: ${firstResponse.status} ${firstResponse.statusText} - ${errorText}`
-  //       );
-  //     }
-
-  //     const firstResult = await firstResponse.json(); // Process the response if needed
-  //     console.log("First API call successful:", firstResult);
-
-  //     // Second API call (only if the first call is successful)
-  //     // const secondResponse = await fetch(
-  //     //   `${API_BASE_URL}/api/SaveIntentCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}`
-  //     // );
-
-  //     // if (!secondResponse.ok) {
-  //     //   const errorText = await secondResponse.text();
-  //     //   throw new Error(
-  //     //     `Failed to upload data to SaveRefCase: ${secondResponse.status} ${secondResponse.statusText} - ${errorText}`
-  //     //   );
-  //     // }
-
-  //     // const secondResult = await secondResponse.json(); // Process the response if needed
-  //     // // console.log("Second API call successful:", secondResult);
-
-  //     setUpload(true);
-  //     handleStepChange(3); // or handleStepChange(4) depending on your requirement
-  //   } catch (error) {
-  //     console.error("Error uploading data:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const handleUploadIntent = async () => {
     setLoading(true);
-
     try {
       // First API call
       const firstResponse = await fetch(
@@ -215,7 +195,7 @@ const IntentLetterGenerate = () => {
       if (!firstResponse.ok) {
         const errorText = await firstResponse.text();
         throw new Error(
-          `Failed to upload data to SaveRef: ${firstResponse.status} ${firstResponse.statusText} - ${errorText}`
+          `Failed to upload data to Intent Case: ${firstResponse.status} ${firstResponse.statusText} - ${errorText}`
         );
       }
 
@@ -230,7 +210,7 @@ const IntentLetterGenerate = () => {
       if (!secondResponse.ok) {
         const errorText = await secondResponse.text();
         throw new Error(
-          `Failed to upload data to SaveRefCase: ${secondResponse.status} ${secondResponse.statusText} - ${errorText}`
+          `Failed to upload data to Intent Case: ${secondResponse.status} ${secondResponse.statusText} - ${errorText}`
         );
       }
 
@@ -245,7 +225,6 @@ const IntentLetterGenerate = () => {
       setLoading(false);
     }
   };
-
 
   // Loading Spinner Compenent
   if (loading) return <LoadingSpinner />;
@@ -265,9 +244,9 @@ const IntentLetterGenerate = () => {
 
   const columnsWithoutArbName = [
     { header: "Sr No", key: "Sr No" },
-    { header: "Lots" , key: "Lots"},
+    { header: "Lots", key: "Lots" },
     // { header: "Arbitrator", key: "Arb_name" },
-    { header: "Actions" , key: "action"},
+    { header: "Actions", key: "action" },
   ];
   // for pagination of reusabletableFixed ends
 

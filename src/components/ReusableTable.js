@@ -16,14 +16,14 @@ const ReusableTable = ({
   let [headers, setHeaders] = useState([]);
   let [newheaders, setNewHeader] = useState([]);
 
-  // Used to make Some Columns place in the start
+  // Used to make Some Columns in the start 
 
   useEffect(() => {
     data = data.map((row) => ({
-      Lot_no: row?.Lot_no,
-      Reference_no: row?.Reference_no,
-      Cust_id: row?.Cust_id,
-      Cust_name: row?.Cust_name,
+      Lot_no: row.Lot_no,
+      Reference_no: row.Reference_no,
+      Cust_id : row.Cust_id,
+      Cust_name :row.Cust_name,
       ...row,
     }));
 
@@ -36,8 +36,7 @@ const ReusableTable = ({
     setNewHeader(tempnewheaders);
   }, [data]);
   let SerialNumber = 1;
-
-  // Rename Keys to show in the table Headers
+  // Rename Keys to show in the table Headers 
 
   const newKeys = {
     Case_id: "Case Id",
@@ -89,16 +88,14 @@ const ReusableTable = ({
   useEffect(() => {
     let backupData = data;
     if (searchText !== "") {
-      let filterHeaders = ["Cust_name", "Cust_id" ,];
+      let filterHeaders = ["Cust_name", "Cust_id"];
       const filterFunction = (columnName) => {
-        const filteredData = backupData.filter(
-          (row) =>
-            row[columnName] &&
-            String(row[columnName])
-              .toLowerCase()
-              .trim()
-              .replace(/\s+/g, "")
-              .includes(searchText)
+        const filteredData = backupData.filter((row) =>
+         row[columnName] && row[columnName]
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "")
+            .includes(searchText)
         );
         return filteredData;
       };

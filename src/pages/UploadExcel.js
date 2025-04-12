@@ -327,72 +327,8 @@ const UploadExcel = () => {
     }
   };
 
-  // console.log(prog);
+  
 
-  // setTotalRecords(excelData.length) ;
-
-  // const handleDataUpload = async () => {
-  //   setShowProgress(true);
-
-  //   handleStepChange(2);
-  //   let prevAcc = null;
-  //   let borrowerArray = [];
-  //   let success = 0,
-  //     failed = 0;
-
-  //   for (let i = 0; i < excelData.length; i++) {
-  //     const row = excelData[i];
-  //     const totalRecord = excelData.length;
-  //     setTotalRecords(excelData.length);
-  //     setProgress(Math.round(((i + 1) / totalRecords) * 100));
-
-  //     if (row.ACC_NO !== prevAcc) {
-  //       if (borrowerArray.length > 0) {
-  //         const record = createRecordObject(excelData[i - 1], borrowerArray);
-  //         const isSuccess = await sendRowData(record);
-  //         setProg((prevProg) => prevProg + 1);
-  //         isSuccess ? success++ : failed++;
-  //       }
-  //       borrowerArray = [];
-  //       prevAcc = row.ACC_NO;
-
-  //       borrowerArray.push({
-  //         Type: "B",
-  //         Cust_name: row.CUST_NAME,
-  //         Mobile_no: row.Mobile_no,
-  //         Work_mobile_no: row.WORK_MOBILE_2,
-  //         Email_id: row.E_MAIL_ID,
-  //         Comm_add: row.Communication_address,
-  //       });
-  //     } else {
-  //       borrowerArray.push({
-  //         Type: "C",
-  //         Cust_name: row.CUST_NAME,
-  //         Mobile_no: row.Mobile_no,
-  //         Work_mobile_no: row.WORK_MOBILE_2,
-  //         Email_id: row.E_MAIL_ID,
-  //         Comm_add: row.Communication_address,
-  //       });
-  //     }
-  //   }
-
-  //   if (borrowerArray.length > 0) {
-  //     const lastRecord = createRecordObject(
-  //       excelData[excelData.length - 1],
-  //       borrowerArray
-  //     );
-  //     const isSuccess = await sendRowData(lastRecord);
-  //     isSuccess ? success++ : failed++;
-  //   }
-
-  //   setUploadStatus({ success, failed });
-  //   setClearForm(true);
-  //   setLoading(false);
-
-  //   // if (onUploadComplete) {
-  //   //   onUploadComplete();
-  //   // }
-  // };
   const handleDataUpload = async () => {
     setShowProgress(true);
 
@@ -455,12 +391,15 @@ const UploadExcel = () => {
       setLoading(false);
     } else if (bankId === "2") {
       let prevRef = null;
+      let prevCustId = null;
       let borrowerArray = [];
       let kotakCdrArray = [];
       let finalRecords = [];
 
       for (let i = 0; i < excelData.length; i++) {
         const row = excelData[i];
+        console.log(row);
+
         const nextRow = excelData[i + 1]; // Get next row (undefined if last row)
         const totalRecord = excelData.length;
 
@@ -475,7 +414,7 @@ const UploadExcel = () => {
               Lot_no: row.Lot_No,
               Acc_no: kotakCdrArray[0]?.Loan_Acc_no || "",
               Reference_no: prevRef,
-              Cust_id: row.CUST_ID,
+              Cust_id: prevCustId,
               Client_id: bankId,
               Product_id: selectedProductID,
               Uploaded_by: "Admin",
@@ -493,6 +432,7 @@ const UploadExcel = () => {
           borrowerArray = [];
           kotakCdrArray = [];
           prevRef = row.REFERENCE_NO;
+          prevCustId = row.CUST_ID;
 
           // **Add Borrower Only Once (First Row for REFERENCE_NO)**
           borrowerArray.push({
@@ -530,12 +470,12 @@ const UploadExcel = () => {
             Lot_no: row.Lot_No,
             Acc_no: kotakCdrArray[0]?.Loan_Acc_no || "",
             Reference_no: row.REFERENCE_NO,
-            Cust_id: row.CUST_ID,
+            Cust_id: prevCustId,
             Client_id: bankId,
             Product_id: selectedProductID,
             Uploaded_by: "Admin",
             Borrower: borrowerArray,
-            Kotak_cdr: kotakCdrArray,
+            Kotak_Cdrs: kotakCdrArray,
           };
           // console.log(lastRecord);
           await sendRowData(lastRecord);
@@ -545,19 +485,6 @@ const UploadExcel = () => {
 
       console.log("Final Records:", finalRecords);
 
-      // Send the last batch after the loop ends
-      // if (borrowerArray.length > 0) {
-      //   const lastRecord = createRecordObject(
-      //     excelData[excelData.length - 1],
-      //     borrowerArray,
-      //     kotakCdrArray
-      //   );
-      //   console.log("Final Record Sent:", lastRecord);
-      //   const isSuccess = await sendRowData(lastRecord);
-      //   setProg((prevProg) => prevProg + 1);
-      // }
-
-      // setUploadStatus({ success, failed });
       setClearForm(true);
       // setLoading(false);
     }

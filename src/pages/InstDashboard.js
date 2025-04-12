@@ -33,6 +33,11 @@ const InstDashboard = () => {
       link: "/instdashboard",
     },
     {
+      name: "Arbitrator",
+      icon: <FaHome />, 
+      link: "/instdashboard/arbitrator",
+    },
+    {
       name: "Upload A Lot",
       icon: <MdUploadFile />,
       link: "/instdashboard/uploadalot",
