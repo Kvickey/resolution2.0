@@ -1,98 +1,154 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { API_BASE_URL as url } from "../utils/constants";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ReusableTable from "../components/ReusableTable";
 
 const CaseTrackingLotWise = () => {
-  const [meetingDetails, setMeetingDetails] = useState({
-    topic: "",
-    start_time: "",
-    duration: "",
-    agenda: "",
+  const [loading, setLoading] = useState(true);
+  const [clients, setClients] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [lotData, setLotData] = useState([]);
+  const [currentPage2, setCurrentPage2] = useState(1);
+  const [formData, setFormData] = useState({
+    Client_id: "",
+    Product_id: "",
+    Lot_no: "",
   });
 
-  // Replace with your actual Zoom OAuth access token during testing
-  const accessToken =
- "eyJzdiI6IjAwMDAwMiIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6IjZkNmFiMmYyLTFkYWItNGZkZi1iMDRlLWIxODA3MDU4NTI3ZSJ9.eyJ2ZXIiOjEwLCJhdWlkIjoiYTYyYTg4NWUxMTkyNzFkMWM5NmU4ZGQ4NzllY2I2MGE0MDZmOTMzNjE2MmM2MjY0NGFkMmVjY2UwNDIwNGIxNSIsImNvZGUiOiJxRG5MNzBwOEFtdTFWSERGMFowU2hhMG1ESjNoUzJlcmciLCJpc3MiOiJ6bTpjaWQ6RnB4TEVCSGJSVWlQdnFhTWNOWGx6ZyIsImdubyI6MCwidHlwZSI6MCwidGlkIjowLCJhdWQiOiJodHRwczovL29hdXRoLnpvb20udXMiLCJ1aWQiOiJTNnZlRjZDZFN2R28yNG1FUnQ3WjRnIiwibmJmIjoxNzM5NDM4NTA0LCJleHAiOjE3Mzk0NDIxMDQsImlhdCI6MTczOTQzODUwNCwiYWlkIjoiSmZHYjdzSjVTOUd5dWE4TndWWTVyQSJ9.PN8kAIS_CETKWpuPEeOwhWS5tNCpMiRkdA7k5Sw5AhaR3aHbTbN0eMZ4BrbQfGVj0fEhNcVG9IfYisHIvEWqzQ"
-
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setMeetingDetails({ ...meetingDetails, [name]: value });
-  };
-
-  const createZoomMeeting = async () => {
-    if (!accessToken) {
-      alert("Access token is missing. Please configure it.");
-      return;
-    }
-
+  const fetchData = async (endpoint) => {
     try {
-      const response = await fetch("https://api.zoom.us/v2", {
-        method: "POST",
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          meetingDetails,
-        }),
-      });
-
-      if (!response) {
-        alert("Request sent, but no response .");
-        return;
-      }
-
-      console.log(
-        "Response sent, but you won't see detailed response due to 'no-cors'."
-      );
+      const response = await fetch(url + "/api/" + endpoint);
+      const result = await response.json();
+      const data = Array.isArray(result) ? result : JSON.parse(result);
+      if (data) return data;
     } catch (error) {
-      console.error("Error creating Zoom meeting:", error);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+
+    return [];
+  };
+  useEffect(() => {
+    const getClients = async () => {
+      const data = await fetchData("Client");
+      setClients(data);
+    };
+    getClients();
+  }, []);
+  useEffect(() => {
+    if (formData.Client_id) {
+      const getProducts = async () => {
+        const data = await fetchData(
+          "products?client_id=" + formData.Client_id
+        );
+        setProducts(data);
+      };
+      getProducts();
+    }
+  }, [formData.Client_id]);
+
+  const handleChange = (e) => {
+    let { name, value } = e.target;
+    setFormData((preValue) => ({ ...preValue, [name]: value }));
+  };
+  const inputValidation = () => {
+    if (
+      formData.Client_id === "" ||
+      formData.Product_id === "" ||
+      formData.Lot_no === ""
+    )
+      return false;
+    return true;
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (inputValidation()) {
+      const data = await fetchData("Lot?Lot_no=" + formData.Lot_no);
+      setLotData(data);
     }
   };
 
+
+  // Table Logic
+  const itemsPerPage = 10;
+  const indexOfLastItem = currentPage2 * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems2 = lotData.slice(indexOfFirstItem, indexOfLastItem);
+
+  // calculate total page numbers
+  const pageNumbers2 = Array.from(
+    { length: Math.ceil(tableData.length / itemsPerPage) },
+    (_, i) => i + 1
+  );
+
+  if (loading) return <LoadingSpinner />;
   return (
     <div>
-      <h2>Create Zoom Meeting</h2>
-      <form>
-        <div>
-          <label>Topic: </label>
-          <input
-            type="text"
-            name="topic"
-            value={meetingDetails.topic}
-            onChange={handleInputChange}
-          />
+      <form onSubmit={handleSubmit}>
+        <div className="row my-2 gap-4 px-md-3">
+          <div className="col-md col-12">
+            <select
+              class="form-select custom_input"
+              aria-label="Default select example"
+              value={formData.Client_id}
+              name="Client_id"
+              onChange={handleChange}
+            >
+              <option value="">Choose a Bank</option>
+              {clients &&
+                clients.map((item) => (
+                  <option value={item.Client_id} key={item.Client_id}>
+                    {item.client_name}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="col-md col-12">
+            <select
+              class="form-select custom_input"
+              aria-label="Default select example"
+              value={formData.Product_id}
+              name="Product_id"
+              onChange={handleChange}
+            >
+              <option value="">Choose a Product</option>
+              {products &&
+                products.map((item) => (
+                  <option value={item.Product_id} key={item.Product_id}>
+                    {item.Product_name}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="col-md col-12">
+            <input
+              type="number"
+              className="form-control custom_input"
+              placeholder="Enter Lot Number..."
+              name="Lot_no"
+              value={formData.Lot_no}
+              onChange={(e)=> e.target.value > 0 && handleChange(e)}
+            />
+          </div>
+          <div className="col-md col-12">
+            <button className="custBtn">Show Data</button>
+          </div>
         </div>
-        <div>
-          <label>Start Time: </label>
-          <input
-            type="datetime-local"
-            name="start_time"
-            value={meetingDetails.start_time}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label>Duration (in minutes): </label>
-          <input
-            type="number"
-            name="duration"
-            value={meetingDetails.duration}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div>
-          <label>Agenda: </label>
-          <input
-            type="text"
-            name="agenda"
-            value={meetingDetails.agenda}
-            onChange={handleInputChange}
-          />
-        </div>
-        <button type="button" onClick={createZoomMeeting}>
-          Create Meeting
-        </button>
       </form>
+      {lotData.length !== 0 && (
+        <div className="row">
+          <div className="col-md-12">
+            <ReusableTable
+              data={currentItems2}
+              currentPage={currentPage2}
+              pageNumbers={pageNumbers2}
+              setCurrentPage={setCurrentPage2}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
