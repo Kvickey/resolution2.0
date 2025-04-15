@@ -83,6 +83,7 @@ const LoginForm = () => {
                                 value={User_name}
                                 onChange={(e) => setUsername(e.target.value)}
                                 required
+                                autoFocus
                                 className='login-input animate__animated animate__fadeInLeft'
                             />
                             <FontAwesomeIcon icon={faUser} className='input-icon animate__animated animate__fadeInLeft' />
