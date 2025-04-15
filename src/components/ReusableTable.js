@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Pagination from "react-bootstrap/Pagination";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "./ReusableTable.css";
+import { FaSearch } from "react-icons/fa";
 
 const ReusableTable = ({
   data = [],
@@ -15,17 +16,9 @@ const ReusableTable = ({
   let [headers, setHeaders] = useState([]);
   let [newheaders, setNewHeader] = useState([]);
 
-  // Used to make Some Columns in the start
+  // Used to make Some Columns in the start 
 
   useEffect(() => {
-    data = data.map((row) => ({
-      Lot_no: row.Lot_no,
-      Reference_no: row.Reference_no,
-      Cust_id: row.Cust_id,
-      Cust_name: row.Cust_name,
-      ...row,
-    }));
-
     let tempheaders =
       data.length > 0 && typeof data[0] === "object"
         ? ["Sr", ...Object.keys(data[0])]
@@ -35,7 +28,7 @@ const ReusableTable = ({
     setNewHeader(tempnewheaders);
   }, [data]);
   let SerialNumber = 1;
-  // Rename Keys to show in the table Headers
+  // Rename Keys to show in the table Headers 
 
   const newKeys = {
     Case_id: "Case Id",
@@ -90,14 +83,12 @@ const ReusableTable = ({
     if (searchText !== "") {
       let filterHeaders = ["Cust_name", "Cust_id"];
       const filterFunction = (columnName) => {
-        const filteredData = backupData.filter(
-          (row) =>
-            row[columnName] &&
-            row[columnName]
-              .toLowerCase()
-              .trim()
-              .replace(/\s+/g, "")
-              .includes(searchText)
+        const filteredData = backupData.filter((row) =>
+         row[columnName] && row[columnName]
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, "")
+            .includes(searchText)
         );
         return filteredData;
       };
@@ -144,17 +135,28 @@ const ReusableTable = ({
       <div className="table-container mt-3 pt-0">
         <div className="row justify-content-end w-100 mt-2">
           <div className="col-12 col-md-6 col-lg-4 ">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="form-control py-2 border-2 rounded-pill border-dark-subtle focus-ring focus-ring-light"
-              onChange={(e) =>
-                setSearchText(
-                  e.target.value.toLowerCase().trim().replace(/\s+/g, "")
-                )
-              }
-              value={searchText}
-            />
+            <div className="row border border-secondary-subtle rounded-pill onFocusBorder">
+              <div className="col-11 ">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="form-control py-2  focus-ring focus-ring-light border-0"
+                  onChange={(e) =>
+                    setSearchText(
+                      e.target.value.toLowerCase().trim().replace(/\s+/g, "")
+                    )
+                  }
+                  value={searchText}
+                />
+              </div>
+              <div className="col-1 p-0">
+                <div className="row h-100 justify-content-center align-items-center">
+                  <div className="col p-0" style={{ color: "#c1c1c1" }}>
+                    <FaSearch />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div className="table-wrapper">

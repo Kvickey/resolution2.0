@@ -66,6 +66,7 @@ const LoginForm = () => {
     navigate("/");
   };
 
+<<<<<<< HEAD
   return (
     <Container className="login-container">
       <Row className="justify-content-center form">
@@ -137,6 +138,59 @@ const LoginForm = () => {
     </Container>
   );
 };
+=======
+    return (
+        <Container className='login-container'>
+            <Row className='justify-content-center form'>
+                <Col md={4} className='login-form animate__animated animate__fadeInUp'>
+                    <div className='logo'>
+                        <img src={logo} alt='Logo' />
+                        <h2 className='text-center mb-4'>Login</h2>
+                    </div>
+                    <Form onSubmit={handleLogin}>
+                        <Form.Group controlId='formUsername' className='position-relative mb-4'>
+                            <Form.Control
+                                type='text'
+                                placeholder='Enter username'
+                                value={User_name}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                                autoFocus
+                                className='login-input animate__animated animate__fadeInLeft'
+                            />
+                            <FontAwesomeIcon icon={faUser} className='input-icon animate__animated animate__fadeInLeft' />
+                        </Form.Group>
+                        <Form.Group controlId='formPassword' className='position-relative mb-4'>
+                            <Form.Control
+                                type='password'
+                                placeholder='Enter password'
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                className='login-input animate__animated animate__fadeInRight'
+                            />
+                            <FontAwesomeIcon icon={faLock} className='input-icon animate__animated animate__fadeInRight' />
+                        </Form.Group>
+                        <div className='d-flex justify-content-between align-items-center mt-5'>
+                            <Button
+                                type='submit'
+                                variant=''
+                                disabled={isPending}
+                                className='login-button animate__animated animate__pulse'>
+                                {isPending ? <Spinner as='span' animation='border' size='sm' /> : 'Login'}
+                            </Button>
+                            <Button className='ms-3 cancel-button animate__animated animate__pulse' variant='' onClick={handleCancel}>
+                                Cancel
+                            </Button>
+                        </div>
+                    </Form>
+                </Col>
+            </Row>
+            <ToastContainer /> 
+        </Container>
+    )
+}
+>>>>>>> 5d623531d290eacfd7b92ba137c4f09105880cbc
 
 export default LoginForm;
 
