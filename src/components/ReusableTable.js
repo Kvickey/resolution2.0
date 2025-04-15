@@ -80,6 +80,7 @@ const ReusableTable = ({
     Stage_id: "Stage Id",
     Remark: "Remark",
     Termination_date: "Termination Date",
+    No_of_cases:"No Of Cases",
   };
 
   // Filtering Logic Search box

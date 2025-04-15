@@ -7,8 +7,9 @@ import { toast, ToastContainer } from "react-toastify";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 import { FaMessage } from "react-icons/fa6";
+import { useAuth } from "../components/AuthProvider";
 
-const ReferenceDraftServices = () => {
+const AcceptanceLetterServices = () => {
   const [notServedLots, setNotServedLots] = useState([]);
   const [data, setData] = useState([]);
   const [showData, setShowData] = useState(false);
@@ -16,11 +17,23 @@ const ReferenceDraftServices = () => {
   const [mailDone, setMailDone] = useState(false);
   const [smsDone, setSMSDone] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { user, logout } = useAuth();
+  const [arbId, setArbId] = useState("");
+
+  useEffect(() => {
+    if (user && user.length > 0) {
+      setArbId(user[0].Ref_id);
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchNotServedLots = async () => {
+      if (!arbId) return; // Prevent API call if arbId is not set
+
       try {
-        const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=2`);
+        const response = await fetch(
+          `${API_BASE_URL}/api/notServed?s_id=2&Arb_id=${arbId}`
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -36,7 +49,7 @@ const ReferenceDraftServices = () => {
     };
 
     fetchNotServedLots();
-  }, []);
+  }, [arbId]); // API call will trigger once arbId is updated
 
   console.log(notServedLots);
 
@@ -171,102 +184,101 @@ const ReferenceDraftServices = () => {
     }
   };
 
-
   const handleSMS = () => {};
 
   return (
     <div>
-    {!showData && (
-       <>
-       <div>
-       <h3>Acceptance Letter Services</h3>
-       </div>
-      <div className="row table-container mt-3">
-        <div className="col-md-12 mx-auto table-wrapper">
-          <table className="responsive-table">
-            <thead className="text-center">
-              <tr className="table-info">
-                <th scope="col" className="text-center">
-                  Sr No
-                </th>
-                <th scope="col" className="text-center">
-                  Lots
-                </th>
-                <th scope="col" className="text-center">
-                  Arbitrator
-                </th>
-                <th scope="col" className="text-center">
-                  Services
-                </th>
-                <th scope="col" className="text-center">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {notServedLots.map((item, index) => (
-                <tr key={item.id}>
-                  <td className="text-center">{index + 1}</td>
-                  <td className="text-center">{item.Lots}</td>
-                  <td className="text-center">{item.Arb_name}</td>
-                  <td className="text-center">
-                    <span>
-                      <span className="p-3 border rounded-start-4">
-                        {item.Wa_send_date === 0 ? (
-                          <FaWhatsapp
-                            style={{ color: "Red", fontSize: "25px" }}
-                          />
-                        ) : (
-                          <FaWhatsapp
-                            style={{ color: "Green", fontSize: "25px" }}
-                          />
-                        )}
-                      </span>
-                      <span className="p-3 border">
-                        {item.Mail_send_date === 0 ? (
-                          <IoMdMail
-                            style={{ color: "Red", fontSize: "25px" }}
-                          />
-                        ) : (
-                          <IoMdMail
-                            style={{ color: "green", fontSize: "25px" }}
-                          />
-                        )}
-                      </span>
-                      <span className="p-3 border rounded-end-4">
-                        {item.Sms_send_date === 0 ? (
-                          <FaMessage
-                            style={{ color: "Red", fontSize: "25px" }}
-                          />
-                        ) : (
-                          <FaMessage
-                            style={{ color: "Green", fontSize: "25px" }}
-                          />
-                        )}
-                      </span>
-                    </span>
-                  </td>
-                  <td className="text-center">
-                    <button
-                      onClick={() => handleData(item.Lots, item.Arb_id)}
-                      variant="success"
-                      className="custBtn"
-                    >
-                      Show Data
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-      </>
-    )}
+      {!showData && (
+        <>
+          <div>
+            <h3>Acceptance Letter Services</h3>
+          </div>
+          <div className="row table-container mt-3">
+            <div className="col-md-12 mx-auto table-wrapper">
+              <table className="responsive-table">
+                <thead className="text-center">
+                  <tr className="table-info">
+                    <th scope="col" className="text-center">
+                      Sr No
+                    </th>
+                    <th scope="col" className="text-center">
+                      Lots
+                    </th>
+                    <th scope="col" className="text-center">
+                      Arbitrator
+                    </th>
+                    <th scope="col" className="text-center">
+                      Services
+                    </th>
+                    <th scope="col" className="text-center">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {notServedLots.map((item, index) => (
+                    <tr key={item.id}>
+                      <td className="text-center">{index + 1}</td>
+                      <td className="text-center">{item.Lots}</td>
+                      <td className="text-center">{item.Arb_name}</td>
+                      <td className="text-center">
+                        <span>
+                          <span className="p-3 border rounded-start-4">
+                            {item.Wa_send_date === 0 ? (
+                              <FaWhatsapp
+                                style={{ color: "Red", fontSize: "25px" }}
+                              />
+                            ) : (
+                              <FaWhatsapp
+                                style={{ color: "Green", fontSize: "25px" }}
+                              />
+                            )}
+                          </span>
+                          <span className="p-3 border">
+                            {item.Mail_send_date === 0 ? (
+                              <IoMdMail
+                                style={{ color: "Red", fontSize: "25px" }}
+                              />
+                            ) : (
+                              <IoMdMail
+                                style={{ color: "green", fontSize: "25px" }}
+                              />
+                            )}
+                          </span>
+                          <span className="p-3 border rounded-end-4">
+                            {item.Sms_send_date === 0 ? (
+                              <FaMessage
+                                style={{ color: "Red", fontSize: "25px" }}
+                              />
+                            ) : (
+                              <FaMessage
+                                style={{ color: "Green", fontSize: "25px" }}
+                              />
+                            )}
+                          </span>
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <button
+                          onClick={() => handleData(item.Lots, item.Arb_id)}
+                          variant="success"
+                          className="custBtn"
+                        >
+                          Show Data
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
 
-    {showData && (
-      <div className="mt-3">
-        {/* <button
+      {showData && (
+        <div className="mt-3">
+          {/* <button
           className={`${
             waDone ? "disabledBtn" : "custBtn"
           }`}
@@ -295,76 +307,76 @@ const ReferenceDraftServices = () => {
         >
           Message
         </button> */}
-        <button
-          className={`${
-            // data[0].Wa_send_date !== 0
-            // waDone
-            waDone || data[0].Wa_send_date !== null
-              ? "disabledBtn"
-              : "custBtn"
-            //  ( waDone || data[0].Wa_send_date !== 0) ? "disabledBtn" : "custBtn"
-            //  ( waDone && data[0].Wa_send_date!==null) ? "disabledBtn" : "custBtn"
-          } ms-3`}
-          onClick={handleWhatsapp}
-          disabled={waDone || data[0].Wa_send_date !== null}
-        >
-          <FaWhatsapp className="me-3" />
-          WhatsApp
-        </button>
+          <button
+            className={`${
+              // data[0].Wa_send_date !== 0
+              // waDone
+              waDone || data[0].Wa_send_date !== null
+                ? "disabledBtn"
+                : "custBtn"
+              //  ( waDone || data[0].Wa_send_date !== 0) ? "disabledBtn" : "custBtn"
+              //  ( waDone && data[0].Wa_send_date!==null) ? "disabledBtn" : "custBtn"
+            } ms-3`}
+            onClick={handleWhatsapp}
+            disabled={waDone || data[0].Wa_send_date !== null}
+          >
+            <FaWhatsapp className="me-3" />
+            WhatsApp
+          </button>
 
-        <button
-          className={`ms-3 ${
-            // mailDone ? "disabledBtn" : "custBtn"
-            mailDone || data[0].Mail_send_date !== null
-              ? "disabledBtn"
-              : "custBtn"
-          }`}
-          onClick={handleMail}
-          disabled={mailDone}
-        >
-          <IoMdMail className="me-3" />
-          Mail
-        </button>
+          <button
+            className={`ms-3 ${
+              // mailDone ? "disabledBtn" : "custBtn"
+              mailDone || data[0].Mail_send_date !== null
+                ? "disabledBtn"
+                : "custBtn"
+            }`}
+            onClick={handleMail}
+            disabled={mailDone}
+          >
+            <IoMdMail className="me-3" />
+            Mail
+          </button>
 
-        <button
-          className={`ms-3 ${smsDone ? "disabledBtn" : "custBtn"}`}
-          onClick={handleSMS}
-          disabled={smsDone}
-        >
-          <FaMessage className="me-3" />
-          Message
-        </button>
+          <button
+            className={`ms-3 ${smsDone ? "disabledBtn" : "custBtn"}`}
+            onClick={handleSMS}
+            disabled={smsDone}
+          >
+            <FaMessage className="me-3" />
+            Message
+          </button>
 
-        <div className="table-container mt-3">
-          <div className="table-wrapper">
-            <table className="responsive-table">
-              <thead>
-                <tr>
-                  {headers.map((header) => (
-                    <th key={header}>{header}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((item, index) => (
-                  <tr key={index}>
+          <div className="table-container mt-3">
+            <div className="table-wrapper">
+              <table className="responsive-table">
+                <thead>
+                  <tr>
                     {headers.map((header) => (
-                      <td key={header}>{item[header]}</td>
+                      <th key={header}>{header}</th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {data.map((item, index) => (
+                    <tr key={index}>
+                      {headers.map((header) => (
+                        <td key={header}>{item[header]}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      )}
 
-    {/* <button onClick={showToast}>Show Toast</button> */}
+      {/* <button onClick={showToast}>Show Toast</button> */}
 
-    <ToastContainer />
-  </div>
+      <ToastContainer />
+    </div>
   );
 };
 
-export default ReferenceDraftServices;
+export default AcceptanceLetterServices;

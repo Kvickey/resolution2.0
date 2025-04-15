@@ -15,6 +15,7 @@ const ReusableTableFixed = ({
   startIndex
 }) => {
   console.log(columns);
+  console.log(data);
   const showArbName = columns.some(col => col.key === "Arb_name");
   return (
     <div className="row table-container py-5">
@@ -35,9 +36,10 @@ const ReusableTableFixed = ({
                 <td className="text-center">
                   {startIndex + index + 1}
                 </td>
-                <td className="text-center">{item.Lots}</td>
+                <td className="text-center">{item.Lot_no}</td>
                 {/* <td className="text-left">{item.Arb_name}</td> */}
-                {showArbName && <td className="text-left">{item.Arb_name}</td>}
+                <td className="text-left">{item.Arb_name}</td>
+                {/* {showArbName && <td className="text-left">{item.Arb_name}</td>} */}
                 <td className="text-center">
                   <button
                     onClick={() => handleRowAction(item)}

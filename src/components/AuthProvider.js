@@ -25,12 +25,6 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
       if (response.status === 200) {
         setUser(data);
-        // toast.success("Login Successful!", {
-        //   theme: "colored",
-        // });
-        // setTimeout(() => {
-        //   localStorage.setItem("user", JSON.stringify(data));
-        // }, 2000);
         localStorage.setItem('user', JSON.stringify(data));
         return data;
       } else {

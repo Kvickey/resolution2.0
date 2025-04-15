@@ -10,6 +10,7 @@ import ClearForm from "../components/Clearform";
 
 const SOC = () => {
   const [sec17NotCreatedLots, setSec17NotCreatedLots] = useState([]);
+  const [sec17AppNotCreatedData, setSec17AppNotCreatedData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedLotNo, setSelectedLotNo] = useState([]);
   const [selectedClientID, setSelectedClientID] = useState([]);
@@ -84,7 +85,12 @@ const SOC = () => {
   // for reusableTable Fixed ends
 
   // For the customStepper starts Here
-  const steps = ["Select Lot", "Save Section 17 Application", "Generate Section 17 Application", "Upload Section 17 Application"];
+  const steps = [
+    "Select Lot",
+    "Save Section 17 Application",
+    "Generate Section 17 Application",
+    "Upload Section 17 Application",
+  ];
 
   // Function to move to a specific step in Stepper Component
   const handleStepChange = (step) => {
@@ -98,16 +104,24 @@ const SOC = () => {
     setSelectedClientID(item.Client_id);
     setSelectedProductID(item.Product_id);
     setSelectedArbitratorID(item.Arb_id);
-    const url = `${API_BASE_URL}/api/RefLots?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}&Arb_id=${item.Arb_id}`;
+    const url = `${API_BASE_URL}/api/Sec17appletter?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`;
     setLoading(true);
     handleStepChange(1);
     try {
-      await fetchData(url);
-      setShowData(true);
-    } catch (error) {
-      setError(error);
-    } finally {
+      const response = await fetch(
+        `${API_BASE_URL}/api/Sec17appletter?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const result = await response.json();
+      const parsedNotSec17Lots = Array.isArray(result)
+        ? result
+        : JSON.parse(result); // Ensure parsedArbitrators is an array
+      setSec17AppNotCreatedData(parsedNotSec17Lots);
       setLoading(false);
+    } catch (error) {
+      // setError1(error.message);
     }
   };
 
@@ -117,10 +131,10 @@ const SOC = () => {
   //   for pagination of reusable table starts
   const [currentPage1, setCurrentPage1] = useState(1); // Current page for ReusableTable
   const [itemsPerPage] = useState(10); // Number of items per page
-  const totalItems1 = SOCNotCreatedData.length;
+  const totalItems1 = sec17AppNotCreatedData.length;
   const totalPages1 = Math.ceil(totalItems1 / itemsPerPage);
   const startIndex1 = (currentPage1 - 1) * itemsPerPage;
-  const currentItems1 = SOCNotCreatedData.slice(
+  const currentItems1 = sec17AppNotCreatedData.slice(
     startIndex1,
     startIndex1 + itemsPerPage
   );
@@ -241,7 +255,7 @@ const SOC = () => {
       const result = await response.json(); // Process the response
       //   console.log(result);
       setClearForm(true);
-        handleStepChange(4);
+      handleStepChange(4);
     } catch (error) {
       console.error("Error uploading data:", error);
     } finally {

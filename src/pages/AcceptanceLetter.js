@@ -10,6 +10,7 @@ import { Button, Form } from "react-bootstrap";
 import { format } from "date-fns";
 import { toast, ToastContainer } from "react-toastify";
 import CustomStepper from "../components/CustomStepper";
+import { useAuth } from "../components/AuthProvider";
 
 const AcceptanceLetter = () => {
   const {
@@ -18,6 +19,7 @@ const AcceptanceLetter = () => {
     error: error1,
     fetchData,
   } = useFetch();
+  const { user, logout } = useAuth();
   const [acceptanceNotCreatedLots, setAcceptanceNotCreatedLots] = useState([]);
   const [receivedData, setReceivedData] = useState([]);
   const [selectedLotNo, setSelectedLotNo] = useState([]);
@@ -41,6 +43,9 @@ const AcceptanceLetter = () => {
   const [zoomId, setZoomId] = useState("");
   const [password, setPassword] = useState("");
   const [meetStartTime, setMeetStartTime] = useState("");
+  const [arbId, setArbId] = useState("");
+  const [rate, setRate] = useState(null);
+  const [noOfCases, setNoOfCases] = useState(null);
 
   // for time setting starts
   const [startTime, setStartTime] = useState("");
@@ -86,11 +91,21 @@ const AcceptanceLetter = () => {
   const startIndex = (currentPage - 1) * 10;
   // for pagination of reusabletableFixed
 
+  useEffect(() => {
+    console.log(user);
+    setArbId(user[0].Ref_id);
+  }, [user]);
+
+  console.log(arbId);
+
   // To get the access token start here
   useEffect(() => {
     const fetchAccessToken = async () => {
+      if (!arbId) return;
       try {
-        const response = await fetch(`${API_BASE_URL}/api/ZoomAccess`);
+        const response = await fetch(
+          `${API_BASE_URL}/api/ZoomAccess?Arb_id=${arbId}`
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -107,16 +122,19 @@ const AcceptanceLetter = () => {
     };
 
     fetchAccessToken();
-  }, []);
+  }, [arbId]);
 
   // console.log(accessTokenArray);
-  // console.log(accessToken);
+  console.log(accessToken);
   // To get the access token start here
 
   useEffect(() => {
     const fetchAcceptanceNotCreatedLots = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/pendingAcc`);
+        const response = await fetch(
+          `${API_BASE_URL}/api/pendingAcc?Arb_id=${arbId}`
+        );
+        // const response = await fetch(`${API_BASE_URL}/api/pendingAcc?Arb_id=${item.Arb_id}`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -131,7 +149,7 @@ const AcceptanceLetter = () => {
     };
 
     fetchAcceptanceNotCreatedLots();
-  }, []);
+  }, [arbId]);
 
   // console.log(acceptanceNotCreatedLots);
 
@@ -163,13 +181,21 @@ const AcceptanceLetter = () => {
 
   // console.log(getData);
 
+  const handleRateChange = (e) => {
+    setRate(e.target.value);
+  };
+
+  const handleNoOfCasesChange = (e) => {
+    setNoOfCases(e.target.value);
+  };
+
   //   for the getting data of selected lot to create refernce Draft starts
   const handleRowAction = async (item) => {
     setSelectedLotNo(item.Lot_no);
     setSelectedClientID(item.Client_id);
     setSelectedProductID(item.Product_id);
     setSelectedArbitratorID(item.Arb_id);
-    const url = `${API_BASE_URL}/api/RefLots?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}&Arb_id=${item.Arb_id}`;
+    const url = `${API_BASE_URL}/api/RefLots?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}&Arb_id=${arbId}`;
     setLoading(true);
     handleStepChange(1);
     try {
@@ -193,6 +219,9 @@ const AcceptanceLetter = () => {
     // console.log(getDate); // Outputs in MM/dd/yyyy format
     return;
   };
+
+  console.log(rate);
+  console.log(noOfCases);
 
   // the logic of assigning time slot start here
   const generateTimeOptions = () => {
@@ -293,7 +322,7 @@ const AcceptanceLetter = () => {
       duration: "720",
       agenda: "The Resolution Metting for dispute resolving",
     };
-    // console.log(dataToGenerateZoomMeet);
+    console.log(dataToGenerateZoomMeet);
     handleStepChange(3);
     try {
       setLoading(true);
@@ -363,6 +392,7 @@ const AcceptanceLetter = () => {
   // console.log(meetStartTime);
 
   const distributeRecords = () => {
+    console.log(noOfCases);
     handleStepChange(2);
     if (
       !startTime ||
@@ -409,13 +439,12 @@ const AcceptanceLetter = () => {
             Hearing_date: formattedDate,
             Hearing_time_From: formattedStartTime,
             Hearing_time_To: formattedEndTime,
-            Video_link:
-              joinUrl,
+            Video_link: joinUrl,
             Link_ID: zoomId,
             Password: password,
             // Acc_Date: new Date().toISOString().split("T")[0],
-            No_of_cases: "1810",
-            Rate: "1000",
+            No_of_cases: noOfCases,
+            Rate: rate,
           });
           assignedRecordsCount++;
         }
@@ -443,8 +472,8 @@ const AcceptanceLetter = () => {
             Link_ID: zoomId,
             Password: password,
             // Acc_Date: new Date().toISOString().split("T")[0],
-            No_of_cases: "1810",
-            Rate: "1000",
+            No_of_cases: noOfCases,
+            Rate: rate,
           });
           assignedRecordsCount++;
         }
@@ -467,12 +496,12 @@ const AcceptanceLetter = () => {
           Hearing_date: formattedDate,
           Hearing_time_From: lastSlotStartTime,
           Hearing_time_To: lastSlotEndTime,
-          Video_link:joinUrl,
+          Video_link: joinUrl,
           Link_ID: zoomId,
           Password: password,
           // Acc_Date: new Date().toISOString().split("T")[0],
-          No_of_cases: "1810",
-          Rate: "1000",
+          No_of_cases: noOfCases,
+          Rate: rate,
         });
       }
     }
@@ -484,7 +513,7 @@ const AcceptanceLetter = () => {
 
   // console.log(distributedRecords);
 
-  // console.log(distRecords);
+  console.log(distRecords);
 
   // TO Save the Records starts
   const handleSave = async () => {
@@ -615,7 +644,7 @@ const AcceptanceLetter = () => {
   const columns = [
     { header: "Sr No" },
     { header: "Lots" },
-    // { header: "Arbitrator" },
+    { header: "Arbitrator" },
     { header: "Actions" },
   ];
   // for pagination of reusabletableFixed ends
@@ -644,16 +673,40 @@ const AcceptanceLetter = () => {
       </div>
 
       <div className="row align-items-center ">
-        <div className="col-md-6">
+        <div className="col-md-5">
           {/* {!showTable && !showData && (<h5>Generate Acceptance Letter</h5>)} */}
           {showTable && !showData && !showPDF && !clearForm && (
             <h5>Generate Acceptance Letter</h5>
           )}
           {showPDF && !clearForm && <h5>Upload Acceptance Letter</h5>}
+          {zoomMeet && !showDistributed && (
+            <div className="">
+              {/* <label>Enter Rate</label> */}
+              <Form.Control
+                type="number"
+                className="custom_input"
+                placeholder="Enter Rate"
+                onChange={handleRateChange}
+                value={rate}
+              />
+            </div>
+          )}
         </div>
 
-        {!showTable ? <div className="col-md-4"></div> : ""}
-        <div className="col-md-4"> {!showTable ? "" : ""}</div>
+        <div className="col-md-5">
+          {zoomMeet && !showDistributed && (
+            <div className="">
+              {/* <label>Enter No Of Cases</label> */}
+              <Form.Control
+                type="number"
+                className="custom_input"
+                placeholder="Enter No Of Cases"
+                onChange={handleNoOfCasesChange}
+                value={noOfCases}
+              />
+            </div>
+          )}
+        </div>
 
         <div className="col-md-2">
           {save && !showPDF && (
@@ -668,9 +721,15 @@ const AcceptanceLetter = () => {
             </button>
           )}
           {distRecords.length > 0 && !save && (
-            <button className="custBtn" onClick={handleSave}>
-              Save
-            </button>
+            <>
+              {/* <div className="col-md-3"></div> */}
+
+              <div className="col-md-3">
+                <button className="custBtn" onClick={handleSave}>
+                  Save
+                </button>
+              </div>
+            </>
           )}
         </div>
       </div>
@@ -767,7 +826,7 @@ const AcceptanceLetter = () => {
             <div className="col-md-8"></div>
             <div className="col-md-3">
               <Button className="custBtn" onClick={distributeRecords}>
-                Assign 
+                Assign
               </Button>
             </div>
           </div>

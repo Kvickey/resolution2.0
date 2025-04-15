@@ -14,7 +14,6 @@ const ArbitratorList = () => {
     const fetchArbitrators = async () => {
       try {
         const response = await fetch(
-          // "http://arb.resolutionexperts.in/api/arbitrator"
           `${API_BASE_URL}/api/arbitrator`
         );
         if (!response.ok) {

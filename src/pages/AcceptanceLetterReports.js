@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "../utils/constants";
 import { Form } from "react-bootstrap";
 import "./ReferenceDraftReports.css";
+import { useAuth } from "../components/AuthProvider";
 
 const ReferenceDraftReports = () => {
   const [data, setData] = useState([]);
@@ -14,6 +15,14 @@ const ReferenceDraftReports = () => {
   const [error, setError] = useState(null);
   const [showTable, setShowTable] = useState(false);
   const [clearForm, setClearForm] = useState(false);
+  const { user, logout } = useAuth();
+  const [arbId, setArbId] = useState("");
+
+  useEffect(() => {
+    if (user && user.length > 0) {
+      setArbId(user[0].Ref_id);
+    }
+  }, [user]);
 
   // To fetch Clients(Bank) DaTA
   useEffect(() => {
@@ -93,7 +102,7 @@ const ReferenceDraftReports = () => {
     setLoading(true); // Start loading before fetching data
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=2`
+        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=2&Arb_id=${arbId}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -166,14 +175,7 @@ const ReferenceDraftReports = () => {
             </div>
 
             {/* To enter the Lot No */}
-            <div className="col-md-3">
-              <Form.Control
-                type="number"
-                className="custom_input"
-                placeholder="Enter Lot No"
-                onChange={handleLotNoChange}
-              />
-            </div>
+            ?Arb_id=${arbId}
 
             {/* For Button */}
             <div className="col-md-3">

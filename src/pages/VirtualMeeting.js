@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap is imported
@@ -13,6 +13,7 @@ import { IoMdAdd } from "react-icons/io";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { format } from "date-fns";
+import { useAuth } from "../components/AuthProvider";
 
 const VirtualMeeting = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -53,6 +54,14 @@ const VirtualMeeting = () => {
   const [records, setRecords] = useState([]);
   const [distRecords, setDistRecords] = useState([]);
   // for time setting ends
+  const { user, logout } = useAuth();
+  const [arbId, setArbId] = useState("");
+  useEffect(() => {
+    console.log(user);
+    setArbId(user[0].Ref_id);
+  }, [user]);
+
+  console.log(arbId);
 
   const defaultDummyLink =
     "https://us05web.zoom.us/j/82064910816?pwd=irnBsMk470Z2Uws7dxxZri8jrhdUG3.1";
@@ -145,7 +154,9 @@ const VirtualMeeting = () => {
   const handleAppointments = async (date) => {
     const meetingId = fetchZoomMeetingId(date);
 
-    const dataAppointments = { Hearing_date: formattedDate };
+    const dataAppointments = { Hearing_date: formattedDate,
+      Arb_id:arbId,
+     };
     console.log(dataAppointments);
     // console.log(formattedDate);
     setLoading(true);
@@ -271,6 +282,7 @@ const VirtualMeeting = () => {
       formData.append(`files[${index}]`, file);
     });
 
+
     try {
       toast.info("Uploading files, please wait...");
 
@@ -279,9 +291,10 @@ const VirtualMeeting = () => {
         comment
       )}&Second_Date=${encodeURIComponent(
         formattedDate
-      )}&Second_date_time_from=${startTime}&Second_date_time_to=${endTime}&Video_link=${zoomMeetingLink}&Link_id=${zoomMeetingId}&Password=${zoomMeetingPassword}`;
+      )}&Second_date_time_from=${startTime}&Second_date_time_to=${endTime}&Video_link=${zoomMeetingLink}&Link_id=${zoomMeetingId}&Password=${zoomMeetingPassword}&Meeting_No=1`;
 
       console.log(url);
+      console.log(formData);
       // Perform the upload request
       const response = await fetch(url, {
         method: "POST",

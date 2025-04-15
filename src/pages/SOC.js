@@ -94,11 +94,12 @@ const SOC = () => {
 
   //   for the getting data of selected lot to create refernce Draft starts
   const handleRowAction = async (item) => {
+    console.log(item);
     setSelectedLotNo(item.Lot_no);
     setSelectedClientID(item.Client_id);
     setSelectedProductID(item.Product_id);
     setSelectedArbitratorID(item.Arb_id);
-    const url = `${API_BASE_URL}/api/RefLots?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}&Arb_id=${item.Arb_id}`;
+    const url = `${API_BASE_URL}/api/SocData?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`;
     setLoading(true);
     handleStepChange(1);
     try {
@@ -111,7 +112,7 @@ const SOC = () => {
     }
   };
 
-  // console.log(SOCNotCreatedData);
+  console.log(SOCNotCreatedData);
   //   for the getting data of selected lot to create refernce Draft ends
 
   //   for pagination of reusable table starts
@@ -199,7 +200,7 @@ const SOC = () => {
     try {
       // Fetch the PDF file from the API
       const response = await fetch(
-        `${API_BASE_URL}/api/SOCletter?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
+        `${API_BASE_URL}/api/SOCletter?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -225,34 +226,74 @@ const SOC = () => {
   // for the generation of dearft function ends
 
   //   function to upload the reference Drafts Starts Here
+  // const handleUploadSOC = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch(
+  //       `${API_BASE_URL}/api/SaveSOCCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
+  //     );
+
+  //     if (!response.ok) {
+  //       const errorText = await response.text();
+  //       throw new Error(
+  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+  //       );
+  //     }
+
+  //     const result = await response.json(); // Process the response
+  //     //   console.log(result);
+  //     setClearForm(true);
+  //     handleStepChange(4);
+  //   } catch (error) {
+  //     console.error("Error uploading data:", error);
+  //     alert(`Error uploading data: ${error.message}`);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  //   function to upload the reference Drafts ends Here
+
   const handleUploadSOC = async () => {
     setLoading(true);
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/SaveSOCCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
+      // First API call
+      const firstResponse = await fetch(
+        `https://api.resolutionexperts.in/api/SaveSoc?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}`
       );
 
-      if (!response.ok) {
-        const errorText = await response.text();
+      if (!firstResponse.ok) {
+        const errorText = await firstResponse.text();
         throw new Error(
-          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+          `Failed to upload data to SOC: ${firstResponse.status} ${firstResponse.statusText} - ${errorText}`
         );
       }
 
-      const result = await response.json(); // Process the response
-      //   console.log(result);
-      setClearForm(true);
+      const firstResult = await firstResponse.json(); // Process the response if needed
+      // console.log("First API call successful:", firstResult);
 
-      //   handleStepChange(3);
-      handleStepChange(4);
+      // Second API call (only if the first call is successful)
+      const secondResponse = await fetch(
+        `${API_BASE_URL}/api/SaveSOCCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}`
+      );
+
+      if (!secondResponse.ok) {
+        const errorText = await secondResponse.text();
+        throw new Error(
+          `Failed to upload data to SOC: ${secondResponse.status} ${secondResponse.statusText} - ${errorText}`
+        );
+      }
+
+      const secondResult = await secondResponse.json(); // Process the response if needed
+      // console.log("Second API call successful:", secondResult);
+
+      setClearForm(true);
+      handleStepChange(3); // or handleStepChange(4) depending on your requirement
     } catch (error) {
       console.error("Error uploading data:", error);
-      alert(`Error uploading data: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
-  //   function to upload the reference Drafts ends Here
 
   return (
     <div className="container">
@@ -333,7 +374,7 @@ const SOC = () => {
         </div>
       )}
 
-      {showData &&  !showPDF && (
+      {showData && !showPDF && (
         <div className="row">
           <div className="col-md-12 mt-3">
             <ReusableTable
