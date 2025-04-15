@@ -34,11 +34,6 @@ const ArbDashboard = () => {
             link: '/arbdashboard',
         },
         {
-            name: 'Arbitrator',
-            icon: <GiThorHammer />,
-            link: '/arbdashboard/section17order',
-        },
-        {
             name: 'Acceptance Letter',
             icon: <FaHandshake />,
             submenu: [

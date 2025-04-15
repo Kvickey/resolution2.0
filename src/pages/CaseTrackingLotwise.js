@@ -65,11 +65,19 @@ const CaseTrackingLotWise = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (inputValidation()) {
-      const data = await fetchData("Lot?Lot_no=" + formData.Lot_no);
+      let data = await fetchData("Lot?Lot_no=" + formData.Lot_no);
+      data = data.map((row) => ({
+        Lot_no: row.Lot_no,
+        Reference_no: row.Reference_no,
+        Cust_id: row.Cust_id,
+        Cust_name: row.Cust_name,
+        ...row,
+      }));
       setLotData(data);
     }
   };
 
+  console.log(lotData);
 
   // Table Logic
   const itemsPerPage = 10;
@@ -129,7 +137,7 @@ const CaseTrackingLotWise = () => {
               placeholder="Enter Lot Number..."
               name="Lot_no"
               value={formData.Lot_no}
-              onChange={(e)=> e.target.value > 0 && handleChange(e)}
+              onChange={(e) => e.target.value > 0 && handleChange(e)}
             />
           </div>
           <div className="col-md col-12 text-center text-md-start">

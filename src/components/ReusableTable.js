@@ -19,14 +19,6 @@ const ReusableTable = ({
   // Used to make Some Columns in the start 
 
   useEffect(() => {
-    data = data.map((row) => ({
-      Lot_no: row.Lot_no,
-      Reference_no: row.Reference_no,
-      Cust_id : row.Cust_id,
-      Cust_name :row.Cust_name,
-      ...row,
-    }));
-
     let tempheaders =
       data.length > 0 && typeof data[0] === "object"
         ? ["Sr", ...Object.keys(data[0])]

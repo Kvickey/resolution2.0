@@ -1,0 +1,51 @@
+@keyframes fade-in {
+    from{
+        opacity: 0.7;
+        transform: scale(0.9);
+    }
+    to{
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.fadeIn{
+    animation: fade-in 0.3s ease-in-out;
+}
+@keyframes slide-up {
+    from{
+        opacity: 0.7;
+        transform: translateY(100px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+.slideUp{
+    animation: slide-up 0.3s ease-in-out;
+}
+@keyframes slide-down {
+    from{
+        opacity: 0.7;
+        transform: translateY(-100px);
+    }
+    to{
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+.slideDown{
+    animation: slide-down 0.3s ease-in-out;
+}
+
+.hoverZoom{
+    transition: transform 0.3s ease-in-out;
+}
+
+.hoverZoom:hover{
+    transform: scale(1.03);
+    cursor: pointer;
+}
