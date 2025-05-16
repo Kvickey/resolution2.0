@@ -119,6 +119,7 @@ const AssignArbitratorByIntent = () => {
       }))
     );
     setUpload(true);
+    handleStepChange(2);
   };
 
   console.log(newdata);

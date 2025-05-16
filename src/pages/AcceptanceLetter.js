@@ -6,7 +6,7 @@ import ReusableTable from "../components/ReusableTable";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ClearForm from "../components/Clearform";
 import DatePicker from "react-datepicker";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Modal, Pagination } from "react-bootstrap";
 import { format } from "date-fns";
 import { toast, ToastContainer } from "react-toastify";
 import CustomStepper from "../components/CustomStepper";
@@ -39,13 +39,16 @@ const AcceptanceLetter = () => {
   const [zoomMeet, setZoomMeet] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [zoomResponse, setZoomResponse] = useState([]);
+  const [meeting, setMeeting] = useState([]);
   const [joinUrl, setJoinUrl] = useState("");
+  const [meetStartTime, setMeetStartTime] = useState("");
   const [zoomId, setZoomId] = useState("");
   const [password, setPassword] = useState("");
-  const [meetStartTime, setMeetStartTime] = useState("");
+  const [meetingId, setMeetingId] = useState(null);
   const [arbId, setArbId] = useState("");
   const [rate, setRate] = useState(null);
   const [noOfCases, setNoOfCases] = useState(null);
+  const [showSecondModal, setShowSecondModal] = useState(false);
 
   // for time setting starts
   const [startTime, setStartTime] = useState("");
@@ -74,13 +77,20 @@ const AcceptanceLetter = () => {
   //   for pagination of reusable distributed items table starts
   const [currentPage2, setCurrentPage2] = useState(1); // Current page for ReusableTable
   const totalItems2 = distRecords.length;
-  const totalPages2 = Math.ceil(totalItems1 / itemsPerPage);
-  const startIndex2 = (currentPage1 - 1) * itemsPerPage;
+  const totalPages2 = Math.ceil(totalItems2 / itemsPerPage);
+
+  const startIndex2 = (currentPage2 - 1) * itemsPerPage;
   const currentItems2 = distRecords.slice(
-    startIndex1,
-    startIndex1 + itemsPerPage
+    startIndex2,
+    startIndex2 + itemsPerPage
   );
-  const pageNumbers2 = Array.from({ length: totalPages1 }, (_, i) => i + 1);
+
+  const pageNumbers2 = Array.from({ length: totalPages2 }, (_, i) => i + 1);
+  // console.log(totalItems2);
+  // console.log(totalPages2);
+  // console.log(startIndex2);
+  // console.log(currentItems2);
+
   //   for pagination of reusable distributed items table ends
 
   // for pagination of reusabletableFixed
@@ -91,12 +101,45 @@ const AcceptanceLetter = () => {
   const startIndex = (currentPage - 1) * 10;
   // for pagination of reusabletableFixed
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const rowsPerPage = 10;
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   useEffect(() => {
     console.log(user);
     setArbId(user[0].Ref_id);
   }, [user]);
 
   console.log(arbId);
+
+  // To get the access Meeting start here
+  useEffect(() => {
+    const fetchAccessToken = async () => {
+      if (!arbId) return;
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/api/Meetings?Arb_id=${arbId}`
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const result = await response.json();
+        const parsedAccessTokenArray = Array.isArray(result)
+          ? result
+          : JSON.parse(result); // Ensure parsedArbitrators is an array
+        setMeeting(parsedAccessTokenArray);
+        // console.log(parsedAccessTokenArray);
+      } catch (error) {
+        // setError1(error.message);
+      }
+    };
+
+    fetchAccessToken();
+  }, [arbId]);
+
+  console.log(meeting);
 
   // To get the access token start here
   useEffect(() => {
@@ -126,6 +169,7 @@ const AcceptanceLetter = () => {
 
   // console.log(accessTokenArray);
   console.log(accessToken);
+  console.log(refreshToken);
   // To get the access token start here
 
   useEffect(() => {
@@ -151,7 +195,19 @@ const AcceptanceLetter = () => {
     fetchAcceptanceNotCreatedLots();
   }, [arbId]);
 
-  // console.log(acceptanceNotCreatedLots);
+  console.log(acceptanceNotCreatedLots);
+
+  const searchFields = ["Arb_name", "Lots"];
+
+  const filteredLots = acceptanceNotCreatedLots.filter((item) =>
+    searchFields.some((key) =>
+      item[key]?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = filteredLots.slice(indexOfFirstRow, indexOfLastRow);
 
   useEffect(() => {
     if (AcceptanceNotCreatedData.length > 0) {
@@ -165,7 +221,7 @@ const AcceptanceLetter = () => {
           ...rest
         } = item;
         return {
-          SrNo: index + 1,
+          // SrNo: index + 1,
           ...rest,
         };
       });
@@ -287,6 +343,8 @@ const AcceptanceLetter = () => {
 
   // Function to format date and time together
   const formatDateTime = (date, time) => {
+    console.log(time);
+
     const [hour, minute] = time.match(/\d+/g).map(Number);
 
     let formattedHour = hour;
@@ -306,85 +364,88 @@ const AcceptanceLetter = () => {
     const hours = String(newDate.getHours()).padStart(2, "0");
     const minutes = String(newDate.getMinutes()).padStart(2, "0");
 
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+    return `${year}-${month}-${day}T${hours}:${minutes}:${minutes}Z`;
   };
 
-  const handleZoomMeet = async () => {
-    // console.log(selectedDate);
-    // console.log(startTime);
-    const formattedDateTime = formatDateTime(selectedDate, startTime);
-    // console.log(formattedDateTime);
-    const dataToGenerateZoomMeet = {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      topic: "Zoom Meeting",
-      start_time: formattedDateTime,
-      duration: "720",
-      agenda: "The Resolution Metting for dispute resolving",
-    };
-    console.log(dataToGenerateZoomMeet);
-    handleStepChange(3);
-    try {
-      setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/Zoom`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToGenerateZoomMeet),
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-        );
-      }
-      const result = await response.json(); // Process the response
-      // console.log("Upload response:", result);
-      setZoomResponse(result);
-      toast.success("Data Uploaded Successfully", {
-        // position: toast.POSITION.BOTTOM_RIGHT,
-        theme: "colored",
-        autoClose: 1000,
-      });
-      setZoomMeet(true);
-      // console.log(save);
-    } catch (error) {
-      console.error("Error uploading data:", error);
-      // alert(`Error uploading data: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const handleZoomMeet = async () => {
+  //   // console.log(selectedDate);
+  //   // console.log(startTime);
+  //   const formattedDateTime = formatDateTime(selectedDate, startTime);
+  //   // console.log(formattedDateTime);
+  //   const dataToGenerateZoomMeet = {
+  //     accessToken: accessToken,
+  //     refreshToken: refreshToken,
+  //     topic: "Zoom Meeting",
+  //     // start_time: "2025-05-08T15:00:00Z",
+  //     start_time: formattedDateTime,
+  //     duration: "720",
+  //     timezone: "Asia/Kolkata",
+  //     agenda: "The Resolution Metting for dispute resolving",
+  //     Arb_id: arbId,
+  //   };
+  //   console.log(dataToGenerateZoomMeet);
+  //   handleStepChange(3);
+  //   try {
+  //     setLoading(true);
+  //     const response = await fetch(`${API_BASE_URL}/api/Zoom`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(dataToGenerateZoomMeet),
+  //     });
+  //     if (!response.ok) {
+  //       const errorText = await response.text();
+  //       throw new Error(
+  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+  //       );
+  //     }
+  //     const result = await response.json(); // Process the response
+  //     // console.log("Upload response:", result);
+  //     setZoomResponse(result);
+  //     toast.success("Data Uploaded Successfully", {
+  //       // position: toast.POSITION.BOTTOM_RIGHT,
+  //       theme: "colored",
+  //       autoClose: 1000,
+  //     });
+  //     setZoomMeet(true);
+  //     // console.log(save);
+  //   } catch (error) {
+  //     console.error("Error uploading data:", error);
+  //     // alert(`Error uploading data: ${error.message}`);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    // console.log("Updated zoomResponse:", zoomResponse);
-    let parsedResponse;
+  // useEffect(() => {
+  //   // console.log("Updated zoomResponse:", zoomResponse);
+  //   let parsedResponse;
 
-    if (typeof zoomResponse === "string") {
-      try {
-        parsedResponse = JSON.parse(zoomResponse);
-        console.log("Parsed Response:", parsedResponse);
-      } catch (error) {
-        console.error("Error parsing zoomResponse:", error);
-        return;
-      }
-    } else if (zoomResponse && typeof zoomResponse === "object") {
-      parsedResponse = zoomResponse;
-    } else {
-      console.log("zoomResponse is undefined or not an object!");
-      return;
-    }
-    setZoomId(parsedResponse.id);
-    setPassword(parsedResponse.password);
-    setMeetStartTime(parsedResponse.start_time);
-    if (parsedResponse?.join_url) {
-      console.log("Join URL:", parsedResponse.join_url);
-      setJoinUrl(parsedResponse.join_url); // Store join_url in state
-    } else {
-      console.log("join_url not found in parsed response!");
-    }
-  }, [zoomResponse]);
+  //   if (typeof zoomResponse === "string") {
+  //     try {
+  //       parsedResponse = JSON.parse(zoomResponse);
+  //       console.log("Parsed Response:", parsedResponse);
+  //     } catch (error) {
+  //       console.error("Error parsing zoomResponse:", error);
+  //       return;
+  //     }
+  //   } else if (zoomResponse && typeof zoomResponse === "object") {
+  //     parsedResponse = zoomResponse;
+  //   } else {
+  //     console.log("zoomResponse is undefined or not an object!");
+  //     return;
+  //   }
+  //   setZoomId(parsedResponse.id);
+  //   setPassword(parsedResponse.password);
+  //   setMeetStartTime(parsedResponse.start_time);
+  //   if (parsedResponse?.join_url) {
+  //     console.log("Join URL:", parsedResponse.join_url);
+  //     setJoinUrl(parsedResponse.join_url); // Store join_url in state
+  //   } else {
+  //     console.log("join_url not found in parsed response!");
+  //   }
+  // }, [zoomResponse]);
 
   // console.log(joinUrl);
   // console.log(zoomId);
@@ -393,11 +454,11 @@ const AcceptanceLetter = () => {
 
   const distributeRecords = () => {
     console.log(noOfCases);
+
     handleStepChange(2);
     if (
       !startTime ||
       !endTime ||
-      !selectedDate ||
       timeDifference <= 0 ||
       AcceptanceNotCreatedData.length === 0
     ) {
@@ -421,7 +482,7 @@ const AcceptanceLetter = () => {
     let assignedRecordsCount = 0; // Counter to track assigned records
     const distributed = [];
     let currentStartTime = parseTimeStringToDate(startTime);
-    const formattedDate = format(selectedDate, "MM/dd/yyyy");
+    const formattedDate = format(meetStartTime, "MM/dd/yyyy");
 
     for (let hour = 0; hour < fullHours; hour++) {
       const slotStartTime = new Date(currentStartTime.getTime());
@@ -641,12 +702,12 @@ const AcceptanceLetter = () => {
     }
   };
 
-  const columns = [
-    { header: "Sr No" },
-    { header: "Lots" },
-    { header: "Arbitrator" },
-    { header: "Actions" },
-  ];
+  // const columns = [
+  //   { header: "Sr No" },
+  //   { header: "Lots" },
+  //   { header: "Arbitrator" },
+  //   { header: "Actions" },
+  // ];
   // for pagination of reusabletableFixed ends
 
   // For the customStepper starts Here
@@ -664,6 +725,69 @@ const AcceptanceLetter = () => {
   };
   // For the customStepper ends Here
 
+  const handleCloseSecondModal = () => {
+    setShowSecondModal(false);
+  };
+  const handleShowSecondModal = () => setShowSecondModal(true);
+
+  // Pagination For the Main Table Starts Here
+  const headers = meeting.length > 0 ? Object.keys(meeting[0]) : [];
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  //   const currentItems = 1;
+  const currentItems = meeting.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const totalPages3 = Math.ceil(meeting.length / itemsPerPage);
+
+  const totalPagesToShow = 5; // Maximum number of page buttons to show
+
+  const generatePaginationItems = () => {
+    const items = [];
+    const pageWindow = 5;
+    let startPage = Math.max(currentPage - Math.floor(pageWindow / 2), 1);
+    let endPage = startPage + pageWindow - 1;
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(endPage - pageWindow + 1, 1);
+    }
+
+    for (let number = startPage; number <= endPage; number++) {
+      items.push(
+        <Pagination.Item
+          key={number}
+          active={number === currentPage}
+          onClick={() => setCurrentPage(number)}
+        >
+          {number}
+        </Pagination.Item>
+      );
+    }
+
+    return items;
+  };
+  // Pagination For the Main Table Ends Here
+
+  const handleSelectZoomMeet = () => {
+    setShowSecondModal(true);
+  };
+
+  const handleSelect = (record) => {
+    console.log(record);
+    // you can do whatever you want with meetingId here
+    setMeetingId(record.Meeting_id);
+    setZoomId(record.Link_id);
+    setPassword(record.Password);
+    setMeetStartTime(record.Date);
+    setJoinUrl(record.Link);
+    setShowSecondModal(false);
+    setZoomMeet(true);
+  };
+
   return (
     <div className="container">
       <div className="row">
@@ -679,9 +803,8 @@ const AcceptanceLetter = () => {
             <h5>Generate Acceptance Letter</h5>
           )}
           {showPDF && !clearForm && <h5>Upload Acceptance Letter</h5>}
-          {zoomMeet && !showDistributed && (
+          {/* {zoomMeet && !showDistributed && (
             <div className="">
-              {/* <label>Enter Rate</label> */}
               <Form.Control
                 type="number"
                 className="custom_input"
@@ -690,13 +813,12 @@ const AcceptanceLetter = () => {
                 value={rate}
               />
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="col-md-5">
-          {zoomMeet && !showDistributed && (
+          {/* {zoomMeet && !showDistributed && (
             <div className="">
-              {/* <label>Enter No Of Cases</label> */}
               <Form.Control
                 type="number"
                 className="custom_input"
@@ -705,7 +827,7 @@ const AcceptanceLetter = () => {
                 value={noOfCases}
               />
             </div>
-          )}
+          )} */}
         </div>
 
         <div className="col-md-2">
@@ -737,18 +859,111 @@ const AcceptanceLetter = () => {
       {!showTable && (
         <div className="row">
           <div className="col-md-12 mt-4">
-            <ReusableTableFixed
-              columns={columns}
-              data={acceptanceNotCreatedLots.slice(startIndex, startIndex + 10)}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              displayedPages={displayedPages}
-              handlePrevious={handlePrevious}
-              handleNext={handleNext}
-              setCurrentPage={setCurrentPage}
-              handleRowAction={handleRowAction}
-              startIndex={startIndex}
-            />
+            <div className="row table-container mt-3">
+              <div className="col-md-12 mx-auto table-wrapper">
+                {/* Search Input */}
+                <div className="mb-3 d-flex justify-content-start">
+                  <input
+                    type="text"
+                    placeholder="Search Lots..."
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setCurrentPage(1); // reset to first page on search
+                    }}
+                    className="form-control"
+                    style={{ maxWidth: "300px" }}
+                  />
+                </div>
+
+                {/* Table */}
+                <table className="responsive-table my-3">
+                  <thead className="text-center">
+                    <tr className="table-info">
+                      <th scope="col" className="text-center">
+                        Sr No
+                      </th>
+
+                      <th scope="col" className="text-center">
+                        Assigned Date
+                      </th>
+
+                      <th scope="col" className="text-center">
+                        Lots
+                      </th>
+                      {/* <th scope="col" className="text-center">
+                        Arbitrator Name
+                      </th> */}
+                      <th scope="col" className="text-center">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentRows.length > 0 ? (
+                      currentRows.map((item, index) => (
+                        <tr key={item.id}>
+                          <td className="text-center">
+                            {indexOfFirstRow + index + 1}
+                          </td>
+                          <td className="text-center">
+                            {item.Assign_date
+                              ? new Date(item.Assign_date).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                )
+                              : ""}
+                          </td>
+                          <td className="text-center">{item.Lots}</td>
+                          {/* <td className="text-center">{item.Arb_name}</td> */}
+                          <td className="text-center">
+                            <button
+                              onClick={() => handleRowAction(item)}
+                              className="custBtn"
+                            >
+                              Show
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="3" className="text-center text-muted">
+                          No results found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+
+                {/* Pagination */}
+                <div className="d-flex justify-content-center">
+                  <nav>
+                    <ul className="pagination">
+                      {Array.from({ length: totalPages }, (_, i) => (
+                        <li
+                          key={i + 1}
+                          className={`page-item ${
+                            currentPage === i + 1 ? "active" : ""
+                          }`}
+                        >
+                          <button
+                            className="page-link"
+                            onClick={() => handlePageChange(i + 1)}
+                          >
+                            {i + 1}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -757,7 +972,7 @@ const AcceptanceLetter = () => {
       {showData && !showDistributed && !zoomMeet && (
         <div className="row mt-3">
           {/* the date picker */}
-          <div className="col-md-3">
+          {/* <div className="col-md-3">
             <DatePicker
               selected={selectedDate}
               onChange={handleDateChange}
@@ -775,7 +990,7 @@ const AcceptanceLetter = () => {
                 boxSizing: "border-box",
               }}
             />
-          </div>
+          </div> */}
 
           {/* The Start time Picker */}
           <div className="col-md-3">
@@ -810,56 +1025,180 @@ const AcceptanceLetter = () => {
             </Form.Control>
           </div>
 
+          <div className="col-md-3"> </div>
+
           {/* button Goes here */}
           <div className="col-md-3">
-            <Button className="custBtn" onClick={handleZoomMeet}>
-              Create Zoom Meet
+            <Button className="custBtn" onClick={handleSelectZoomMeet}>
+              Select Zoom Meet
             </Button>
           </div>
+          {/* <div className="col-md-3">
+            <Button className="custBtn" onClick={handleZoomMeet}>
+              Select Zoom Meet
+            </Button>
+          </div> */}
         </div>
       )}
       {/* to SAVE The date and time for Virtul meeting ends */}
 
+      {/*Modal starts here */}
+      <Modal
+        show={showSecondModal}
+        onHide={handleCloseSecondModal}
+        className="modal-xl"
+      >
+        <Modal.Header className="customModal" style={{ position: "relative" }}>
+          <Modal.Title className="">Assign Second Hearing Date</Modal.Title>
+          <Button
+            style={{
+              position: "absolute",
+              right: "15px",
+              color: "orange",
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "40px",
+            }}
+            aria-label="Close"
+            onClick={handleCloseSecondModal}
+          >
+            &times;
+          </Button>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="table-responsive">
+            {currentItems.length > 0 && (
+              <table className="table table-striped table-bordered table-hover mt-3 text-center">
+                <thead>
+                  <tr>
+                    <th>Select</th> {/* <-- Added Select button header */}
+                    {headers.map((header) => (
+                      <th key={header}>{header}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentItems.map((item, index) => (
+                    <tr
+                      key={index}
+                      style={{
+                        maxHeight: "50px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                      className="text-center custom_fz"
+                    >
+                      {/* Select Button */}
+                      <td>
+                        <button
+                          className="btn btn-primary btn-sm"
+                          onClick={() => handleSelect(item)}
+                        >
+                          Select
+                        </button>
+                      </td>
+
+                      {/* Table Data */}
+                      {headers.map((header) => (
+                        <td key={header}>{item[header]}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          {totalPages > 1 && (
+            <Pagination className="justify-content-center">
+              <Pagination.Prev
+                onClick={() =>
+                  setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
+                }
+              />
+              {generatePaginationItems()}
+              <Pagination.Next
+                onClick={() =>
+                  setCurrentPage((prev) =>
+                    prev < totalPages ? prev + 1 : prev
+                  )
+                }
+              />
+            </Pagination>
+          )}
+        </Modal.Body>
+      </Modal>
+      {/*Modal ends here */}
+
       {zoomMeet && !showDistributed && (
         <>
           <div className="row my-3">
-            <div className="col-md-8"></div>
+            <div className="col-md-4">
+              <div className="">
+                <Form.Control
+                  type="number"
+                  className="custom_input"
+                  placeholder="Enter Rate"
+                  onChange={handleRateChange}
+                  value={rate}
+                />
+              </div>
+            </div>
+            <div className="col-md-4">
+              <Form.Control
+                type="number"
+                className="custom_input"
+                placeholder="Enter No Of Cases"
+                onChange={handleNoOfCasesChange}
+                value={noOfCases}
+              />
+            </div>
             <div className="col-md-3">
               <Button className="custBtn" onClick={distributeRecords}>
                 Assign
               </Button>
             </div>
           </div>
-          <div className="row ms-3 mt-2">
-            <div className="col-md-3">
-              <h5>Zoom Join Url</h5>
+          <div className=" other-container">
+            <div className="row">
+              <div className="col-md-4"></div>
+              <div className="col-md-4">
+                <h4>Zoom Meeting Details</h4>
+              </div>
+              <div className="col-md-4"></div>
             </div>
-            <div className="col-md-8">
-              <span>{joinUrl}</span>
+            <div className="row ms-3 mt-2 mb-2">
+              <div className="col-md-3">
+                <h5>Zoom Join Url</h5>
+              </div>
+              <div className="col-md-9">
+                <span>:&nbsp;&nbsp;&nbsp;{joinUrl}</span>
+              </div>
             </div>
-          </div>
-          <div className="row ms-3">
-            <div className="col-md-3">
-              <h5>Zoom Meeting Id</h5>
+            <div className="row ms-3 mb-2">
+              <div className="col-md-3">
+                <h5>Zoom Meeting Id</h5>
+              </div>
+              <div className="col-md-5">
+                <span>:&nbsp;&nbsp;&nbsp;{zoomId}</span>
+              </div>
             </div>
-            <div className="col-md-5">
-              <span>{zoomId}</span>
+            <div className="row ms-3 mb-2">
+              <div className="col-md-3">
+                <h5>Zoom Password</h5>
+              </div>
+              <div className="col-md-5">
+                <span>:&nbsp;&nbsp;&nbsp;{password}</span>
+              </div>
             </div>
-          </div>
-          <div className="row ms-3">
-            <div className="col-md-3">
-              <h5>Zoom Password</h5>
-            </div>
-            <div className="col-md-5">
-              <span>{password}</span>
-            </div>
-          </div>
-          <div className="row ms-3">
-            <div className="col-md-3">
-              <h5>Zoom Start Time</h5>
-            </div>
-            <div className="col-md-5">
-              <span>{meetStartTime}</span>
+            <div className="row ms-3 mb-2">
+              <div className="col-md-3">
+                <h5>Zoom Start Time</h5>
+              </div>
+              <div className="col-md-5">
+                <span>:&nbsp;&nbsp;&nbsp;{meetStartTime}</span>
+              </div>
             </div>
           </div>
         </>

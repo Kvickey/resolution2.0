@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { scrollSpy } from "react-scroll";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import About from "./pages/About";
 import ContactUs from "./pages/ContactUs";
 import LoginForm from "./components/LoginForm";
@@ -11,7 +11,7 @@ import Display from "./pages/Display";
 import UploadExcel from "./pages/UploadExcel";
 import InstDashboardMain from "./pages/InstDashboardMain";
 import { Modal, Box, Typography, Button, Zoom } from "@mui/material";
-import "./App.css"; 
+import "./App.css";
 import { RxCookie } from "react-icons/rx";
 import Cookie from "./assets/images/cookie.png";
 import InstDashboard from "./pages/InstDashboard";
@@ -66,6 +66,20 @@ import IntentLetterGenerate from "./pages/IntentLetterGenerate";
 import IntentLetterServices from "./pages/IntentLetterServices";
 import IntentLetterReports from "./pages/IntentLetterReports";
 import ArbitratorList from "./components/ArbitratorList";
+import UploadedLotList from "./pages/UploadedLotList";
+import IntentLetterList from "./pages/IntentLetterList";
+import AccScheduledMeets from "./pages/AccScheduledMeets";
+import ZoomMeetings from "./pages/ZoomMeetings";
+import Section17OrderData from "./pages/Section17OrderData";
+import Section17OrderService from "./pages/Section17OrderService";
+import Section17OrderReports from "./pages/Section17OrderReports";
+import Section17ApplicationService from "./pages/Section17ApplicationService";
+import Section17ApplicationReports from "./pages/Section17ApplicationReports";
+import Section17ApplicationData from "./pages/Section17ApplicationData";
+import SOCService from "./pages/SOCService";
+import SOCReports from "./pages/SOCReports";
+import SOCData from "./pages/SOCData";
+
 
 const App = () => {
   // useEffect(() => {
@@ -102,13 +116,13 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<LoginForm />} />
         <Route path="/" element={<Display />} />
-        
+
         <Route path="/bankdashboard" element={<BankDashboard />}>
           <Route index element={<BankDashboardMain />} />
           <Route path="dashboard" element={<BankDashboardMain />} />
           <Route path="casetracking">
-          <Route path="lotwise" element={<CaseTrackingLotwise />} />
-          <Route path="casewise" element={<CaseTrackingCasewise />} />
+            <Route path="lotwise" element={<CaseTrackingLotwise />} />
+            <Route path="casewise" element={<CaseTrackingCasewise />} />
           </Route>
         </Route>
 
@@ -116,11 +130,19 @@ const App = () => {
           <Route index element={<InstDashboardMain />} />
           <Route path="dashboard" element={<InstDashboardMain />} />
           <Route path="arbitrator" element={<ArbitratorList />} />
-          <Route path="uploadalot" element={<UploadExcel />} />
+          {/* <Route path="uploadalot" element={<UploadExcel />} /> */}
+          <Route path="uploadalot">
+            <Route path="uploadnewlot" element={<UploadExcel />} />
+            <Route path="list" element={<UploadedLotList />} />
+          </Route>
           <Route path="intentletter">
-            <Route path="generateintentletter" element={<IntentLetterGenerate />} />
-            <Route path="ilservices" element={<IntentLetterServices/>} />
+            <Route
+              path="generateintentletter"
+              element={<IntentLetterGenerate />}
+            />
+            <Route path="ilservices" element={<IntentLetterServices />} />
             <Route path="ilreports" element={<IntentLetterReports />} />
+            <Route path="illist" element={<IntentLetterList />} />
           </Route>
           <Route path="assignArb">
             <Route path="byintent" element={<AssignArbitratorByIntent />} />
@@ -145,40 +167,96 @@ const App = () => {
         <Route path="/arbdashboard" element={<ArbDashboard />}>
           <Route index element={<ArbDashboardMain />} />
           <Route path="dashboard" element={<ArbDashboardMain />} />
+          <Route path="zoommeetings" element={<ZoomMeetings />} />
           <Route path="acceptletter" element={<AcceptanceLetter />} />
           <Route path="acceptletter">
             <Route path="generate_al" element={<AcceptanceLetter />} />
             <Route path="services" element={<AcceptanceLetterService />} />
             <Route path="reports" element={<AcceptanceLetterReports />} />
+            <Route path="list" element={<AccScheduledMeets />} />
           </Route>
-          <Route path="section17order" element={<Section17Order />} />
+          {/* <Route path="section17order" element={<Section17Order />} /> */}
+          <Route path="section17order">
+            <Route path="generatesection17order" element={<Section17Order />} />
+            <Route path="services" element={<Section17OrderService />} />
+            <Route path="reports" element={<Section17OrderReports />} />
+            <Route path="list" element={<Section17OrderData />} />
+          </Route>
           <Route path="firstHearing">
             <Route path="first_Hearing" element={<VirtualMeeting />} />
-            <Route path="createSecondHearingNotice" element={<SecondHearingNotice />} />
-            <Route path="secondHearingNoticeServices" element={<SecondHearingServices />} />
-            <Route path="secondHearingNoticeReports" element={<SecondHearingReport />} />
+            <Route
+              path="createSecondHearingNotice"
+              element={<SecondHearingNotice />}
+            />
+            <Route
+              path="secondHearingNoticeServices"
+              element={<SecondHearingServices />}
+            />
+            <Route
+              path="secondHearingNoticeReports"
+              element={<SecondHearingReport />}
+            />
           </Route>
           <Route path="secondHearing">
-            <Route path="second_Hearing" element={<VirtualMeetingForSecondHearing />} />
-            <Route path="createThirdHearingNotice" element={<ThirdHearingNotice />} />
-            <Route path="thirdHearingNoticeServices" element={<ThirdHearingServices />} />
-            <Route path="thirdHearingNoticeReports" element={<ThirdHearingReport />} />
+            <Route
+              path="second_Hearing"
+              element={<VirtualMeetingForSecondHearing />}
+            />
+            <Route
+              path="createThirdHearingNotice"
+              element={<ThirdHearingNotice />}
+            />
+            <Route
+              path="thirdHearingNoticeServices"
+              element={<ThirdHearingServices />}
+            />
+            <Route
+              path="thirdHearingNoticeReports"
+              element={<ThirdHearingReport />}
+            />
           </Route>
           <Route path="thirdHearing">
-            <Route path="third_Hearing" element={<VirtualMeetingForThirdHearing />} />
-            <Route path="createForthHearingNotice" element={<ForthHearingNotice />} />
-            <Route path="forthHearingNoticeServices" element={<ForthHearingServices />} />
-            <Route path="forthHearingNoticeReports" element={<ForthHearingReports />} />
+            <Route
+              path="third_Hearing"
+              element={<VirtualMeetingForThirdHearing />}
+            />
+            {/* <Route
+              path="createForthHearingNotice"
+              element={<ForthHearingNotice />}
+            />
+            <Route
+              path="forthHearingNoticeServices"
+              element={<ForthHearingServices />}
+            />
+            <Route
+              path="forthHearingNoticeReports"
+              element={<ForthHearingReports />}
+            /> */}
           </Route>
-          <Route path="forthHearing">
-            <Route path="forth_Hearing" element={<VirtualMeetingForForthHearing />} />
-            <Route path="createFifthHearingNotice" element={<FifthHearingNotice />} />
-            <Route path="fifthHearingNoticeServices" element={<FifthHearingServices />} />
-            <Route path="fifthHearingNoticeReports" element={<FifthHearingReports />} />
+          {/* <Route path="forthHearing">
+            <Route
+              path="forth_Hearing"
+              element={<VirtualMeetingForForthHearing />}
+            />
+            <Route
+              path="createFifthHearingNotice"
+              element={<FifthHearingNotice />}
+            />
+            <Route
+              path="fifthHearingNoticeServices"
+              element={<FifthHearingServices />}
+            />
+            <Route
+              path="fifthHearingNoticeReports"
+              element={<FifthHearingReports />}
+            />
           </Route>
           <Route path="fifthHearing">
-            <Route path="fifth_Hearing" element={<VirtualMeetingForFifthHearing />} />
-          </Route>
+            <Route
+              path="fifth_Hearing"
+              element={<VirtualMeetingForFifthHearing />}
+            />
+          </Route> */}
           <Route path="awardPass" element={<AwardPass />} />
           <Route path="terminate" element={<Terminate />} />
         </Route>
@@ -186,11 +264,19 @@ const App = () => {
         <Route path="/lawyerdashboard" element={<LawyerDashboard />}>
           <Route index element={<LawyerDashboardMain />} />
           <Route path="dashboard" element={<LawyerDashboardMain />} />
-          <Route path="uploadsoc" element={<SOC />} />
-          <Route
-            path="section17application"
-            element={<Section17Application />}
-          />
+          {/* <Route path="soc" element={<SOC />} /> */}
+          <Route path="soc">
+            <Route path="generatesoc" element={<SOC />} />
+            <Route path="services" element={<SOCService />} />
+            <Route path="reports" element={<SOCReports />} />
+            <Route path="list" element={<SOCData />} />
+          </Route>
+           <Route path="section17application">
+            <Route path="generatesection17application" element={<Section17Application />} />
+            <Route path="services" element={<Section17ApplicationService />} />
+            <Route path="reports" element={<Section17ApplicationReports />} />
+            <Route path="list" element={<Section17ApplicationData />} />
+          </Route>
         </Route>
       </Routes>
 

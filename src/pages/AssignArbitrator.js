@@ -25,6 +25,9 @@ const AssignArbitrator = () => {
   const [clearForm, setClearForm] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
 
   // for unassigned Data
   const [currentPage1, setCurrentPage1] = useState(1);
@@ -60,11 +63,9 @@ const AssignArbitrator = () => {
   const handleFirmChange = (e) => {
     // const selectedID = e.target.value;
     setSelectedFirm(e.target.value);
-    
+
     // setFirm(selectedID);
   };
-
-
 
   // To fetch the arbitrators based on firm
   useEffect(() => {
@@ -95,8 +96,6 @@ const AssignArbitrator = () => {
     fetchArbitrators();
   }, [selectedFirm]);
 
-  
-
   // unassignedLots Fetch Code
   useEffect(() => {
     const fetchUnassignedLots = async () => {
@@ -122,7 +121,21 @@ const AssignArbitrator = () => {
     fetchUnassignedLots();
   }, []);
 
-  
+  console.log(unassignedLots);
+
+  const filteredLots = unassignedLots.filter((item) =>
+    item.Lots.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = filteredLots.slice(indexOfFirstRow, indexOfLastRow);
+
+  const totalPages = Math.ceil(filteredLots.length / rowsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   if (loading) return <LoadingSpinner />;
 
@@ -218,7 +231,7 @@ const AssignArbitrator = () => {
         })()
       : null;
     return {
-      SrNo: index + 1,
+      // SrNo: index + 1,
       Reference_no,
       Cust_name,
       LRN_Date: formattedLRN_Date,
@@ -472,10 +485,8 @@ const AssignArbitrator = () => {
               </button>
             )}
           </div>
-          <div className="col-md-3">
-          </div>
-          <div className="col-md-3 d-flex justify-content-end">
-          </div>
+          <div className="col-md-3"></div>
+          <div className="col-md-3 d-flex justify-content-end"></div>
           <div className="col-md-2">
             {!upload && selectedFirm.length > 0 && (
               <button className="custBtn" onClick={handleAssign}>
@@ -494,11 +505,34 @@ const AssignArbitrator = () => {
       {!showData && unassignedLots.length > 0 && (
         <div className="row table-container mt-3">
           <div className="col-md-12 mx-auto table-wrapper">
+            {/* Search Input */}
+            <div className="mb-3 d-flex justify-content-start">
+              <input
+                type="text"
+                placeholder="Search Lots..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1); // reset to first page on search
+                }}
+                className="form-control"
+                style={{ maxWidth: "300px" }}
+              />
+            </div>
+
+            {/* Table */}
             <table className="responsive-table my-3">
               <thead className="text-center">
                 <tr className="table-info">
                   <th scope="col" className="text-center">
                     Sr No
+                  </th>
+
+                  <th scope="col" className="text-center">
+                    Uploaded Date
+                  </th>
+                  <th scope="col" className="text-center">
+                    Days
                   </th>
                   <th scope="col" className="text-center">
                     Lots
@@ -508,25 +542,69 @@ const AssignArbitrator = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="">
-                {unassignedLots.map((item, index) => (
-                  <tr key={item.id}>
-                    <td className="text-center">{index + 1}</td>
-                    <td className="text-center">{item.Lots}</td>
-                    <td className="text-center">
-                      <button
-                        onClick={() => handleGetUnassignedLots(item)}
-                        variant="primary"
-                        // disabled={isPending}
-                        className="custBtn"
-                      >
-                        Show
-                      </button>
+              <tbody>
+                {currentRows.length > 0 ? (
+                  currentRows.map((item, index) => (
+                    <tr key={item.id}>
+                      <td className="text-center">
+                        {indexOfFirstRow + index + 1}
+                      </td>
+                      <td className="text-center">
+                        {item.Uploaded_date
+                          ? new Date(item.Uploaded_date).toLocaleDateString(
+                              "en-GB",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )
+                          : ""}
+                      </td>
+                      <td className="text-center">{item.days}</td>
+                      <td className="text-center">{item.Lots}</td>
+                      <td className="text-center">
+                        <button
+                          onClick={() => handleGetUnassignedLots(item)}
+                          className="custBtn"
+                        >
+                          Show
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="text-center text-muted">
+                      No results found
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
+
+            {/* Pagination */}
+            <div className="d-flex justify-content-center">
+              <nav>
+                <ul className="pagination">
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <li
+                      key={i + 1}
+                      className={`page-item ${
+                        currentPage === i + 1 ? "active" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link"
+                        onClick={() => handlePageChange(i + 1)}
+                      >
+                        {i + 1}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
           </div>
         </div>
       )}

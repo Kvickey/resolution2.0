@@ -34,18 +34,34 @@ const ArbDashboard = () => {
             link: '/arbdashboard',
         },
         {
+            name: 'Zoom Meetings',
+            icon: <FaHome /> , 
+            link: '/arbdashboard/zoommeetings',
+        },
+        {
             name: 'Acceptance Letter',
             icon: <FaHandshake />,
             submenu: [
                 { name: 'Generate AL', link: '/arbdashboard/acceptletter/generate_al', icon: <RiAiGenerate /> },
                 { name: 'Services', link: '/arbdashboard/acceptletter/services', icon: <RiCustomerService2Line /> },
                 { name: 'Reports', link: '/arbdashboard/acceptletter/reports', icon: <TbReportAnalytics /> },
+                { name: 'Scheduled Mettings', link: '/arbdashboard/acceptletter/list', icon: <TbReportAnalytics /> },
             ]
         },
+        // {
+        //     name: 'Section 17 Order',
+        //     icon: <GiThorHammer />,
+        //     link: '/arbdashboard/section17order',
+        // },
         {
             name: 'Section 17 Order',
-            icon: <GiThorHammer />,
-            link: '/arbdashboard/section17order',
+            icon: <FaHandshake />,
+            submenu: [
+                { name: 'Generate Sec 17 Order', link: '/arbdashboard/section17order/generatesection17order', icon: <RiAiGenerate /> },
+                { name: 'Services', link: '/arbdashboard/section17order/services', icon: <RiCustomerService2Line /> },
+                { name: 'Reports', link: '/arbdashboard/section17order/reports', icon: <TbReportAnalytics /> },
+                { name: 'Section 17 Orders', link: '/arbdashboard/section17order/list', icon: <TbReportAnalytics /> },
+            ]
         },
         {
             name: 'First Hearing',
@@ -72,28 +88,8 @@ const ArbDashboard = () => {
             icon: <FaVideo />,
             submenu: [
                 { name: 'Third Hearing', link: '/arbdashboard/thirdHearing/third_Hearing', icon: <FaFileVideo /> },
-                { name: 'Forth Hearing Notice', link: '/arbdashboard/thirdHearing/createForthHearingNotice', icon: <IoDocumentTextOutline />  },
-                { name: 'Forth Hearing Services', link: '/arbdashboard/thirdHearing/forthHearingNoticeServices', icon: <TiMessages /> },
-                { name: 'Forth Hearing Reports', link: '/arbdashboard/thirdHearing/forthHearingNoticeReports', icon: <TbReportAnalytics /> },
             ]
-        },
-        {
-            name: 'Forth Hearing',
-            icon: <FaVideo />,
-            submenu: [
-                { name: 'Forth Hearing', link: '/arbdashboard/forthHearing/forth_Hearing', icon: <FaFileVideo /> },
-                { name: 'Fifth Hearing Notice', link: '/arbdashboard/forthHearing/createFifthHearingNotice', icon: <IoDocumentTextOutline />  },
-                { name: 'Fifth Hearing Services', link: '/arbdashboard/forthHearing/fifthHearingNoticeServices', icon: <TiMessages /> },
-                { name: 'Fifth Hearing Reports', link: '/arbdashboard/forthHearing/fifthHearingNoticeReports', icon: <TbReportAnalytics /> },
-            ]
-        },
-        {
-            name: 'Fifth Hearing',
-            icon: <FaVideo />,
-            submenu: [
-                { name: 'Fifth Hearing', link: '/arbdashboard/fifthHearing/fifth_Hearing', icon: <RiAiGenerate /> },
-            ]
-        },
+        }, 
         {
             name: 'Award Pass',
             icon: <GoNote />,

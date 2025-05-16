@@ -6,6 +6,8 @@ import ReusableTable from "../components/ReusableTable";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ClearForm from "../components/Clearform";
 import CustomStepper from "../components/CustomStepper";
+import { Pagination } from "react-bootstrap";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const IntentLetterGenerate = () => {
   const {
@@ -41,6 +43,7 @@ const IntentLetterGenerate = () => {
   const currentItems1 = getData.slice(startIndex1, startIndex1 + itemsPerPage);
   const pageNumbers1 = Array.from({ length: totalPages1 }, (_, i) => i + 1);
   //   for pagination of reusable table ends
+  console.log(totalItems1);
 
   // for pagination of reusabletableFixed
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,6 +51,10 @@ const IntentLetterGenerate = () => {
   const totalPages = Math.ceil(unassignedLots.length / 10);
   const displayedPages = Array.from({ length: totalPages }, (_, i) => i + 1);
   const startIndex = (currentPage - 1) * 10;
+  const currentItems = unassignedLots.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   // for pagination of reusabletableFixed
 
@@ -84,13 +91,16 @@ const IntentLetterGenerate = () => {
           UPLODED_DATE,
           Cust_name,
           Lot_no,
+          Reference_no,
+          Acc_no,
           ...rest
         } = item;
         return {
-          SrNo: index + 1,
+          // SrNo: index + 1,
           Lot_no,
+          Acc_no,
+          Reference_no,
           Cust_name,
-          ...rest,
         };
       });
 
@@ -104,26 +114,6 @@ const IntentLetterGenerate = () => {
 
   //   console.log(getData);
 
-  //   for the getting data of selected lot to create refernce Draft starts
-
-  // const handleRowAction = async (item) => {
-  //   console.log(item);
-  // setSelectedLotNo(item.Lot_no);
-  // setSelectedClientID(item.Client_id);
-  // setSelectedProductID(item.Product_id);
-  // setSelectedArbitratorID(item.Arb_id);
-  //   const url = `${API_BASE_URL}/api/unassignLots?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`;
-  //   setLoading(true);
-  //   try {
-  //     await fetchData(url);
-  //     handleStepChange(1);
-  //   } catch (error) {
-  //     setError(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const handleRowAction = async (item) => {
     setSelectedLotNo(item.Lot_no);
     setSelectedClientID(item.Client_id);
@@ -131,13 +121,14 @@ const IntentLetterGenerate = () => {
     setSelectedArbitratorID(item.Arb_id);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/unassignLots?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`
+        `${API_BASE_URL}/api/pendingIntent?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const result = await response.json();
-      console.log(result);
+      // console.log(result);
+      handleStepChange(2);
       const parsedIntentData = Array.isArray(result)
         ? result
         : JSON.parse(result); // Ensure parsedArbitrators is an array
@@ -253,8 +244,9 @@ const IntentLetterGenerate = () => {
   // For the customStepper starts Here
   const steps = [
     "Select Lot",
-    "Generate Appointment Letter",
-    "Upload Appointment Letter",
+    "View INtent Letter",
+    "Generate Intent Letter",
+    "Upload Intent Letter",
   ];
 
   // Function to move to a specific step in Stepper Component
@@ -303,20 +295,77 @@ const IntentLetterGenerate = () => {
       </div>
 
       {!showTable && (
-        <div className="row">
-          <div className="col-md-12 mt-4">
-            <ReusableTableFixed
-              columns={columnsWithoutArbName}
-              data={unassignedLots.slice(startIndex, startIndex + 10)}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              displayedPages={displayedPages}
-              handlePrevious={handlePrevious}
-              handleNext={handleNext}
-              setCurrentPage={setCurrentPage}
-              handleRowAction={handleRowAction}
-              startIndex={startIndex}
-            />
+        <div className="row table-container py-5">
+          <div className="col-md-12 mx-auto table-wrapper">
+            <table className="responsive-table">
+              <thead className="text-center">
+                <tr className="table-info">
+                  <th className="text-center">Sr No</th>
+                  <th className="text-center">Uploaded Date</th>
+                  <th className="text-center">Pending From Days</th>
+                  <th className="text-center">Lot No</th>
+                  <th className="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems.map((item, index) => (
+                  <tr key={item.id}>
+                    <td className="text-center">{startIndex + index + 1}</td>
+                    <td className="text-center">
+                      {item.Uploaded_date
+                        ? new Date(item.Uploaded_date).toLocaleDateString(
+                            "en-GB",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )
+                        : ""}
+                    </td>
+                    <td className="text-center">{item.days}</td>
+                    <td className="text-center">{item.Lots}</td>
+                    <td className="text-center">
+                      <button
+                        onClick={() => handleRowAction(item)}
+                        className="custBtn"
+                      >
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <Pagination className="justify-content-center mt-3">
+                <Pagination.Prev
+                  onClick={handlePrevious}
+                  disabled={currentPage === 1}
+                >
+                  <FaChevronLeft />
+                </Pagination.Prev>
+
+                {displayedPages.map((number) => (
+                  <Pagination.Item
+                    key={number}
+                    active={number === currentPage}
+                    onClick={() => setCurrentPage(number)}
+                  >
+                    {number}
+                  </Pagination.Item>
+                ))}
+
+                <Pagination.Next
+                  onClick={handleNext}
+                  disabled={currentPage === totalPages}
+                >
+                  <FaChevronRight />
+                </Pagination.Next>
+              </Pagination>
+            )}
           </div>
         </div>
       )}

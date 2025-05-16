@@ -77,6 +77,8 @@ const FifthHearingNotice = () => {
   const startIndex = (currentPage - 1) * 10;
   // for pagination of reusabletableFixed
 
+  
+
   useEffect(() => {
     const fetchAcceptanceNotCreatedLots = async () => {
       try {

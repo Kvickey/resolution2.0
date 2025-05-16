@@ -19,7 +19,7 @@ const Sidebar = ({
 
   useEffect(() => {
     const currentPath = location.pathname;
-    console.log(currentPath)
+    // console.log(currentPath)
       menuItems.forEach((item) => {
       if (item.link === currentPath) {
         setActiveItem(item.name);

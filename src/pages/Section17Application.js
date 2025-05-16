@@ -104,12 +104,12 @@ const SOC = () => {
     setSelectedClientID(item.Client_id);
     setSelectedProductID(item.Product_id);
     setSelectedArbitratorID(item.Arb_id);
-    const url = `${API_BASE_URL}/api/Sec17appletter?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`;
+    // const url = `${API_BASE_URL}/api/Sec17appletter?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`;
     setLoading(true);
     handleStepChange(1);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/Sec17appletter?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`
+        `${API_BASE_URL}/api/Sec17appData?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}&Arb_id=${item.Arb_id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -120,12 +120,13 @@ const SOC = () => {
         : JSON.parse(result); // Ensure parsedArbitrators is an array
       setSec17AppNotCreatedData(parsedNotSec17Lots);
       setLoading(false);
+      setShowData(true);
     } catch (error) {
       // setError1(error.message);
     }
   };
 
-  // console.log(SOCNotCreatedData);
+  console.log(sec17AppNotCreatedData);
   //   for the getting data of selected lot to create refernce Draft ends
 
   //   for pagination of reusable table starts
@@ -164,8 +165,8 @@ const SOC = () => {
 
   // TO Save the SOC Records  with Date starts
   const handleSaveSec17app = async () => {
-    console.log(SOCNotCreatedData);
-    const dataToGenerateSOC = SOCNotCreatedData.map((item) => ({
+    console.log(sec17AppNotCreatedData);
+    const dataToGenerateSOC = sec17AppNotCreatedData.map((item) => ({
       Case_id: item.Case_id,
       Sec_17_app_date: theDate,
     }));
@@ -274,7 +275,7 @@ const SOC = () => {
 
       <div className="row">
         <div className="col-md-6">
-          {!SOCNotCreatedData.length > 0 && <h5> Select Lot </h5>}
+          {!SOCNotCreatedData.length > 0 && !showData && <h5> Select Lot </h5>}
         </div>
         <div className="col-md-4"></div>
         <div className="col-md-2"></div>

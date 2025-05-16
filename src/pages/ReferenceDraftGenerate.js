@@ -47,6 +47,12 @@ const ReferenceDraftGenerate = () => {
   const displayedPages = Array.from({ length: totalPages }, (_, i) => i + 1); // Example pagination logic
   const startIndex = (currentPage - 1) * 10;
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const rowsPerPage = 10;
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   // for pagination of reusabletableFixed
 
   useEffect(() => {
@@ -71,6 +77,18 @@ const ReferenceDraftGenerate = () => {
 
   console.log(refNotCreatedLots);
 
+  const searchFields = ["Arb_name", "Lots"];
+
+  const filteredLots = refNotCreatedLots.filter((item) =>
+    searchFields.some((key) =>
+      item[key]?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = filteredLots.slice(indexOfFirstRow, indexOfLastRow);
+
   useEffect(() => {
     if (draftNotCreatedData.length > 0) {
       const updatedData = draftNotCreatedData.map((item, index) => {
@@ -83,7 +101,7 @@ const ReferenceDraftGenerate = () => {
           ...rest
         } = item;
         return {
-          SrNo: index + 1,
+          // SrNo: index + 1,
           ...rest,
         };
       });
@@ -128,10 +146,12 @@ const ReferenceDraftGenerate = () => {
       const response = await fetch(
         `${API_BASE_URL}/api/Refletter?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
       );
+      console.log(response);
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
+        console.log(error);
       }
-
       // Convert the response to a Blob
       const pdfBlob = await response.blob();
       console.log(pdfBlob);
@@ -195,34 +215,6 @@ const ReferenceDraftGenerate = () => {
       setLoading(false);
     }
   };
-
-  // const handleUploadDraft = async () => {
-  //   setLoading(true);
-
-  //   try {
-  //     const response = await fetch(
-  //       `${API_BASE_URL}/api/SaveRefCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
-  //     );
-
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(
-  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-  //       );
-  //     }
-
-  //     const result = await response.json(); // Process the response
-  //     //   console.log(result);
-  //     setClearForm(true);
-
-  //       handleStepChange(3);
-  //     //   handleStepChange(4);
-  //   } catch (error) {
-  //     console.error("Error uploading data:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   //   function to upload the reference Drafts ends Here
 
   // Loading Spinner Compenent
@@ -241,18 +233,11 @@ const ReferenceDraftGenerate = () => {
     }
   };
 
-  // const columns = [
-  //   { header: "Sr No" },
-  //   { header: "Lots" },
-  //   { header: "Arbitrator" },
-  //   { header: "Actions" },
-  // ];
-
   const columnsWithArbName = [
     { header: "Sr No", key: "Sr No" },
-    { header: "Lots" , key: "Lots"},
+    { header: "Lots", key: "Lots" },
     { header: "Arbitrator", key: "Arb_name" },
-    { header: "Actions" , key: "action"},
+    { header: "Actions", key: "action" },
   ];
   // for pagination of reusabletableFixed ends
 
@@ -304,20 +289,125 @@ const ReferenceDraftGenerate = () => {
       </div>
 
       {!showTable && (
-        <div className="row">
-          <div className="col-md-12 mt-4">
-            <ReusableTableFixed
-              columns={columnsWithArbName}
-              data={refNotCreatedLots.slice(startIndex, startIndex + 10)}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              displayedPages={displayedPages}
-              handlePrevious={handlePrevious}
-              handleNext={handleNext}
-              setCurrentPage={setCurrentPage}
-              handleRowAction={handleRowAction}
-              startIndex={startIndex}
-            />
+        // <div className="row">
+        //   <div className="col-md-12 mt-4">
+        //     <ReusableTableFixed
+        //       columns={columnsWithArbName}
+        //       data={refNotCreatedLots.slice(startIndex, startIndex + 10)}
+        //       currentPage={currentPage}
+        //       totalPages={totalPages}
+        //       displayedPages={displayedPages}
+        //       handlePrevious={handlePrevious}
+        //       handleNext={handleNext}
+        //       setCurrentPage={setCurrentPage}
+        //       handleRowAction={handleRowAction}
+        //       startIndex={startIndex}
+        //     />
+        //   </div>
+        // </div>
+        <div className="row table-container mt-3">
+          <div className="col-md-12 mx-auto table-wrapper">
+            {/* Search Input */}
+            <div className="mb-3 d-flex justify-content-start">
+              <input
+                type="text"
+                placeholder="Search Lots..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1); // reset to first page on search
+                }}
+                className="form-control"
+                style={{ maxWidth: "300px" }}
+              />
+            </div>
+
+            {/* Table */}
+            <table className="responsive-table my-3">
+              <thead className="text-center">
+                <tr className="table-info">
+                  <th scope="col" className="text-center">
+                    Sr No
+                  </th>
+
+                  <th scope="col" className="text-center">
+                    Assigned Date
+                  </th>
+
+                  <th scope="col" className="text-center">
+                    Lots
+                  </th>
+                  <th scope="col" className="text-center">
+                    Arbitrator Name
+                  </th>
+                  <th scope="col" className="text-center">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentRows.length > 0 ? (
+                  currentRows.map((item, index) => (
+                    <tr key={item.id}>
+                      <td className="text-center">
+                        {indexOfFirstRow + index + 1}
+                      </td>
+                      <td className="text-center">
+                        {item.Assign_date
+                          ? new Date(item.Assign_date).toLocaleDateString(
+                              "en-GB",
+                              {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              }
+                            )
+                          : ""}
+                      </td>
+                      <td className="text-center">{item.Lots}</td>
+                      <td className="text-center">{item.Arb_name}</td>
+                      <td className="text-center">
+                        <button
+                          onClick={() => handleRowAction(item)}
+                          className="custBtn"
+                        >
+                          Show
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="text-center text-muted">
+                      No results found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+
+            {/* Pagination */}
+            <div className="d-flex justify-content-center">
+              <nav>
+                <ul className="pagination">
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <li
+                      key={i + 1}
+                      className={`page-item ${
+                        currentPage === i + 1 ? "active" : ""
+                      }`}
+                    >
+                      <button
+                        className="page-link"
+                        onClick={() => handlePageChange(i + 1)}
+                      >
+                        {i + 1}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
           </div>
         </div>
       )}

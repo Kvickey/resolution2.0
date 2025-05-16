@@ -1,35 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "react-bootstrap/Pagination";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaSearch } from "react-icons/fa";
 import "./ReusableTable.css";
-import { FaSearch } from "react-icons/fa";
 
 const ReusableTable = ({
-  data = [],
+  data,
   currentPage,
   pageNumbers,
   setCurrentPage,
 }) => {
-  // Use the keys of the first object in data as headers if data is an array of objects
   const [searchText, setSearchText] = useState("");
   const [tableData, setTableData] = useState(data);
-  let [headers, setHeaders] = useState([]);
-  let [newheaders, setNewHeader] = useState([]);
+  const [headers, setHeaders] = useState([]);
+  const [newheaders, setNewHeader] = useState([]);
 
-  // Used to make Some Columns in the start 
-
-  useEffect(() => {
-    let tempheaders =
-      data.length > 0 && typeof data[0] === "object"
-        ? ["Sr", ...Object.keys(data[0])]
-        : [];
-    let tempnewheaders = tempheaders.map((header) => newKeys[header] || header);
-    setHeaders(tempheaders);
-    setNewHeader(tempnewheaders);
-  }, [data]);
-  let SerialNumber = 1;
-  // Rename Keys to show in the table Headers 
-
+  // Header key mapping
   const newKeys = {
     Case_id: "Case Id",
     Lot_no: "Lot No",
@@ -73,52 +58,55 @@ const ReusableTable = ({
     Stage_id: "Stage Id",
     Remark: "Remark",
     Termination_date: "Termination Date",
-    No_of_cases:"No Of Cases",
+    No_of_cases: "No Of Cases",
   };
 
-  // Filtering Logic Search box
-
   useEffect(() => {
-    let backupData = data;
+    let tempheaders =
+      data.length > 0 && typeof data[0] === "object"
+        ? ["Sr No", ...Object.keys(data[0])]
+        : [];
+    let tempnewheaders = tempheaders.map((header) => newKeys[header] || header);
+    setHeaders(tempheaders);
+    setNewHeader(tempnewheaders);
+    setTableData(data); // reset tableData when new data is passed
+  }, [data]);
+
+  // Search filtering logic
+  useEffect(() => {
+    let backupData = [...data];
     if (searchText !== "") {
-      let filterHeaders = ["Cust_name", "Cust_id"];
-      const filterFunction = (columnName) => {
-        const filteredData = backupData.filter((row) =>
-         row[columnName] && row[columnName]
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, "")
-            .includes(searchText)
-        );
-        return filteredData;
-      };
+      const filterHeaders = ["Cust_name", "Cust_id"];
       let filteredData = [];
       filterHeaders.forEach((header) => {
-        const filterArray = filterFunction(header);
-        filteredData = [...filteredData, ...filterArray];
+        const matches = backupData.filter(
+          (row) =>
+            row[header] &&
+            row[header].toLowerCase().trim().replace(/\s+/g, "").includes(searchText)
+        );
+        filteredData = [...filteredData, ...matches];
       });
-      backupData = filteredData;
+
+      // Remove duplicates
+      const uniqueData = Array.from(new Set(filteredData.map(item => JSON.stringify(item)))).map(item => JSON.parse(item));
+      setTableData(uniqueData);
+    } else {
+      setTableData(data);
     }
-    setTableData(backupData);
-  }, [searchText]);
+  }, [searchText, data]);
 
-  // Pagination logic to show only 5 buttons at a time
-
+  // Pagination logic
   const totalPages = pageNumbers.length;
   const maxPagesToShow = 5;
 
   const startPage = Math.max(
     1,
-    Math.min(
-      currentPage - Math.floor(maxPagesToShow / 2),
-      totalPages - maxPagesToShow + 1
-    )
+    Math.min(currentPage - Math.floor(maxPagesToShow / 2), totalPages - maxPagesToShow + 1)
   );
   const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
 
   const displayedPages = pageNumbers.slice(startPage - 1, endPage);
 
-  // Handlers for arrow clicks
   const handlePrevious = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -130,21 +118,23 @@ const ReusableTable = ({
       setCurrentPage(currentPage + 1);
     }
   };
+
+  // Serial number starting index
+  const SerialNumberStart = (currentPage - 1) * 10 + 1;
+
   return (
     <>
       <div className="table-container mt-3 pt-0">
         <div className="row justify-content-end w-100 mt-2">
-          <div className="col-12 col-md-6 col-lg-4 ">
+          <div className="col-12 col-md-6 col-lg-4 mt-2">
             <div className="row border border-secondary-subtle rounded-pill onFocusBorder">
-              <div className="col-11 ">
+              <div className="col-11">
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="form-control py-2  focus-ring focus-ring-light border-0"
+                  className="form-control py-2 focus-ring focus-ring-light border-0"
                   onChange={(e) =>
-                    setSearchText(
-                      e.target.value.toLowerCase().trim().replace(/\s+/g, "")
-                    )
+                    setSearchText(e.target.value.toLowerCase().trim().replace(/\s+/g, ""))
                   }
                   value={searchText}
                 />
@@ -159,6 +149,7 @@ const ReusableTable = ({
             </div>
           </div>
         </div>
+
         <div className="table-wrapper">
           <table className="responsive-table my-3">
             <thead>
@@ -184,8 +175,7 @@ const ReusableTable = ({
                           key={cellIndex}
                           style={{
                             textAlign:
-                              header === "CUST_NAME" ||
-                              header === "assignedArbitrator"
+                              header === "CUST_NAME" || header === "assignedArbitrator"
                                 ? "left"
                                 : "center",
                             whiteSpace: "nowrap",
@@ -193,8 +183,8 @@ const ReusableTable = ({
                             padding: "5px 20px",
                           }}
                         >
-                          {header === "Sr"
-                            ? SerialNumber++
+                          {header === "Sr No"
+                            ? SerialNumberStart + rowIndex
                             : row[header]
                             ? row[header]
                             : "Not provided"}
@@ -206,7 +196,6 @@ const ReusableTable = ({
           </table>
         </div>
 
-        {/* Pagination */}
         {pageNumbers.length > 1 && (
           <Pagination className="justify-content-center">
             <Pagination.Prev

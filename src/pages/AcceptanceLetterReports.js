@@ -175,7 +175,14 @@ const ReferenceDraftReports = () => {
             </div>
 
             {/* To enter the Lot No */}
-            ?Arb_id=${arbId}
+            <div className="col-md-3">
+              <Form.Control
+                type="number"
+                className="custom_input"
+                placeholder="Enter Lot No"
+                onChange={handleLotNoChange}
+              />
+            </div>
 
             {/* For Button */}
             <div className="col-md-3">

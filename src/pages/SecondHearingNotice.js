@@ -12,7 +12,7 @@ import { toast, ToastContainer } from "react-toastify";
 import CustomStepper from "../components/CustomStepper";
 import { useAuth } from "../components/AuthProvider";
 
-const AcceptanceLetter = () => {
+const SecondHearingNotice = () => {
   const { user, logout } = useAuth();
   const [acceptanceNotCreatedLots, setAcceptanceNotCreatedLots] = useState([]);
   const [dataForSecondHearing, setDataForSecondHearing] = useState([]);
@@ -45,6 +45,7 @@ const AcceptanceLetter = () => {
   // for time setting starts
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [secondHearingDate, setSecondHearingDate] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [timeDifference, setTimeDifference] = useState(null);
@@ -64,6 +65,12 @@ const AcceptanceLetter = () => {
   const startIndex1 = (currentPage1 - 1) * itemsPerPage;
   const currentItems1 = getData.slice(startIndex1, startIndex1 + itemsPerPage);
   const pageNumbers1 = Array.from({ length: totalPages1 }, (_, i) => i + 1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const rowsPerPage = 10;
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   //   for pagination of reusable table ends
 
   //   for pagination of reusable distributed items table starts
@@ -92,36 +99,6 @@ const AcceptanceLetter = () => {
 
   console.log(arbId);
 
-  // To get the access token start here
-  useEffect(() => {
-    const fetchAccessToken = async () => {
-      if (!arbId) return;
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/ZoomAccess?Arb_id=${arbId}`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        const parsedAccessTokenArray = Array.isArray(result)
-          ? result
-          : JSON.parse(result); // Ensure parsedArbitrators is an array
-        setAccessTokenArray(parsedAccessTokenArray);
-        setAccessToken(parsedAccessTokenArray.access_token);
-        setRefreshToken(parsedAccessTokenArray.refresh_token);
-      } catch (error) {
-        // setError1(error.message);
-      }
-    };
-
-    fetchAccessToken();
-  }, [arbId]);
-
-  // console.log(accessTokenArray);
-  console.log(accessToken);
-  // To get the access token start here
-
   useEffect(() => {
     const fetchLotsForSecondHearing = async () => {
       try {
@@ -144,7 +121,20 @@ const AcceptanceLetter = () => {
     fetchLotsForSecondHearing();
   }, [arbId]);
 
-  // console.log(acceptanceNotCreatedLots);
+  console.log(acceptanceNotCreatedLots);
+  const searchFields = ["Lot_no"]; // match actual key names
+
+  const filteredLots = acceptanceNotCreatedLots.filter((item) =>
+    searchFields.some((key) =>
+      item[key]?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
+  console.log(filteredLots);
+
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = filteredLots.slice(indexOfFirstRow, indexOfLastRow);
 
   useEffect(() => {
     if (dataForSecondHearing.length > 0) {
@@ -186,6 +176,8 @@ const AcceptanceLetter = () => {
   const handleRowAction = async (item) => {
     console.log(item);
     setLoading(true);
+    setSelectedLotNo(item.Lot_no);
+    setSecondHearingDate(item.Second_Hearing_date);
     handleStepChange(1);
     try {
       const response = await fetch(
@@ -200,7 +192,10 @@ const AcceptanceLetter = () => {
       const parsedNotServedLots = Array.isArray(result)
         ? result
         : JSON.parse(result); // Ensure parsedArbitrators is an array
+      setShowData(true);
       setDataForSecondHearing(parsedNotServedLots);
+      setSelectedClientID(parsedNotServedLots[0].Client_id);
+      setSelectedProductID(parsedNotServedLots[0].Product_id);
     } catch (error) {
       // setError1(error.message);
     }
@@ -215,6 +210,11 @@ const AcceptanceLetter = () => {
   };
 
   console.log(dataForSecondHearing);
+  console.log(selectedLotNo);
+  console.log(selectedClientID);
+  console.log(selectedProductID);
+  console.log(arbId);
+
   //   for the getting data of selected lot to create refernce Draft ends
 
   const handleDateChange = (date) => {
@@ -521,55 +521,7 @@ const AcceptanceLetter = () => {
 
   console.log(distRecords);
 
-  // TO Save the Records starts
-  const handleSave = async () => {
-    // console.log(distRecords);
-    const dataToGenerateAL = distRecords.map((item) => ({
-      Case_id: item.Case_id,
-      Hearing_date: item.Hearing_date,
-      Hearing_time_from: item.Hearing_time_From,
-      Hearing_time_to: item.Hearing_time_To,
-      Video_link: item.Video_link,
-      Link_id: item.Link_ID,
-      Password: item.Password,
-      No_of_cases: "1810",
-      Rate: "1000",
-    }));
-    // console.log(dataToGenerateAL);
-    handleStepChange(3);
-    try {
-      setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/acc`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToGenerateAL),
-        // body: JSON.stringify({ case: dataToGenerateAL }),
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-        );
-      }
-      const result = await response.json(); // Process the response
-      // console.log("Upload response:", result);
-      toast.success("Data Uploaded Successfully", {
-        // position: toast.POSITION.BOTTOM_RIGHT,
-        theme: "colored",
-        autoClose: 1000,
-      });
-      setSave(true);
-      // console.log(save);
-    } catch (error) {
-      console.error("Error uploading data:", error);
-      // alert(`Error uploading data: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-  // TO Save the Records ends
+
 
   // for the generation of dearft function starts
   const handleGenerateAcceptance = async () => {
@@ -577,7 +529,7 @@ const AcceptanceLetter = () => {
     try {
       // Fetch the PDF file from the API
       const response = await fetch(
-        `${API_BASE_URL}/api/Accletter?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
+        `${API_BASE_URL}/api/SecondHearingletter?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${arbId}&Meeting_no=1&SH_date=${secondHearingDate}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -608,7 +560,8 @@ const AcceptanceLetter = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/SaveAccCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
+        `${API_BASE_URL}/api/SaveSHLetterCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${arbId}&Meeting_no=1&SH_date=${secondHearingDate}`
+        // `${API_BASE_URL}/api/SaveAccCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${arbId}`
       );
 
       if (!response.ok) {
@@ -682,9 +635,9 @@ const AcceptanceLetter = () => {
         <div className="col-md-5">
           {/* {!showTable && !showData && (<h5>Generate Acceptance Letter</h5>)} */}
           {showTable && !showData && !showPDF && !clearForm && (
-            <h5>Generate Acceptance Letter</h5>
+            <h5>Generate Second Hearing Notice</h5>
           )}
-          {showPDF && !clearForm && <h5>Upload Acceptance Letter</h5>}
+          {showPDF && !clearForm && <h5>Upload Second Hearing Notice</h5>}
           {zoomMeet && !showDistributed && (
             <div className="">
               {/* <label>Enter Rate</label> */}
@@ -715,20 +668,17 @@ const AcceptanceLetter = () => {
         </div>
 
         <div className="col-md-2">
-          {save && !showPDF && (
+          {/* {save && !showPDF && (
             // {showTable && !showData && !showPDF && !clearForm && (
-            <button className="custBtn" onClick={handleGenerateAcceptance}>
-              Generate
-            </button>
-          )}
+           
+          )} */}
           {showPDF && !clearForm && (
             <button className="custBtn" onClick={handleUploadAcceptance}>
               Upload
             </button>
           )}
-          {distRecords.length > 0 && !save && (
+          {/* {distRecords.length > 0 && !save && (
             <>
-              {/* <div className="col-md-3"></div> */}
 
               <div className="col-md-3">
                 <button className="custBtn" onClick={handleSave}>
@@ -736,140 +686,133 @@ const AcceptanceLetter = () => {
                 </button>
               </div>
             </>
-          )}
+          )} */}
         </div>
       </div>
 
       {!showTable && (
         <div className="row">
           <div className="col-md-12 mt-4">
-            <ReusableTableFixed
-              columns={columns}
-              data={acceptanceNotCreatedLots.slice(startIndex, startIndex + 10)}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              displayedPages={displayedPages}
-              handlePrevious={handlePrevious}
-              handleNext={handleNext}
-              setCurrentPage={setCurrentPage}
-              handleRowAction={handleRowAction}
-              startIndex={startIndex}
-            />
+           
+            <div className="row table-container mt-3">
+              <div className="col-md-12 mx-auto table-wrapper">
+                {/* Search Input */}
+                <div className="mb-3 d-flex justify-content-start">
+                  <input
+                    type="text"
+                    placeholder="Search Lots..."
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setCurrentPage(1); // reset to first page on search
+                    }}
+                    className="form-control"
+                    style={{ maxWidth: "300px" }}
+                  />
+                </div>
+
+                {/* Table */}
+                <table className="responsive-table my-3">
+                  <thead className="text-center">
+                    <tr className="table-info">
+                      <th scope="col" className="text-center">
+                        Sr No
+                      </th>
+
+                      <th scope="col" className="text-center">
+                        First Hearing Date
+                      </th>
+
+                      <th scope="col" className="text-center">
+                        Lot No
+                      </th>
+                      {/* <th scope="col" className="text-center">
+                        Arbitrator Name
+                      </th> */}
+                      <th scope="col" className="text-center">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentRows.length > 0 ? (
+                      currentRows.map((item, index) => (
+                        <tr key={item.id}>
+                          <td className="text-center">
+                            {indexOfFirstRow + index + 1}
+                          </td>
+                          <td className="text-center">
+                            {item.First_hearing_date}
+                            {/* {item.First_hearing_date
+                              ? new Date(item.Assign_date).toLocaleDateString(
+                                  "en-GB",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                )
+                              : ""} */}
+                          </td>
+                          <td className="text-center">{item.Lot_no}</td>
+                          {/* <td className="text-center">{item.Arb_name}</td> */}
+                          <td className="text-center">
+                            <button
+                              onClick={() => handleRowAction(item)}
+                              className="custBtn"
+                            >
+                              Show
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="3" className="text-center text-muted">
+                          No results found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+
+                {/* Pagination */}
+                <div className="d-flex justify-content-center">
+                  <nav>
+                    <ul className="pagination">
+                      {Array.from({ length: totalPages }, (_, i) => (
+                        <li
+                          key={i + 1}
+                          className={`page-item ${
+                            currentPage === i + 1 ? "active" : ""
+                          }`}
+                        >
+                          <button
+                            className="page-link"
+                            onClick={() => handlePageChange(i + 1)}
+                          >
+                            {i + 1}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
       {/* to SAVE The date and time for cirtul meeting starts */}
-      {showData && !showDistributed && !zoomMeet && (
-        <div className="row mt-3">
-          {/* the date picker */}
-          <div className="col-md-3">
-            <DatePicker
-              selected={selectedDate}
-              onChange={handleDateChange}
-              placeholderText="Select a date"
-              dateFormat="MM/dd/yyyy"
-              className="form-control custom_input" // Smaller size
-              id="datePicker"
-              style={{
-                width: "100%",
-                height: "calc(1.5em + .75rem + 2px)",
-                padding: ".375rem .75rem",
-                fontSize: "1rem",
-                borderRadius: ".25rem",
-                border: "1px solid #ced4da",
-                boxSizing: "border-box",
-              }}
-            />
-          </div>
-
-          {/* The Start time Picker */}
-          <div className="col-md-3">
-            <Form.Control
-              as="select"
-              value={startTime}
-              onChange={handleStartTimeChange}
-            >
-              <option value="">Select Start Time</option>
-              {timeOptions.map((time) => (
-                <option key={time} value={time}>
-                  {time}
-                </option>
-              ))}
-            </Form.Control>
-          </div>
-
-          {/* the end time picker */}
-          <div className="col-md-3">
-            <Form.Control
-              as="select"
-              value={endTime}
-              onChange={handleEndTimeChange}
-              disabled={!startTime}
-            >
-              <option value="">Select end time</option>
-              {timeOptions.map((time, index) => (
-                <option key={index} value={time}>
-                  {time}
-                </option>
-              ))}
-            </Form.Control>
-          </div>
-
-          {/* button Goes here */}
-          <div className="col-md-3">
-            <Button className="custBtn" onClick={handleZoomMeet}>
-              Create Zoom Meet
-            </Button>
-          </div>
+      {showData && !showDistributed && !zoomMeet && !showPDF && (
+        <div className="col-md-3">
+          <button className="custBtn" onClick={handleGenerateAcceptance}>
+            Generate
+          </button>
         </div>
       )}
       {/* to SAVE The date and time for Virtul meeting ends */}
-
-      {zoomMeet && !showDistributed && (
-        <>
-          <div className="row my-3">
-            <div className="col-md-8"></div>
-            <div className="col-md-3">
-              <Button className="custBtn" onClick={distributeRecords}>
-                Assign
-              </Button>
-            </div>
-          </div>
-          <div className="row ms-3 mt-2">
-            <div className="col-md-3">
-              <h5>Zoom Join Url</h5>
-            </div>
-            <div className="col-md-8">
-              <span>{joinUrl}</span>
-            </div>
-          </div>
-          <div className="row ms-3">
-            <div className="col-md-3">
-              <h5>Zoom Meeting Id</h5>
-            </div>
-            <div className="col-md-5">
-              <span>{zoomId}</span>
-            </div>
-          </div>
-          <div className="row ms-3">
-            <div className="col-md-3">
-              <h5>Zoom Password</h5>
-            </div>
-            <div className="col-md-5">
-              <span>{password}</span>
-            </div>
-          </div>
-          <div className="row ms-3">
-            <div className="col-md-3">
-              <h5>Zoom Start Time</h5>
-            </div>
-            <div className="col-md-5">
-              <span>{meetStartTime}</span>
-            </div>
-          </div>
-        </>
-      )}
 
       {/* {showTable && !showPDF && !showDistributed && ( */}
       {showTable && !showPDF && !showDistributed && !zoomMeet && (
@@ -881,14 +824,6 @@ const AcceptanceLetter = () => {
         />
       )}
 
-      {distRecords.length > 0 && !showPDF && (
-        <ReusableTable
-          data={currentItems2}
-          currentPage={currentPage2}
-          pageNumbers={pageNumbers2}
-          setCurrentPage={setCurrentPage2}
-        />
-      )}
 
       {showPDF && !clearForm && (
         <div className="row mt-3">
@@ -906,7 +841,7 @@ const AcceptanceLetter = () => {
         <div className="row">
           <div className="col-md-12 d-flex justify-content-center ">
             <ClearForm
-              message="Acceptance Letter Created Successfully!"
+              message="Second Hearing Notice Created Successfully!"
               redirectPath="/arbdashboard"
             />
           </div>
@@ -918,4 +853,4 @@ const AcceptanceLetter = () => {
   );
 };
 
-export default AcceptanceLetter;
+export default SecondHearingNotice;

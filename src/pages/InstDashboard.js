@@ -37,10 +37,26 @@ const InstDashboard = () => {
       icon: <FaHome />, 
       link: "/instdashboard/arbitrator",
     },
+    // {
+    //   name: "Upload A Lot",
+    //   icon: <MdUploadFile />,
+    //   link: "/instdashboard/uploadalot",
+    // },
     {
-      name: "Upload A Lot",
-      icon: <MdUploadFile />,
-      link: "/instdashboard/uploadalot",
+      name: "Lots",
+      icon: <RiDraftLine />,
+      submenu: [
+        {
+          name: "Upload New Lot",
+          link: "/instdashboard/uploadalot/uploadnewlot",
+          icon: <IoCreate />,
+        },
+        {
+          name: "Lot List",
+          link: "/instdashboard/uploadalot/list",
+          icon: <RiCustomerService2Line />,
+        },
+      ],
     },
     {
       name: "Intent Letter",
@@ -59,6 +75,11 @@ const InstDashboard = () => {
         {
           name: "Reports",
           link: "/instdashboard/intentletter/ilreports",
+          icon: <TbReport />,
+        },
+        {
+          name: "Intent Done List",
+          link: "/instdashboard/intentletter/illist",
           icon: <TbReport />,
         },
       ],

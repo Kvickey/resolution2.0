@@ -225,33 +225,7 @@ const SOC = () => {
   };
   // for the generation of dearft function ends
 
-  //   function to upload the reference Drafts Starts Here
-  // const handleUploadSOC = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const response = await fetch(
-  //       `${API_BASE_URL}/api/SaveSOCCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
-  //     );
 
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(
-  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-  //       );
-  //     }
-
-  //     const result = await response.json(); // Process the response
-  //     //   console.log(result);
-  //     setClearForm(true);
-  //     handleStepChange(4);
-  //   } catch (error) {
-  //     console.error("Error uploading data:", error);
-  //     alert(`Error uploading data: ${error.message}`);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  //   function to upload the reference Drafts ends Here
 
   const handleUploadSOC = async () => {
     setLoading(true);

@@ -45,12 +45,9 @@ const ArbitratorList = () => {
     const fetchArbitrators = async () => {
       try {
         const response = await fetch(
-<<<<<<< HEAD
-          `${API_BASE_URL}/api/arbitrator`
-=======
+          // `${API_BASE_URL}/api/arbitrator`
           // "http://arb.resolutionexperts.in/api/arbitrator"
           `${url}/api/arbitrator`
->>>>>>> 5d623531d290eacfd7b92ba137c4f09105880cbc
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");

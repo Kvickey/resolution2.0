@@ -20,7 +20,7 @@ const SecondHearingServices = () => {
   useEffect(() => {
     const fetchNotServedLots = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=2`);
+        const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=5`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
