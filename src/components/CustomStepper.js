@@ -1,33 +1,58 @@
-import React from 'react';
-import { Box, Stepper, Step, StepLabel } from '@mui/material';
-import PropTypes from 'prop-types'; // Optional: for type checking
+import React from "react";
+import { Box, Stepper, Step, StepLabel } from "@mui/material";
+import PropTypes from "prop-types";
 
-export default function CustomStepper({ steps = [], activeStep = 0 ,color = '#1abc9c'}) {
-  // Ensure steps is always an array to avoid errors
+export default function CustomStepper({
+  steps = [],
+  activeStep = 0,
+  color = "#1abc9c",
+}) {
   if (!Array.isArray(steps)) {
     console.error('The "steps" prop should be an array.');
-    return null; // Render nothing if steps is not an array
+    return null;
   }
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Stepper activeStep={activeStep} alternativeLabel>
+    <Box sx={{ width: "100%" }}>
+      <Stepper
+        activeStep={activeStep}
+        alternativeLabel
+        sx={{
+          "& .MuiStep-root": {
+            px: 1,
+          },
+          "& .MuiStepLabel-root": {
+            flexDirection: "column",
+            alignItems: "center",
+          },
+          "& .MuiStepConnector-root": {
+            top: "9px", // aligns line with icon center
+          },
+          "& .MuiStepLabel-label.MuiStepLabel-alternativeLabel": {
+            marginTop: "5px !important", // <== override the default 16px
+          },
+        }}
+      >
         {steps.map((label, index) => (
           <Step key={index}>
             <StepLabel
               sx={{
-                // '& .MuiStepIcon-root.Mui-completed': {
-                //   color: '#1abc9c', // Set green color for completed step icon
-                // },
-                // '& .MuiStepIcon-root.Mui-active': {
-                //   color: '#1abc9c', // Set green color for active step icon
-                // },
-                // '& .MuiStepLabel-label': {
-                //   fontWeight: 'bold', // Make label bold
-                //   color: activeStep === index || index < activeStep ? '#1abc9c' : undefined, // Set green color for the active/completed label
-                // },
-                '& .MuiStepIcon-root.Mui-completed': {
-                  color: color, // Keep the completed step icon in the color
+                "& .MuiStepIcon-root": {
+                  fontSize: "1.1rem", // smaller icon
+                },
+                "& .MuiStepIcon-root.Mui-completed": {
+                  color: color,
+                },
+                "& .MuiStepIcon-root.Mui-active": {
+                  color: color,
+                },
+                "& .MuiStepLabel-labelContainer": {
+                  marginTop: "0px", // reduce space between icon and label
+                },
+                "& .MuiStepLabel-label": {
+                  fontSize: "0.6rem",
+                  // lineHeight: 1,
+                  // marginTop: '1px', // fine-tune label spacing
                 },
               }}
             >
@@ -36,21 +61,12 @@ export default function CustomStepper({ steps = [], activeStep = 0 ,color = '#1a
           </Step>
         ))}
       </Stepper>
-      {/* Uncomment if you want to display the current step message
-      <Box sx={{ mt: 2, mb: 1 }}>
-        <Typography>
-          {activeStep === steps.length
-            ? 'All steps completed - you\'re finished'
-            : `Current Step: ${steps[activeStep]}`}
-        </Typography>
-      </Box>
-      */}
     </Box>
   );
 }
 
-// Optional: PropTypes for better type checking
 CustomStepper.propTypes = {
   steps: PropTypes.arrayOf(PropTypes.string).isRequired,
   activeStep: PropTypes.number,
+  color: PropTypes.string,
 };

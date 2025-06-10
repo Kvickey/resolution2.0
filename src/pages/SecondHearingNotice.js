@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "../utils/constants";
-import ReusableTableFixed from "../components/ReusableTableFixed";
-import useFetch from "../hooks/useFetch";
 import ReusableTable from "../components/ReusableTable";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ClearForm from "../components/Clearform";
-import DatePicker from "react-datepicker";
 import { Button, Form } from "react-bootstrap";
 import { format } from "date-fns";
 import { toast, ToastContainer } from "react-toastify";
@@ -183,7 +180,6 @@ const SecondHearingNotice = () => {
       const response = await fetch(
         `${API_BASE_URL}/api/HearingData?&Arb_id=${arbId}&Meeting_no=1&Lot_no=${item.Lot_no}&SH_date=${item.Second_Hearing_date}`
       );
-      // const response = await fetch(`${API_BASE_URL}/api/pendingAcc?Arb_id=${item.Arb_id}`);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -216,35 +212,8 @@ const SecondHearingNotice = () => {
   console.log(arbId);
 
   //   for the getting data of selected lot to create refernce Draft ends
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    // const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    // const getDate = date.toLocaleDateString('en-GB', options);
-    const getDate = date.toLocaleDateString("en-US");
-    // console.log(getDate); // Outputs in MM/dd/yyyy format
-    return;
-  };
-
-  console.log(rate);
-  console.log(noOfCases);
-
-  // the logic of assigning time slot start here
-  const generateTimeOptions = () => {
-    const times = [];
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minutes = 0; minutes <= 30; minutes += 30) {
-        const hour12 = hour % 12 === 0 ? 12 : hour % 12;
-        const ampm = hour < 12 ? "AM" : "PM";
-        const hourStr = hour12 < 10 ? `0${hour12}` : `${hour12}`;
-        const minutesStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
-        times.push(`${hourStr}:${minutesStr} ${ampm}`);
-      }
-    }
-    return times;
-  };
-
-  const timeOptions = generateTimeOptions();
+  // console.log(rate);
+  // console.log(noOfCases);
 
   const handleStartTimeChange = (e) => {
     setStartTime(e.target.value);

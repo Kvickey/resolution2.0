@@ -266,7 +266,7 @@ const ReferenceDraftGenerate = () => {
         <div className="col-md-6">
           {!showTable ? <h5>Generate Appointment Letter</h5> : ""}
           {showTable && !showPDF && !clearForm && (
-            <h5>Generate Appointment Letter</h5>
+            <h6>Generate Appointment Letter</h6>
           )}
           {showPDF && !clearForm && <h5>Upload Appointment Letter</h5>}
         </div>
@@ -305,10 +305,10 @@ const ReferenceDraftGenerate = () => {
         //     />
         //   </div>
         // </div>
-        <div className="row table-container mt-3">
+        <div className="row table-container mt-1">
           <div className="col-md-12 mx-auto table-wrapper">
             {/* Search Input */}
-            <div className="mb-3 d-flex justify-content-start">
+            <div className="mb-1 d-flex justify-content-end">
               <input
                 type="text"
                 placeholder="Search Lots..."
@@ -317,13 +317,13 @@ const ReferenceDraftGenerate = () => {
                   setSearchTerm(e.target.value);
                   setCurrentPage(1); // reset to first page on search
                 }}
-                className="form-control"
-                style={{ maxWidth: "300px" }}
+                className="form-control p-1"
+                style={{ maxWidth: "300px",fontSize:"10px" }}
               />
             </div>
 
             {/* Table */}
-            <table className="responsive-table my-3">
+            <table className="responsive-table">
               <thead className="text-center">
                 <tr className="table-info">
                   <th scope="col" className="text-center">
@@ -349,10 +349,10 @@ const ReferenceDraftGenerate = () => {
                 {currentRows.length > 0 ? (
                   currentRows.map((item, index) => (
                     <tr key={item.id}>
-                      <td className="text-center">
+                      <td className="text-center p-0">
                         {indexOfFirstRow + index + 1}
                       </td>
-                      <td className="text-center">
+                      <td className="text-center p-0">
                         {item.Assign_date
                           ? new Date(item.Assign_date).toLocaleDateString(
                               "en-GB",
@@ -364,9 +364,9 @@ const ReferenceDraftGenerate = () => {
                             )
                           : ""}
                       </td>
-                      <td className="text-center">{item.Lots}</td>
-                      <td className="text-center">{item.Arb_name}</td>
-                      <td className="text-center">
+                      <td className="text-center p-0">{item.Lots}</td>
+                      <td className="text-center p-0">{item.Arb_name}</td>
+                      <td className="text-center p-1">
                         <button
                           onClick={() => handleRowAction(item)}
                           className="custBtn"

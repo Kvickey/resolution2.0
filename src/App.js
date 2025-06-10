@@ -79,7 +79,8 @@ import Section17ApplicationData from "./pages/Section17ApplicationData";
 import SOCService from "./pages/SOCService";
 import SOCReports from "./pages/SOCReports";
 import SOCData from "./pages/SOCData";
-
+import AwardPassLotwise from "./pages/AwardPassLotwise";
+import AwardPassCasewise from "./pages/AwardPassCasewise";
 
 const App = () => {
   // useEffect(() => {
@@ -257,7 +258,10 @@ const App = () => {
               element={<VirtualMeetingForFifthHearing />}
             />
           </Route> */}
-          <Route path="awardPass" element={<AwardPass />} />
+          <Route path="awardPass">
+            <Route path="lotwise" element={<AwardPassLotwise />} />
+            <Route path="casewise" element={<AwardPassCasewise />} />
+          </Route>
           <Route path="terminate" element={<Terminate />} />
         </Route>
 
@@ -271,8 +275,11 @@ const App = () => {
             <Route path="reports" element={<SOCReports />} />
             <Route path="list" element={<SOCData />} />
           </Route>
-           <Route path="section17application">
-            <Route path="generatesection17application" element={<Section17Application />} />
+          <Route path="section17application">
+            <Route
+              path="generatesection17application"
+              element={<Section17Application />}
+            />
             <Route path="services" element={<Section17ApplicationService />} />
             <Route path="reports" element={<Section17ApplicationReports />} />
             <Route path="list" element={<Section17ApplicationData />} />

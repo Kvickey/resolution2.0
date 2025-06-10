@@ -15,6 +15,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import ThirdHearingModal from "./ThirdHearingModal";
 import { formatDate } from "../utils/FormatDate";
 import VirtualMeetingModalForTH from "./VirtualMeetingModalForTH";
+import { generateTimeOptions } from '../utils/timeUtils';
 
 const VirtualMeetingForSecondHearing = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -70,19 +71,6 @@ const VirtualMeetingForSecondHearing = () => {
   const [currentPage1, setCurrentPage1] = useState(1);
 
   // the logic of assigning time slot start here
-  const generateTimeOptions = () => {
-    const times = [];
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minutes = 0; minutes <= 30; minutes += 30) {
-        const hour12 = hour % 12 === 0 ? 12 : hour % 12;
-        const ampm = hour < 12 ? "AM" : "PM";
-        const hourStr = hour12 < 10 ? `0${hour12}` : `${hour12}`;
-        const minutesStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
-        times.push(`${hourStr}:${minutesStr} ${ampm}`);
-      }
-    }
-    return times;
-  };
 
   const timeOptions = generateTimeOptions();
 
@@ -398,8 +386,8 @@ const VirtualMeetingForSecondHearing = () => {
           custStartTime
         )}&Second_date_time_from=${startTime}&Second_date_time_to=${endTime}&Video_link=${joinUrl}&Link_id=${custZoomId}&Password=${custPassword}&Meeting_No=2`;
 
-        console.log(url);
-        console.log(formData);
+        // console.log(url);
+        // console.log(formData);
 
         // Perform the upload request
         const response = await fetch(url, {
@@ -516,117 +504,7 @@ const VirtualMeetingForSecondHearing = () => {
     setCustPassword(null);
     setCustStartTime(null);
     setJoinUrl(null);
-  };
-
-  // const createZoomMeet = async () => {
-  //   // console.log(selectedDate3);
-  //   // console.log(startTimeBulk);
-  //   const formattedDateTime = formatDateTime(selectedDate3, startTimeBulk);
-  //   // console.log(formattedDateTime);
-  //   const dataToGenerateZoomMeet = {
-  //     accessToken: accessToken,
-  //     refreshToken: refreshToken,
-  //     topic: "Zoom Meeting",
-  //     start_time: formattedDateTime,
-  //     duration: "720",
-  //     timezone: "Asia/Kolkata",
-  //     agenda: "The Resolution Metting for dispute resolving",
-  //     Arb_id: arbId,
-  //   };
-  //   // console.log(dataToGenerateZoomMeet);
-  //   try {
-  //     setLoading(true);
-  //     const response = await fetch(`${API_BASE_URL}/api/Zoom`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(dataToGenerateZoomMeet),
-  //     });
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(
-  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-  //       );
-  //     }
-  //     const result = await response.json(); // Process the response
-  //     // console.log("Upload response:", result);
-  //     const parsedZoomMeet = Array.isArray(result)
-  //       ? result
-  //       : JSON.parse(result);
-  //     console.log(parsedZoomMeet);
-  //     // setJoinUrl(parsedZoomMeet.join_url);
-  //     // setCustZoomId(parsedZoomMeet.id);
-  //     // setCustPassword(parsedZoomMeet.password);
-  //     // setCustStartTime(parsedZoomMeet.start_time);
-  //     toast.success("Data Uploaded Successfully", {
-  //       theme: "colored",
-  //       autoClose: 1000,
-  //     });
-  //     setZoomMeet(true);
-  //     // console.log(save);
-  //   } catch (error) {
-  //     console.error("Error uploading data:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  const distributeRecords = () => {};
-
-  // function for bulk second date assign starts here
-  // const handleBulkSecHearing = async () => {
-  //   // console.log(distRecords);
-  //   const dataForAssign = distRecords.map((item) => ({
-  //     Case_id: item.Case_id,
-  //     Reference_No: item.Reference_No,
-  //     Cust_name: item.Cust_name,
-  //     Second_Hearing_date: formattedDate,
-  //     Hearing_time_From: startTime,
-  //     Hearing_time_To: endTime,
-  //     // Video_link: zoomMeetingLink,
-  //     // Link_ID: zoomId,
-  //     // Password: zoomMeetingPassword,
-  //     No_of_cases: "1810",
-  //     Rate: "1000",
-  //   }));
-  //   console.log(dataForAssign);
-  //   setLoading(true);
-  //   try {
-  //     const response = await fetch(`${API_BASE_URL}/api/AssignSecond_date`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(dataForAssign),
-  //     });
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(
-  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-  //       );
-  //     }
-  //     const result = await response.json();
-  //     console.log("Upload response:", result);
-  //     // setMailDone(true);
-  //     setShowSecondModal(false);
-  //     setTimeout(() => {
-  //       toast.success("Second Hearing Date Assigned Successfully", {
-  //         // position: toast.POSITION.BOTTOM_RIGHT,
-  //         theme: "colored",
-  //       });
-  //       // window.location.reload();
-  //     }, 5);
-  //   } catch (error) {
-  //     console.error("Error uploading data:", error);
-  //     setTimeout(() => {
-  //       toast.error(`Error: ${error.message}`, { theme: "colored" });
-  //     }, 50);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  // function for bulk second date assign Ends here
+  }; 
 
   const handleSelectZoomMeet = () => {
     setShowSelectModal(true);

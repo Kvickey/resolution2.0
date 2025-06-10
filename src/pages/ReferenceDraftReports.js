@@ -290,7 +290,7 @@ const ReferenceDraftReports = () => {
                             : response.mail_send_date === "Not Read"
                         }
                       >
-                        {response.mail_send_date === null ? "Pending" : "Read"}
+                        {response.Mail_read_datetime === null ? "Pending" : "Read"}
                       </td>
                       <td
                         className={

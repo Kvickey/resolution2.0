@@ -110,13 +110,15 @@ color:#fff;
 
 
 .custBtn {
-  background-color: #1abc9c;
+  /* background-color: #1abc9c; */
+  background-color: #172639;
   color: white;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s, box-shadow 0.3s;
+  font-size: 12px;
 }
 
 .custBtn:hover {

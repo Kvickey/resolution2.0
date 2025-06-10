@@ -9,6 +9,8 @@
   box-sizing: border-box;
   border-radius: 10px;
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3) , -0 -6px 8px rgba(0, 0, 0, 0.1);
+  font-size: 13px;
+  margin-top: 10px;
 }
 
 /* Title */
@@ -53,10 +55,9 @@
 
 /* Pagination styles */
 .pagination {
-  margin-top: 20px; /* Add space above the pagination */
   display: flex;
-  justify-content: center; /* Center the pagination */
-  
+  justify-content: center; 
+  font-size: 10px!important;
 }
 
 

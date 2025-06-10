@@ -6,6 +6,7 @@ import ReusableTable from "../components/ReusableTable";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ClearForm from "../components/Clearform";
 import CustomStepper from "../components/CustomStepper";
+import { useAuth } from "../components/AuthProvider";
 
 const Section17OrderData = () => {
   const {
@@ -30,6 +31,8 @@ const Section17OrderData = () => {
   const [save, setSave] = useState(false);
   const [clearForm, setClearForm] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
+  const { user, logout } = useAuth();
+  const [arbId, setArbId] = useState(null);
 
   //   for pagination of reusable table starts
   const [getData, setGetData] = useState([]);
@@ -54,9 +57,18 @@ const Section17OrderData = () => {
   // for pagination of reusabletableFixed
 
   useEffect(() => {
+    // console.log(user);
+    setArbId(user[0].Ref_id);
+  }, [user]);
+
+  console.log(arbId);
+
+  useEffect(() => {
     const fetchUnassignedLots = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}//api/Lots`);
+        const response = await fetch(
+          `${API_BASE_URL}/api/ProcessSec17Order?Arb_id=${arbId}`
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -135,9 +147,6 @@ const Section17OrderData = () => {
   console.log(intentData);
 
   //   for the getting data of selected lot to create refernce Draft ends
-
-
-
 
   // Loading Spinner Compenent
   if (loading) return <LoadingSpinner />;

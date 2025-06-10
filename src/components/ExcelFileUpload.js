@@ -3,16 +3,20 @@ import { Form } from "react-bootstrap";
 import * as XLSX from "xlsx";
 import { headers } from "../utils/headers";
 import { kotakheaders } from "../utils/kotakheaders";
+import { kotakccheaders } from "../utils/kotakccheaders";
 
 const ExcelFileUpload = ({
   onFileChange,
   onErrorFileGenerated,
   onErrorCount,
   bankId,
+  selectedProductID
 }) => {
+
   const [validationErrors, setValidationErrors] = useState([]);
 
   // console.log(bankId);
+  console.log(selectedProductID);
 
   // Function to generate an Excel file from errors
   const generateErrorExcel = (errors) => {
@@ -42,9 +46,13 @@ const ExcelFileUpload = ({
     return blob;
   };
 
+
   // Function to validate data based on header rules
   const validateData = (headers, data) => {
     const errors = [];
+
+    console.log(data);
+    
 
     if (!data || data.length === 0) {
       console.error("No data available for validation.");
@@ -56,13 +64,19 @@ const ExcelFileUpload = ({
     // const savedHeaders = headers.map((header) => header.name); // Extract header names from headers.js
     let savedHeaders;
 
-    console.log(bankId);
+    // console.log(bankId);
+    // console.log(excelHeaders);
+    
 
-    if (bankId === "1") {
+    if (bankId === "1" && selectedProductID === "1" ) {
+      console.log("Axis CV");      
       savedHeaders = headers.map((header) => header.name); // Extract header names from headers.js when bankid is 1
-    } else if (bankId === "2") {
-      console.log("Kotak");
+    } else if (bankId === "2" && selectedProductID === "2") {
+      console.log("Kotak CDR");
       savedHeaders = kotakheaders.map((header) => header.name); // Extract header names from kotakheaders.js when bankid is 2
+    } else if (bankId === "2" && selectedProductID === "3") {
+      console.log("Kotak CC");
+      savedHeaders = kotakccheaders.map((header) => header.name);
     }
 
     console.log(savedHeaders);
@@ -285,6 +299,9 @@ const ExcelFileUpload = ({
       const sheet = workbook.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
+      // console.log(jsonData);
+      
+
       // Validate the data and collect all errors
       const allErrors = validateData(headers, jsonData);
       setValidationErrors(allErrors);
@@ -310,6 +327,7 @@ const ExcelFileUpload = ({
           accept=".xlsx, .xls"
           onChange={handleFileUpload}
           className="custom_input"
+          style={{fontSize:"12px"}}
         />
       </Form.Group>
     </div>

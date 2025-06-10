@@ -11,16 +11,12 @@ import { format } from "date-fns";
 import { toast, ToastContainer } from "react-toastify";
 import CustomStepper from "../components/CustomStepper";
 import { useAuth } from "../components/AuthProvider";
+import { generateTimeOptions } from '../utils/timeUtils';
 
 const AcceptanceLetter = () => {
-  const {
-    data: AcceptanceNotCreatedData,
-    loading: loading1,
-    error: error1,
-    fetchData,
-  } = useFetch();
   const { user, logout } = useAuth();
   const [acceptanceNotCreatedLots, setAcceptanceNotCreatedLots] = useState([]);
+  const [acceptanceNotCreatedData, setAcceptanceNotCreatedData] = useState([]);
   const [receivedData, setReceivedData] = useState([]);
   const [selectedLotNo, setSelectedLotNo] = useState([]);
   const [selectedClientID, setSelectedClientID] = useState([]);
@@ -210,8 +206,8 @@ const AcceptanceLetter = () => {
   const currentRows = filteredLots.slice(indexOfFirstRow, indexOfLastRow);
 
   useEffect(() => {
-    if (AcceptanceNotCreatedData.length > 0) {
-      const updatedData = AcceptanceNotCreatedData.map((item, index) => {
+    if (acceptanceNotCreatedData.length > 0) {
+      const updatedData = acceptanceNotCreatedData.map((item, index) => {
         const {
           SR_No,
           assign_id,
@@ -227,12 +223,12 @@ const AcceptanceLetter = () => {
       });
 
       // console.log(updatedData);
-      setReceivedData(AcceptanceNotCreatedData);
+      setReceivedData(acceptanceNotCreatedData);
       setGetData(updatedData);
       setShowTable(true);
       //   handleStepChange(1);
     }
-  }, [AcceptanceNotCreatedData]);
+  }, [acceptanceNotCreatedData]);
   // Watch for changes in draftNotCreatedData
 
   // console.log(getData);
@@ -255,7 +251,20 @@ const AcceptanceLetter = () => {
     setLoading(true);
     handleStepChange(1);
     try {
-      await fetchData(url);
+      // await fetchData(url);
+
+      const response = await fetch(
+        `${API_BASE_URL}/api/RefLots?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}&Arb_id=${arbId}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const result = await response.json();
+      const parsedNotServedLots = Array.isArray(result)
+        ? result
+        : JSON.parse(result); // Ensure parsedArbitrators is an array
+      console.log(parsedNotServedLots);
+      setAcceptanceNotCreatedData(parsedNotServedLots);
       setShowData(true);
     } catch (error) {
       setError(error);
@@ -264,35 +273,14 @@ const AcceptanceLetter = () => {
     }
   };
 
-  // console.log(AcceptanceNotCreatedData);
+  console.log(acceptanceNotCreatedData);
   //   for the getting data of selected lot to create refernce Draft ends
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    // const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    // const getDate = date.toLocaleDateString('en-GB', options);
-    const getDate = date.toLocaleDateString("en-US");
-    // console.log(getDate); // Outputs in MM/dd/yyyy format
-    return;
-  };
-
-  console.log(rate);
-  console.log(noOfCases);
+  // console.log(rate);
+  // console.log(noOfCases);
 
   // the logic of assigning time slot start here
-  const generateTimeOptions = () => {
-    const times = [];
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minutes = 0; minutes <= 30; minutes += 30) {
-        const hour12 = hour % 12 === 0 ? 12 : hour % 12;
-        const ampm = hour < 12 ? "AM" : "PM";
-        const hourStr = hour12 < 10 ? `0${hour12}` : `${hour12}`;
-        const minutesStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
-        times.push(`${hourStr}:${minutesStr} ${ampm}`);
-      }
-    }
-    return times;
-  };
+
 
   const timeOptions = generateTimeOptions();
 
@@ -342,243 +330,100 @@ const AcceptanceLetter = () => {
   };
 
   // Function to format date and time together
-  const formatDateTime = (date, time) => {
-    console.log(time);
+  // const formatDateTime = (date, time) => {
+  //   console.log(time);
 
-    const [hour, minute] = time.match(/\d+/g).map(Number);
+  //   const [hour, minute] = time.match(/\d+/g).map(Number);
 
-    let formattedHour = hour;
-    if (time.includes("PM") && formattedHour !== 12) formattedHour += 12;
-    if (time.includes("AM") && formattedHour === 12) formattedHour = 0;
+  //   let formattedHour = hour;
+  //   if (time.includes("PM") && formattedHour !== 12) formattedHour += 12;
+  //   if (time.includes("AM") && formattedHour === 12) formattedHour = 0;
 
-    // Create a new Date object to prevent modifying the original date
-    const newDate = new Date(date);
+  //   // Create a new Date object to prevent modifying the original date
+  //   const newDate = new Date(date);
 
-    // Set hours and minutes in local time
-    newDate.setHours(formattedHour, minute, 0, 0);
+  //   // Set hours and minutes in local time
+  //   newDate.setHours(formattedHour, minute, 0, 0);
 
-    // Format the date and time manually in YYYY-MM-DDTHH:MM (local time)
-    const year = newDate.getFullYear();
-    const month = String(newDate.getMonth() + 1).padStart(2, "0");
-    const day = String(newDate.getDate()).padStart(2, "0");
-    const hours = String(newDate.getHours()).padStart(2, "0");
-    const minutes = String(newDate.getMinutes()).padStart(2, "0");
+  //   // Format the date and time manually in YYYY-MM-DDTHH:MM (local time)
+  //   const year = newDate.getFullYear();
+  //   const month = String(newDate.getMonth() + 1).padStart(2, "0");
+  //   const day = String(newDate.getDate()).padStart(2, "0");
+  //   const hours = String(newDate.getHours()).padStart(2, "0");
+  //   const minutes = String(newDate.getMinutes()).padStart(2, "0");
 
-    return `${year}-${month}-${day}T${hours}:${minutes}:${minutes}Z`;
-  };
-
-  // const handleZoomMeet = async () => {
-  //   // console.log(selectedDate);
-  //   // console.log(startTime);
-  //   const formattedDateTime = formatDateTime(selectedDate, startTime);
-  //   // console.log(formattedDateTime);
-  //   const dataToGenerateZoomMeet = {
-  //     accessToken: accessToken,
-  //     refreshToken: refreshToken,
-  //     topic: "Zoom Meeting",
-  //     // start_time: "2025-05-08T15:00:00Z",
-  //     start_time: formattedDateTime,
-  //     duration: "720",
-  //     timezone: "Asia/Kolkata",
-  //     agenda: "The Resolution Metting for dispute resolving",
-  //     Arb_id: arbId,
-  //   };
-  //   console.log(dataToGenerateZoomMeet);
-  //   handleStepChange(3);
-  //   try {
-  //     setLoading(true);
-  //     const response = await fetch(`${API_BASE_URL}/api/Zoom`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(dataToGenerateZoomMeet),
-  //     });
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(
-  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-  //       );
-  //     }
-  //     const result = await response.json(); // Process the response
-  //     // console.log("Upload response:", result);
-  //     setZoomResponse(result);
-  //     toast.success("Data Uploaded Successfully", {
-  //       // position: toast.POSITION.BOTTOM_RIGHT,
-  //       theme: "colored",
-  //       autoClose: 1000,
-  //     });
-  //     setZoomMeet(true);
-  //     // console.log(save);
-  //   } catch (error) {
-  //     console.error("Error uploading data:", error);
-  //     // alert(`Error uploading data: ${error.message}`);
-  //   } finally {
-  //     setLoading(false);
-  //   }
+  //   return `${year}-${month}-${day}T${hours}:${minutes}:${minutes}Z`;
   // };
 
-  // useEffect(() => {
-  //   // console.log("Updated zoomResponse:", zoomResponse);
-  //   let parsedResponse;
-
-  //   if (typeof zoomResponse === "string") {
-  //     try {
-  //       parsedResponse = JSON.parse(zoomResponse);
-  //       console.log("Parsed Response:", parsedResponse);
-  //     } catch (error) {
-  //       console.error("Error parsing zoomResponse:", error);
-  //       return;
-  //     }
-  //   } else if (zoomResponse && typeof zoomResponse === "object") {
-  //     parsedResponse = zoomResponse;
-  //   } else {
-  //     console.log("zoomResponse is undefined or not an object!");
-  //     return;
-  //   }
-  //   setZoomId(parsedResponse.id);
-  //   setPassword(parsedResponse.password);
-  //   setMeetStartTime(parsedResponse.start_time);
-  //   if (parsedResponse?.join_url) {
-  //     console.log("Join URL:", parsedResponse.join_url);
-  //     setJoinUrl(parsedResponse.join_url); // Store join_url in state
-  //   } else {
-  //     console.log("join_url not found in parsed response!");
-  //   }
-  // }, [zoomResponse]);
-
-  // console.log(joinUrl);
-  // console.log(zoomId);
-  // console.log(password);
-  // console.log(meetStartTime);
-
   const distributeRecords = () => {
-    console.log(noOfCases);
-
     handleStepChange(2);
+
     if (
       !startTime ||
       !endTime ||
       timeDifference <= 0 ||
-      AcceptanceNotCreatedData.length === 0
+      acceptanceNotCreatedData.length === 0
     ) {
       setErrorMessage("All fields are required and must be valid.");
       setDistRecords([]);
       return;
     }
 
-    const totalRecords = AcceptanceNotCreatedData.length;
-    const fullHours = Math.floor(timeDifference); // Full hours
-    const fractionalHour = timeDifference % 1; // Fractional part of the hour
+    const totalRecords = acceptanceNotCreatedData.length;
+    const totalSlots = Math.ceil((timeDifference * 60) / 60); // Total 1-hour or partial-hour slots
 
-    const recordsPerFullHour = Math.floor(
-      totalRecords / (fullHours + fractionalHour)
-    );
+    const baseRecordsPerSlot = Math.floor(totalRecords / totalSlots);
+    const extraRecords = totalRecords % totalSlots; // Remaining to distribute one-by-one
 
-    const recordsForFractionalHour = Math.floor(
-      recordsPerFullHour * fractionalHour
-    );
-
-    let assignedRecordsCount = 0; // Counter to track assigned records
-    const distributed = [];
     let currentStartTime = parseTimeStringToDate(startTime);
     const formattedDate = format(meetStartTime, "MM/dd/yyyy");
+    const distributed = [];
 
-    for (let hour = 0; hour < fullHours; hour++) {
-      const slotStartTime = new Date(currentStartTime.getTime());
-      const slotEndTime = new Date(currentStartTime.getTime());
-      slotEndTime.setHours(slotEndTime.getHours() + 1);
+    let recordIndex = 0;
 
-      for (let i = 0; i < recordsPerFullHour; i++) {
-        const recordIndex = hour * recordsPerFullHour + i;
-        if (recordIndex < totalRecords) {
-          const formattedStartTime = format(slotStartTime, "hh:mm a");
-          const formattedEndTime = format(slotEndTime, "hh:mm a");
+    for (let slot = 0; slot < totalSlots; slot++) {
+      const slotStartTime = new Date(currentStartTime);
+      const slotEndTime = new Date(currentStartTime);
 
-          distributed.push({
-            ...AcceptanceNotCreatedData[recordIndex],
-            Hearing_date: formattedDate,
-            Hearing_time_From: formattedStartTime,
-            Hearing_time_To: formattedEndTime,
-            Video_link: joinUrl,
-            Link_ID: zoomId,
-            Password: password,
-            // Acc_Date: new Date().toISOString().split("T")[0],
-            No_of_cases: noOfCases,
-            Rate: rate,
-          });
-          assignedRecordsCount++;
-        }
+      if (slot === totalSlots - 1 && timeDifference % 1 !== 0) {
+        // If fractional last slot
+        slotEndTime.setMinutes(
+          slotEndTime.getMinutes() + Math.floor(60 * (timeDifference % 1))
+        );
+      } else {
+        slotEndTime.setHours(slotEndTime.getHours() + 1);
       }
-      currentStartTime.setHours(currentStartTime.getHours() + 1);
-    }
 
-    if (fractionalHour > 0) {
-      const slotStartTime = new Date(currentStartTime.getTime());
-      const slotEndTime = new Date(currentStartTime.getTime());
-      slotEndTime.setMinutes(Math.floor(60 * fractionalHour));
+      // Distribute baseRecordsPerSlot + 1 if within extraRecords count
+      const numRecords = baseRecordsPerSlot + (slot < extraRecords ? 1 : 0);
 
-      for (let i = 0; i < recordsForFractionalHour; i++) {
-        const recordIndex = fullHours * recordsPerFullHour + i;
-        if (recordIndex < totalRecords) {
-          const formattedStartTime = format(slotStartTime, "hh:mm a");
-          const formattedEndTime = format(slotEndTime, "hh:mm a");
-
-          distributed.push({
-            ...AcceptanceNotCreatedData[recordIndex],
-            Hearing_date: formattedDate,
-            Hearing_time_From: formattedStartTime,
-            Hearing_time_To: formattedEndTime,
-            Video_link: joinUrl,
-            Link_ID: zoomId,
-            Password: password,
-            // Acc_Date: new Date().toISOString().split("T")[0],
-            No_of_cases: noOfCases,
-            Rate: rate,
-          });
-          assignedRecordsCount++;
-        }
-      }
-    }
-
-    if (assignedRecordsCount < totalRecords) {
-      const remainingRecordsCount = totalRecords - assignedRecordsCount;
-      const lastSlotStartTime =
-        distributed[distributed.length - 1]?.Virtual_Hearing_Time_From ||
-        startTime;
-      const lastSlotEndTime =
-        distributed[distributed.length - 1]?.Virtual_Hearing_Time_To || endTime;
-
-      for (let i = 0; i < remainingRecordsCount; i++) {
-        const recordIndex = assignedRecordsCount + i;
-
+      for (let i = 0; i < numRecords && recordIndex < totalRecords; i++) {
         distributed.push({
-          ...records[recordIndex],
+          ...acceptanceNotCreatedData[recordIndex],
           Hearing_date: formattedDate,
-          Hearing_time_From: lastSlotStartTime,
-          Hearing_time_To: lastSlotEndTime,
+          Hearing_time_From: format(slotStartTime, "hh:mm a"),
+          Hearing_time_To: format(slotEndTime, "hh:mm a"),
           Video_link: joinUrl,
           Link_ID: zoomId,
           Password: password,
-          // Acc_Date: new Date().toISOString().split("T")[0],
           No_of_cases: noOfCases,
           Rate: rate,
         });
+        recordIndex++;
       }
+
+      currentStartTime = new Date(slotEndTime);
     }
 
-    // console.log(`Total Records Assigned: ${assignedRecordsCount}`);
     setDistRecords(distributed);
     setShowDistributed(true);
   };
-
-  // console.log(distributedRecords);
 
   console.log(distRecords);
 
   // TO Save the Records starts
   const handleSave = async () => {
-    // console.log(distRecords);
+    console.log(distRecords);
     const dataToGenerateAL = distRecords.map((item) => ({
       Case_id: item.Case_id,
       Hearing_date: item.Hearing_date,
@@ -658,28 +503,43 @@ const AcceptanceLetter = () => {
   };
   // for the generation of dearft function ends
 
-  //   function to upload the reference Drafts Starts Here
   const handleUploadAcceptance = async () => {
     setLoading(true);
     try {
-      const response = await fetch(
+      // First API call
+      const firstResponse = await fetch(
         `${API_BASE_URL}/api/SaveAccCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
       );
 
-      if (!response.ok) {
-        const errorText = await response.text();
+      if (!firstResponse.ok) {
+        const errorText = await firstResponse.text();
         throw new Error(
-          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+          `Failed to upload data to SaveRef: ${firstResponse.status} ${firstResponse.statusText} - ${errorText}`
         );
       }
 
-      const result = await response.json(); // Process the response
-      //   console.log(result);
+      const firstResult = await firstResponse.json(); // Process the response if needed
+      // console.log("First API call successful:", firstResult);
+
+      // Second API call (only if the first call is successful)
+      const secondResponse = await fetch(
+        `${API_BASE_URL}/api/SaveAcc?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
+      );
+
+      if (!secondResponse.ok) {
+        const errorText = await secondResponse.text();
+        throw new Error(
+          `Failed to upload data to SaveRefCase: ${secondResponse.status} ${secondResponse.statusText} - ${errorText}`
+        );
+      }
+
+      const secondResult = await secondResponse.json(); // Process the response if needed
+      // console.log("Second API call successful:", secondResult);
+
       setClearForm(true);
-      handleStepChange(5);
+      handleStepChange(3); // or handleStepChange(4) depending on your requirement
     } catch (error) {
       console.error("Error uploading data:", error);
-      alert(`Error uploading data: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -791,7 +651,7 @@ const AcceptanceLetter = () => {
   return (
     <div className="container">
       <div className="row">
-        <div className="col-md-12 mb-3">
+        <div className="col-md-12">
           <CustomStepper steps={steps} activeStep={activeStep} />
         </div>
       </div>
@@ -803,32 +663,9 @@ const AcceptanceLetter = () => {
             <h5>Generate Acceptance Letter</h5>
           )}
           {showPDF && !clearForm && <h5>Upload Acceptance Letter</h5>}
-          {/* {zoomMeet && !showDistributed && (
-            <div className="">
-              <Form.Control
-                type="number"
-                className="custom_input"
-                placeholder="Enter Rate"
-                onChange={handleRateChange}
-                value={rate}
-              />
-            </div>
-          )} */}
         </div>
 
-        <div className="col-md-5">
-          {/* {zoomMeet && !showDistributed && (
-            <div className="">
-              <Form.Control
-                type="number"
-                className="custom_input"
-                placeholder="Enter No Of Cases"
-                onChange={handleNoOfCasesChange}
-                value={noOfCases}
-              />
-            </div>
-          )} */}
-        </div>
+        <div className="col-md-5"></div>
 
         <div className="col-md-2">
           {save && !showPDF && (
@@ -858,11 +695,11 @@ const AcceptanceLetter = () => {
 
       {!showTable && (
         <div className="row">
-          <div className="col-md-12 mt-4">
-            <div className="row table-container mt-3">
+          <div className="col-md-12">
+            <div className="row table-container">
               <div className="col-md-12 mx-auto table-wrapper">
                 {/* Search Input */}
-                <div className="mb-3 d-flex justify-content-start">
+                <div className="d-flex justify-content-start">
                   <input
                     type="text"
                     placeholder="Search Lots..."
@@ -872,12 +709,12 @@ const AcceptanceLetter = () => {
                       setCurrentPage(1); // reset to first page on search
                     }}
                     className="form-control"
-                    style={{ maxWidth: "300px" }}
+                    style={{ maxWidth: "300px", fontSize: '0.85rem' }}
                   />
                 </div>
 
                 {/* Table */}
-                <table className="responsive-table my-3">
+                <table className="responsive-table">
                   <thead className="text-center">
                     <tr className="table-info">
                       <th scope="col" className="text-center">
@@ -903,10 +740,10 @@ const AcceptanceLetter = () => {
                     {currentRows.length > 0 ? (
                       currentRows.map((item, index) => (
                         <tr key={item.id}>
-                          <td className="text-center">
+                          <td className="text-center p-0">
                             {indexOfFirstRow + index + 1}
                           </td>
-                          <td className="text-center">
+                          <td className="text-center p-0">
                             {item.Assign_date
                               ? new Date(item.Assign_date).toLocaleDateString(
                                   "en-GB",
@@ -918,9 +755,9 @@ const AcceptanceLetter = () => {
                                 )
                               : ""}
                           </td>
-                          <td className="text-center">{item.Lots}</td>
+                          <td className="text-center p-0">{item.Lots}</td>
                           {/* <td className="text-center">{item.Arb_name}</td> */}
-                          <td className="text-center">
+                          <td className="text-center py-2">
                             <button
                               onClick={() => handleRowAction(item)}
                               className="custBtn"
@@ -971,27 +808,6 @@ const AcceptanceLetter = () => {
       {/* to SAVE The date and time for cirtul meeting starts */}
       {showData && !showDistributed && !zoomMeet && (
         <div className="row mt-3">
-          {/* the date picker */}
-          {/* <div className="col-md-3">
-            <DatePicker
-              selected={selectedDate}
-              onChange={handleDateChange}
-              placeholderText="Select a date"
-              dateFormat="MM/dd/yyyy"
-              className="form-control custom_input" // Smaller size
-              id="datePicker"
-              style={{
-                width: "100%",
-                height: "calc(1.5em + .75rem + 2px)",
-                padding: ".375rem .75rem",
-                fontSize: "1rem",
-                borderRadius: ".25rem",
-                border: "1px solid #ced4da",
-                boxSizing: "border-box",
-              }}
-            />
-          </div> */}
-
           {/* The Start time Picker */}
           <div className="col-md-3">
             <Form.Control
@@ -1134,7 +950,7 @@ const AcceptanceLetter = () => {
       {zoomMeet && !showDistributed && (
         <>
           <div className="row my-3">
-            <div className="col-md-4">
+            <div className="col-md-2">
               <div className="">
                 <Form.Control
                   type="number"
@@ -1142,19 +958,41 @@ const AcceptanceLetter = () => {
                   placeholder="Enter Rate"
                   onChange={handleRateChange}
                   value={rate}
+                  style={{fontSize:"12px"}}
                 />
               </div>
             </div>
-            <div className="col-md-4">
+            <div className="col-md-2">
               <Form.Control
                 type="number"
                 className="custom_input"
-                placeholder="Enter No Of Cases"
+                placeholder="No Of Cases"
                 onChange={handleNoOfCasesChange}
                 value={noOfCases}
+                style={{fontSize:"12px"}}
               />
             </div>
-            <div className="col-md-3">
+            <div className="col-md-2">
+              <Form.Control
+                type="number"
+                className="custom_input"
+                placeholder="Ongoing Cases"
+                onChange={handleNoOfCasesChange}
+                value={noOfCases}
+                style={{fontSize:"12px"}}
+              />
+            </div>
+            <div className="col-md-2">
+              <Form.Control
+                type="number"
+                className="custom_input"
+                placeholder="Ongoing Cases"
+                onChange={handleNoOfCasesChange}
+                value={noOfCases}
+                style={{fontSize:"12px"}}
+              />
+            </div>
+            <div className="col-md-2">
               <Button className="custBtn" onClick={distributeRecords}>
                 Assign
               </Button>

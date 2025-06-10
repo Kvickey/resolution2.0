@@ -36,7 +36,7 @@ const LawyerDashboard = () => {
       icon: <FaHandshake />,
       submenu: [
         {
-          name: "Generate SOC",
+          name: "Upload SOC",
           link: "/lawyerdashboard/soc/generatesoc",
           icon: <RiAiGenerate />,
         },
@@ -62,7 +62,7 @@ const LawyerDashboard = () => {
       icon: <FaHandshake />,
       submenu: [
         {
-          name: "Generate Sec17 Appl",
+          name: "Upload Sec17 Appl",
           link: "/lawyerdashboard/section17application/generatesection17application",
           icon: <RiAiGenerate />,
         },

@@ -127,7 +127,7 @@ const AssignArbitratorByIntent = () => {
   const updatedData = newdata.map((item, index) => {
     const { SR_No, Lot_no, Cust_name, Arb_name, ...rest } = item;
     return {
-      SrNo: index + 1,
+      // SrNo: index + 1,
       Lot_no,
       Cust_name,
       Arb_name,
@@ -248,11 +248,12 @@ const AssignArbitratorByIntent = () => {
               className="custom_input"
               placeholder="Enter Reference No"
               onChange={handleRefNoChange}
+              style={{fontSize:"12px"}}
             />
           </div>
           <div className="col-md-2 ms-3">
             <button
-              className=" btn btn-primary px-5 getDataBtn"
+              className=" btn btn-primary px-5 getDataBtn custBtn"
               onClick={handleClick}
             >
               Show
@@ -262,7 +263,7 @@ const AssignArbitratorByIntent = () => {
       )}
 
       {showData && (
-        <div className="row  ms-3">
+        <div className="row">
           <div className="col-md-4">
             {!upload && (
               <Form.Select
@@ -271,6 +272,7 @@ const AssignArbitratorByIntent = () => {
                 className="custom_input"
                 required
                 defaultValue=""
+                style={{fontSize:"12px"}}
               >
                 <option value="" disabled>
                   Choose Arbitrator
@@ -297,7 +299,7 @@ const AssignArbitratorByIntent = () => {
                 Assign
               </button>
             )}
-            {upload && (
+            {upload && !clearForm && (
               <button className="custBtn" onClick={handleUpload}>
                 Upload
               </button>

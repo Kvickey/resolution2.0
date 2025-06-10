@@ -56,7 +56,7 @@ const SOCData = () => {
   useEffect(() => {
     const fetchUnassignedLots = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}//api/SocData`);
+        const response = await fetch(`${API_BASE_URL}/api/SocData`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }

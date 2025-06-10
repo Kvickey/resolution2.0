@@ -240,59 +240,59 @@ const VirtualMeetingModal = ({
   };
   // Pagination For the Main Table Ends Here
 
-  const handleZoomMeet = async () => {
-    // console.log(selectedDate);
-    // console.log(startTime);
-    const formattedDateTime = formatDateTime(selectedDate3, startTimeBulk);
-    // console.log(formattedDateTime);
-    const dataToGenerateZoomMeet = {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      topic: "Zoom Meeting",
-      start_time: formattedDateTime,
-      duration: "720",
-      timezone: "Asia/Kolkata",
-      agenda: "The Resolution Metting for dispute resolving",
-      Arb_id: arbId,
-    };
-    console.log(dataToGenerateZoomMeet);
-    try {
-      setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/Zoom`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToGenerateZoomMeet),
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-        );
-      }
-      const result = await response.json(); // Process the response
-      // console.log("Upload response:", result);
-      const parsedZoomMeet = Array.isArray(result)
-        ? result
-        : JSON.parse(result);
-      console.log(parsedZoomMeet);
-      setJoinUrl(parsedZoomMeet.join_url);
-      setCustZoomId(parsedZoomMeet.id);
-      setCustPassword(parsedZoomMeet.password);
-      setCustStartTime(parsedZoomMeet.start_time);
-      toast.success("Data Uploaded Successfully", {
-        theme: "colored",
-        autoClose: 1000,
-      });
-      setZoomMeet(true);
-      // console.log(save);
-    } catch (error) {
-      console.error("Error uploading data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const handleZoomMeet = async () => {
+  //   // console.log(selectedDate);
+  //   // console.log(startTime);
+  //   const formattedDateTime = formatDateTime(selectedDate3, startTimeBulk);
+  //   // console.log(formattedDateTime);
+  //   const dataToGenerateZoomMeet = {
+  //     accessToken: accessToken,
+  //     refreshToken: refreshToken,
+  //     topic: "Zoom Meeting",
+  //     start_time: formattedDateTime,
+  //     duration: "720",
+  //     timezone: "Asia/Kolkata",
+  //     agenda: "The Resolution Metting for dispute resolving",
+  //     Arb_id: arbId,
+  //   };
+  //   console.log(dataToGenerateZoomMeet);
+  //   try {
+  //     setLoading(true);
+  //     const response = await fetch(`${API_BASE_URL}/api/Zoom`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(dataToGenerateZoomMeet),
+  //     });
+  //     if (!response.ok) {
+  //       const errorText = await response.text();
+  //       throw new Error(
+  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+  //       );
+  //     }
+  //     const result = await response.json(); // Process the response
+  //     // console.log("Upload response:", result);
+  //     const parsedZoomMeet = Array.isArray(result)
+  //       ? result
+  //       : JSON.parse(result);
+  //     console.log(parsedZoomMeet);
+  //     setJoinUrl(parsedZoomMeet.join_url);
+  //     setCustZoomId(parsedZoomMeet.id);
+  //     setCustPassword(parsedZoomMeet.password);
+  //     setCustStartTime(parsedZoomMeet.start_time);
+  //     toast.success("Data Uploaded Successfully", {
+  //       theme: "colored",
+  //       autoClose: 1000,
+  //     });
+  //     setZoomMeet(true);
+  //     // console.log(save);
+  //   } catch (error) {
+  //     console.error("Error uploading data:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // To distribute records starts here
   const distributeRecords = () => {
@@ -328,7 +328,7 @@ const VirtualMeetingModal = ({
     let assignedRecordsCount = 0; // Counter to track assigned records
     const distributed = [];
     let currentStartTime = parseTimeStringToDate(startTimeBulk);
-    const formattedDate = format(custStartTime, "MM/dd/yyyy");
+    const formattedDate = format(custStartTime, "MM-dd-yyyy");
 
     for (let hour = 0; hour < fullHours; hour++) {
       const slotStartTime = new Date(currentStartTime.getTime());

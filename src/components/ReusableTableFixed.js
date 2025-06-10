@@ -17,7 +17,7 @@ const ReusableTableFixed = ({
   const showArbName = columns.some((col) => col.key === "Arb_name");
 
   return (
-    <div className="row table-container py-5">
+    <div className="row table-container">
       <div className="col-md-12 mx-auto table-wrapper">
         <table className="responsive-table">
           <thead className="text-center">
@@ -32,8 +32,8 @@ const ReusableTableFixed = ({
           <tbody>
             {data.map((item, index) => (
               <tr key={item.id}>
-                <td className="text-center">{startIndex + index + 1}</td>
-                <td className="text-center">
+                <td className="text-center p-0">{startIndex + index + 1}</td>
+                <td className="text-center p-0">
                   {item.Uploded_date
                     ? new Date(item.Uploded_date).toLocaleDateString("en-GB", {
                         year: "numeric",
@@ -42,9 +42,9 @@ const ReusableTableFixed = ({
                       })
                     : ""}
                 </td>
-                <td className="text-center">{item.Lots}</td>
+                <td className="text-center p-0">{item.Lots}</td>
                 {showArbName && <td className="text-left">{item.Arb_name}</td>}
-                <td className="text-center">
+                <td className="text-center p-1">
                   <button
                     onClick={() => handleRowAction(item)}
                     className="custBtn"

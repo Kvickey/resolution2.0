@@ -56,7 +56,7 @@ const Section17ApplicationData = () => {
   useEffect(() => {
     const fetchUnassignedLots = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}//api/Lots`);
+        const response = await fetch(`${API_BASE_URL}/api/Lots`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }

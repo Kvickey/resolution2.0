@@ -124,7 +124,7 @@ const ReusableTable = ({
 
   return (
     <>
-      <div className="table-container mt-3 pt-0">
+      <div className="table-container  pt-0">
         <div className="row justify-content-end w-100 mt-2">
           <div className="col-12 col-md-6 col-lg-4 mt-2">
             <div className="row border border-secondary-subtle rounded-pill onFocusBorder">
@@ -132,11 +132,12 @@ const ReusableTable = ({
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="form-control py-2 focus-ring focus-ring-light border-0"
+                  className="form-control focus-ring focus-ring-light border-0"
                   onChange={(e) =>
                     setSearchText(e.target.value.toLowerCase().trim().replace(/\s+/g, ""))
                   }
                   value={searchText}
+                  style={{ padding: '0.25rem 0.5rem', fontSize: '0.7rem' }}
                 />
               </div>
               <div className="col-1 p-0">
@@ -151,7 +152,7 @@ const ReusableTable = ({
         </div>
 
         <div className="table-wrapper">
-          <table className="responsive-table my-3">
+          <table className="responsive-table mt-2">
             <thead>
               <tr>
                 {newheaders &&
@@ -197,7 +198,7 @@ const ReusableTable = ({
         </div>
 
         {pageNumbers.length > 1 && (
-          <Pagination className="justify-content-center">
+          <Pagination className="pagination" style={{ margin: "0px", fontSize: "0.5rem" }}>
             <Pagination.Prev
               onClick={handlePrevious}
               disabled={currentPage === 1}

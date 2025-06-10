@@ -56,7 +56,7 @@ const IntentLetterList = () => {
   useEffect(() => {
     const fetchUnassignedLots = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}//api/Lots`);
+        const response = await fetch(`${API_BASE_URL}/api/Intentlist`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -86,13 +86,18 @@ const IntentLetterList = () => {
           UPLODED_DATE,
           Cust_name,
           Lot_no,
+          Acc_no,
+          Reference_no,
+          Cust_id,
           ...rest
         } = item;
         return {
-          SrNo: index + 1,
           Lot_no,
           Cust_name,
-          ...rest,
+          Acc_no,
+          Reference_no,
+          Cust_id,
+          // ...rest,
         };
       });
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState , useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Arbitrator1 from "../assets/images/Arbitrator1.jpg";
 import Arbitrator2 from "../assets/images/Arbitrator2.jpg";
 import Arbitrator3 from "../assets/images/Arbitrator3.jpg";
@@ -40,7 +40,6 @@ const ArbitratorList = () => {
   const signatureRef = useRef("");
   const stampRef = useRef("");
 
-
   useEffect(() => {
     const fetchArbitrators = async () => {
       try {
@@ -64,6 +63,7 @@ const ArbitratorList = () => {
 
     fetchArbitrators();
   }, [apiRecall]);
+
   const postData = async () => {
     try {
       const response = await fetch(url + "/api/Arb", {
@@ -430,7 +430,6 @@ const ArbitratorList = () => {
                 <label
                   className="ms-1 my-1 text-white font-monospace rounded px-2 opacity-75"
                   style={{ backgroundColor: "var(--secondary-color)" }}
-                  
                 >
                   Photo
                 </label>
@@ -540,7 +539,6 @@ const ArbitratorList = () => {
                 }}
                 className="custBtn text-nowrap px-4"
               >
-                {" "}
                 Add Arbitrator
               </button>
             </div>
@@ -559,33 +557,31 @@ const ArbitratorList = () => {
                       className="img-fluid rounded "
                     />
                   </div>
-                  <div className="col my-md-0 my-3">
+
+                  <div className="col-md-8 my-md-0 my-3">
                     <div className="row">
-                      <div className="col-md-7">
-                        <div className="row">
+                      <div className="col-md-5">
                           <h5
                             className=" m-0 fw-bold "
                             style={{
-                              color: "var(--primary-color)",
+                              // color: "var(--primary-color)",
                               fontSize: "17px",
                             }}
                           >
                             {arbitrator.Arb_name}
                           </h5>
-                          <p className=" m-0 " style={{ fontSize: "14px" }}>
+                          <p className="m-0" style={{ fontSize: "14px" }}>
                             {arbitrator.Designation}
                           </p>
                           {/* <p className="m-0 cardTitle"> Mobile No :</p> */}
                           <span className="cardContent"> +91-9876543210</span>
                           {/* <p className="m-0 cardTitle"> E-mail :</p> */}
                           <span className="cardContent">
-                            {" "}
                             {arbitrator.Email_id}
                           </span>
-                        </div>
                       </div>
                       {window.innerWidth > 700 && (
-                        <div className="col">
+                        <div className="col-md-7">
                           <div className="row justify-content-end row-cols-auto">
                             <div className="col">
                               <button
@@ -596,7 +592,6 @@ const ArbitratorList = () => {
                                 }}
                                 className="custBtn btn btn-sm text-nowrap"
                               >
-                                {" "}
                                 Update
                               </button>
                             </div>
@@ -613,11 +608,9 @@ const ArbitratorList = () => {
                       <div className="col dottedBorder">
                         <div className="row ">
                           <p className="m-0 cardTitle font-monospace">
-                            {" "}
                             Qualification :
                           </p>
                           <span className="cardContent">
-                            {" "}
                             {arbitrator.Education}{" "}
                           </span>
                         </div>
@@ -625,7 +618,6 @@ const ArbitratorList = () => {
                       <div className="col dottedBorder">
                         <div className="row">
                           <p className="m-0 cardTitle font-monospace">
-                            {" "}
                             Year Of Passing :
                           </p>
                           <span className="cardContent">
@@ -635,9 +627,7 @@ const ArbitratorList = () => {
                       </div>
                       <div className="col ">
                         <div className="row">
-                          {" "}
                           <p className="m-0 cardTitle font-monospace">
-                            {" "}
                             Address :
                           </p>
                           <p className="cardContent">{arbitrator.Address}</p>
@@ -656,7 +646,6 @@ const ArbitratorList = () => {
                               }}
                               className="custBtn btn btn-sm text-nowrap"
                             >
-                              {" "}
                               Update
                             </button>
                           </div>

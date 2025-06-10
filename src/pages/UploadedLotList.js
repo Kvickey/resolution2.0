@@ -86,13 +86,15 @@ const UploadedLotList = () => {
           UPLODED_DATE,
           Cust_name,
           Lot_no,
+          Reference_no,
+          Cust_id,
           ...rest
         } = item;
         return {
-          SrNo: index + 1,
           Lot_no,
           Cust_name,
-          ...rest,
+          Reference_no,
+          Cust_id,
         };
       });
 
@@ -176,7 +178,7 @@ const UploadedLotList = () => {
   return (
     <div className="container">
       <div className="row">
-        <div className="col-md-12 mb-3">
+        <div className="col-md-12 ">
           <CustomStepper steps={steps} activeStep={activeStep} />
         </div>
       </div>
@@ -192,7 +194,7 @@ const UploadedLotList = () => {
 
       {!showTable && (
         <div className="row">
-          <div className="col-md-12 mt-4">
+          <div className="col-md-12 mt-1">
             <ReusableTableFixed
               columns={columnsWithoutArbName}
               data={unassignedLots.slice(startIndex, startIndex + 10)}

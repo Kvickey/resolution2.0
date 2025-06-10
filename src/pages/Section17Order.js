@@ -7,6 +7,7 @@ import ReusableTable from "../components/ReusableTable";
 import LoadingSpinner from "../components/LoadingSpinner";
 import DatePicker from "react-datepicker";
 import { useAuth } from "../components/AuthProvider";
+import ClearForm from "../components/Clearform";
 
 const Section17Order = () => {
   const [sec17OrderNotCreatedLots, setSec17OrderNotCreatedLots] = useState([]);
@@ -50,7 +51,7 @@ const Section17Order = () => {
     setArbId(user[0].Ref_id);
   }, [user]);
 
-  console.log(arbId);
+  // console.log(arbId);
 
   useEffect(() => {
     const fetchSec17OrderNotCreatedLots = async () => {
@@ -160,35 +161,33 @@ const Section17Order = () => {
   // For the customStepper ends Here
 
   //   for the getting data of selected lot to create refernce Draft starts
-   const handleRowAction = async (item) => {
-      setSelectedLotNo(item.Lot_no);
-      setSelectedClientID(item.Client_id);
-      setSelectedProductID(item.Product_id);
-      setSelectedArbitratorID(item.Arb_id);
-      // const url = `${API_BASE_URL}/api/Sec17appletter?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}`;
-      setLoading(true);
-      handleStepChange(1);
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/pendingSec17Order?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}&Arb_id=${item.Arb_id}`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        const parsedNotSec17Lots = Array.isArray(result)
-          ? result
-          : JSON.parse(result); // Ensure parsedArbitrators is an array
-        setSec17OrderNotCreatedData(parsedNotSec17Lots);
-        setLoading(false);
-        setShowData(true);
-      } catch (error) {
-        // setError1(error.message);
+  const handleRowAction = async (item) => {
+    setSelectedLotNo(item.Lot_no);
+    setSelectedClientID(item.Client_id);
+    setSelectedProductID(item.Product_id);
+    setSelectedArbitratorID(item.Arb_id);
+    setLoading(true);
+    handleStepChange(1);
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/pendingSec17Order?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}&Arb_id=${item.Arb_id}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    };
-  
-    // console.log(sec17OrderNotCreatedData);
-  
+      const result = await response.json();
+      const parsedNotSec17Lots = Array.isArray(result)
+        ? result
+        : JSON.parse(result); // Ensure parsedArbitrators is an array
+      setSec17OrderNotCreatedData(parsedNotSec17Lots);
+      setLoading(false);
+      setShowData(true);
+    } catch (error) {
+      // setError1(error.message);
+    }
+  };
+
+  // console.log(sec17OrderNotCreatedData);
 
   //   for pagination of reusable table starts
   const [currentPage1, setCurrentPage1] = useState(1); // Current page for ReusableTable
@@ -205,21 +204,25 @@ const Section17Order = () => {
 
   if (loading) return <LoadingSpinner />;
 
-  // Date Change function Starts Here
   const handleDateChange = (date) => {
-    // Check if the input is a valid Date object
     if (date && date instanceof Date && !isNaN(date)) {
-      // Format the date to "dd/MM/yyyy"
-      // const formattedDate = date.toLocaleDateString("en-GB"); // 'en-GB' outputs date as DD/MM/YYYY
-      const formattedDate = date.toLocaleDateString("en-US"); // 'en-US' outputs date as MM/DD/YYYY
-      setSelectedDate(date); // Set the actual Date object for the DatePicker
-      console.log("Selected Date:", formattedDate); // For debugging, show the formatted date
+      // Manually format the date as MM-DD-YYYY
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Add 1 because getMonth() is 0-based
+      const day = String(date.getDate()).padStart(2, "0");
+      const year = date.getFullYear();
+
+      const formattedDate = `${month}-${day}-${year}`;
+
+      setSelectedDate(date);
       setTheDate(formattedDate);
+      console.log("Selected Date:", formattedDate); // Should log as MM-DD-YYYY
     } else {
       console.error("Invalid date:", date);
-      setSelectedDate(null); // Reset if the date is invalid
+      setSelectedDate(null);
+      setTheDate("");
     }
   };
+
   // Date Change function Ends Here
 
   console.log(theDate);
@@ -275,7 +278,7 @@ const Section17Order = () => {
     try {
       // Fetch the PDF file from the API
       const response = await fetch(
-        `${API_BASE_URL}/api/Sec17appletter?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}`
+        `${API_BASE_URL}/api/Sec17Orderletter?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -304,7 +307,7 @@ const Section17Order = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/SaveRefCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
+        `${API_BASE_URL}/api/SaveSec17OrderCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
       );
 
       if (!response.ok) {
@@ -502,8 +505,8 @@ const Section17Order = () => {
                 Generate
               </button>
             )}
-            {showPDF && (
-              <button className="custBtn" onClick={handleGenerateSec17Order}>
+            {showPDF && !clearForm && (
+              <button className="custBtn" onClick={handleUploadSec17Order}>
                 Upload
               </button>
             )}
@@ -511,7 +514,19 @@ const Section17Order = () => {
         </div>
       )}
 
-      {showData && (
+      {showPDF && !clearForm && (
+        <div className="row mt-3">
+          <div className="col-md-12">
+            <iframe
+              src={pdfUrl}
+              style={{ width: "100%", height: "100vh" }}
+              title="PDF Viewer"
+            />
+          </div>
+        </div>
+      )}
+
+      {showData && !showPDF && (
         <div className="row">
           <div className="col-md-12 mt-3">
             <ReusableTable
@@ -519,6 +534,17 @@ const Section17Order = () => {
               currentPage={currentPage1}
               pageNumbers={pageNumbers1}
               setCurrentPage={setCurrentPage1}
+            />
+          </div>
+        </div>
+      )}
+
+      {clearForm && (
+        <div className="row">
+          <div className="col-md-12 d-flex justify-content-center ">
+            <ClearForm
+              message="Section 17 Order Uploaded Successfully!"
+              redirectPath="/arbdashboard"
             />
           </div>
         </div>

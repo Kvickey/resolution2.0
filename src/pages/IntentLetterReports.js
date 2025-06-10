@@ -95,7 +95,7 @@ const IntentLetterReports = () => {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=1`
+        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=0`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -125,6 +125,8 @@ const IntentLetterReports = () => {
   };
 
   console.log(data);
+  
+
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -290,7 +292,7 @@ const IntentLetterReports = () => {
                             : response.mail_send_date === "Not Read"
                         }
                       >
-                        {response.mail_send_date === null ? "Pending" : "Read"}
+                        {response.Mail_read_datetime === null ? "Pending" : "Read"}
                       </td>
                       <td
                         className={

@@ -5,6 +5,7 @@ import { useAuth } from "../components/AuthProvider";
 import { API_BASE_URL } from "../utils/constants";
 import { toast } from "react-toastify";
 import ClearForm from "../components/Clearform";
+import { generateTimeOptions } from '../utils/timeUtils';
 
 const ZoomMeetings = () => {
   const [startTime, setStartTime] = useState("");
@@ -126,20 +127,6 @@ const ZoomMeetings = () => {
     return;
   };
 
-  // the logic of assigning time slot start here
-  const generateTimeOptions = () => {
-    const times = [];
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minutes = 0; minutes <= 30; minutes += 30) {
-        const hour12 = hour % 12 === 0 ? 12 : hour % 12;
-        const ampm = hour < 12 ? "AM" : "PM";
-        const hourStr = hour12 < 10 ? `0${hour12}` : `${hour12}`;
-        const minutesStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
-        times.push(`${hourStr}:${minutesStr} ${ampm}`);
-      }
-    }
-    return times;
-  };
 
   const timeOptions = generateTimeOptions();
 
@@ -350,7 +337,7 @@ const ZoomMeetings = () => {
 
             {/* button Goes here */}
             <div className="col-md-3">
-              <Button className="custBtn" onClick={handleZoomMeet}>
+              <Button className="custBtn" onClick={handleZoomMeet}  disabled={!startTime || !endTime || !selectedDate}>
                 Create Zoom Meet
               </Button>
             </div>

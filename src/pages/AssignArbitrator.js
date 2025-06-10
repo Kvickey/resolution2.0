@@ -466,6 +466,7 @@ const AssignArbitrator = () => {
                 className="custom_input"
                 required
                 defaultValue=""
+                style={{fontSize:"12px"}}
               >
                 <option value="" disabled>
                   Choose Firm
@@ -503,10 +504,10 @@ const AssignArbitrator = () => {
       )}
 
       {!showData && unassignedLots.length > 0 && (
-        <div className="row table-container mt-3">
+        <div className="row table-container">
           <div className="col-md-12 mx-auto table-wrapper">
             {/* Search Input */}
-            <div className="mb-3 d-flex justify-content-start">
+            <div className="mb-1 d-flex justify-content-start">
               <input
                 type="text"
                 placeholder="Search Lots..."
@@ -516,12 +517,12 @@ const AssignArbitrator = () => {
                   setCurrentPage(1); // reset to first page on search
                 }}
                 className="form-control"
-                style={{ maxWidth: "300px" }}
+                style={{ maxWidth: "300px" , fontSize:"12px"}}
               />
             </div>
 
             {/* Table */}
-            <table className="responsive-table my-3">
+            <table className="responsive-table ">
               <thead className="text-center">
                 <tr className="table-info">
                   <th scope="col" className="text-center">
@@ -546,10 +547,10 @@ const AssignArbitrator = () => {
                 {currentRows.length > 0 ? (
                   currentRows.map((item, index) => (
                     <tr key={item.id}>
-                      <td className="text-center">
+                      <td className="text-center p-0">
                         {indexOfFirstRow + index + 1}
                       </td>
-                      <td className="text-center">
+                      <td className="text-center p-0">
                         {item.Uploaded_date
                           ? new Date(item.Uploaded_date).toLocaleDateString(
                               "en-GB",
@@ -561,9 +562,9 @@ const AssignArbitrator = () => {
                             )
                           : ""}
                       </td>
-                      <td className="text-center">{item.days}</td>
-                      <td className="text-center">{item.Lots}</td>
-                      <td className="text-center">
+                      <td className="text-center p-0">{item.days}</td>
+                      <td className="text-cente p-0">{item.Lots}</td>
+                      <td className="text-center p-1">
                         <button
                           onClick={() => handleGetUnassignedLots(item)}
                           className="custBtn"

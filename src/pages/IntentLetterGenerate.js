@@ -295,7 +295,7 @@ const IntentLetterGenerate = () => {
       </div>
 
       {!showTable && (
-        <div className="row table-container py-5">
+        <div className="row table-container">
           <div className="col-md-12 mx-auto table-wrapper">
             <table className="responsive-table">
               <thead className="text-center">
@@ -310,8 +310,8 @@ const IntentLetterGenerate = () => {
               <tbody>
                 {currentItems.map((item, index) => (
                   <tr key={item.id}>
-                    <td className="text-center">{startIndex + index + 1}</td>
-                    <td className="text-center">
+                    <td className="text-center p-0">{startIndex + index + 1}</td>
+                    <td className="text-center p-0">
                       {item.Uploaded_date
                         ? new Date(item.Uploaded_date).toLocaleDateString(
                             "en-GB",
@@ -323,9 +323,9 @@ const IntentLetterGenerate = () => {
                           )
                         : ""}
                     </td>
-                    <td className="text-center">{item.days}</td>
-                    <td className="text-center">{item.Lots}</td>
-                    <td className="text-center">
+                    <td className="text-center p-0">{item.days}</td>
+                    <td className="text-center p-0">{item.Lots}</td>
+                    <td className="text-center p-1">
                       <button
                         onClick={() => handleRowAction(item)}
                         className="custBtn"

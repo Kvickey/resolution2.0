@@ -51,7 +51,7 @@ const AcceptanceLetterServices = () => {
     fetchNotServedLots();
   }, [arbId]); // API call will trigger once arbId is updated
 
-  console.log(notServedLots);
+  // console.log(notServedLots);
 
   if (loading) return <LoadingSpinner />;
 

@@ -11,11 +11,40 @@
     width: 250px;
     font-family: "Poppins", sans-serif !important;
     font-weight: 400;
+    overflow-y: auto;
     font-style: normal;
+    font-size: 14px;
     /* box-shadow: 0 3px 5px -1px #0003, 0 6px 10px #00000024, 0 1px 18px #0000001f; */
     transition: width 0.5s;
     /* background-image: linear-gradient(to bottom right, #172639,#0003); */
 }
+
+.sidebar-scroll {
+    overflow-y: auto;
+    height: calc(100vh - 40px);
+    padding-bottom: 1rem;
+    border: #172639;
+  }
+  /* .sidebar-scroll::-webkit-scrollbar {
+    width: 8px;
+  } */
+  
+  .sidebar-scroll::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar-track {
+    background: #172639;
+    /* border-left: 1px solid #eaa637; */
+    /* border-radius: 4px; */
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar-thumb {
+    background-color: #eaa637;
+    /* border: 1px solid #ffffff;  */
+    border-radius: 4px;
+  }
+  
 
 .cust-bg {
    
@@ -66,7 +95,7 @@
     /* color: var(--primary-color); */
     color: #f0f0f0;
     border-bottom: 1px solid var(--primary-color);
-    font-size: 30px;
+    font-size: 20px;
     height: 60px;
     margin: 0;
     transition-delay: 0.5s;
@@ -230,7 +259,7 @@
   }
 
   .toggle-button div{
-    width: 25px;
+    width: 20px;
     height: 2px;
     /* background-color: var(--primary-color); */
     background-color: #f0f0f0;

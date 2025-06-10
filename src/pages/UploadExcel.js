@@ -19,6 +19,9 @@ const UploadExcel = () => {
   const [selectedProductID, setSelectedProductID] = useState(null);
   const [loading, setLoading] = useState(false);
   const [shouldUpload, setShouldUpload] = useState(false);
+  const [axisCV, setAxisCV] = useState(false);
+  const [kotakCDR, setKotakCDR] = useState(false);
+  const [kotakCC, setKotakCC] = useState(false);
   const [valid, setValid] = useState(false);
   const [error, setError] = useState(null);
   const [excelData, setExcelData] = useState([]);
@@ -76,6 +79,7 @@ const UploadExcel = () => {
         const products = Array.isArray(result) ? result : JSON.parse(result);
         // console.log(products);
         setSelectedProduct(products); // Set products data
+        setSelectedProductID(products[0].Product_id);
       } catch (error) {
         setError(error);
       } finally {
@@ -91,8 +95,8 @@ const UploadExcel = () => {
     setSelectedProductID(selectedID);
   };
 
-  // console.log(bankId);
-  // console.log(selectedProductID);
+  console.log(bankId);
+  console.log(selectedProductID);
   // For the customStepper starts Here
 
   useEffect(() => {
@@ -107,6 +111,37 @@ const UploadExcel = () => {
       setValid(false);
     }
   }, [bankId, selectedProductID]);
+
+  useEffect(() => {
+    const validCombinations = [
+      { bankId: 1, productId: 1, setter: setAxisCV, value: true },
+      { bankId: 2, productId: 2, setter: setKotakCDR, value: true },
+      { bankId: 2, productId: 3, setter: setKotakCC, value: true },
+      // Add more combinations as needed
+    ];
+
+    const matched = validCombinations.find(
+      (combo) =>
+        Number(bankId) === combo.bankId &&
+        Number(selectedProductID) === combo.productId
+    );
+
+    // Reset all values first (optional, if you need only one to be true at a time)
+    setAxisCV(false);
+    setKotakCDR(false);
+    setKotakCC(false);
+
+    if (matched) {
+      setValid(true);
+      matched.setter(matched.value);
+    } else {
+      setValid(false);
+    }
+  }, [bankId, selectedProductID]);
+
+  // console.log(axisCV);
+  // console.log(kotakCC);
+  // console.log(kotakCDR);
 
   const steps = ["Select Excel", "Verify Data", "Upload Excel"];
 
@@ -128,7 +163,7 @@ const UploadExcel = () => {
     const updatedData = data.map((item, index) => {
       const { SR_NO, ...rest } = item;
       return {
-        SrNo: index + 1,
+        // SrNo: index + 1,
         ...rest,
       };
     });
@@ -247,7 +282,6 @@ const UploadExcel = () => {
       };
     }
   };
-
 
   // Function to send Data row by row starts  here
   const sendRowData = async (rowData) => {
@@ -583,7 +617,7 @@ const UploadExcel = () => {
               Client_id: bankId,
               Product_id: selectedProductID,
               Uploaded_by: "Admin",
-              Borrower: borrowerArray, // Only one borrower entry
+              Borrower: borrowerArray,
               Kotak_Cdrs: kotakCdrArray,
             };
 
@@ -663,7 +697,8 @@ const UploadExcel = () => {
           <CustomStepper steps={steps} activeStep={activeStep} />
         </div>
       </div>
-      <div className="row">
+
+      <div className="row mt-2">
         <div className="col-md-12">
           {excelData.length > 0 && !clearForm && showProgress && (
             <>
@@ -687,13 +722,13 @@ const UploadExcel = () => {
         </div>
       </div>
 
-      <div className="row align-items-center mb-3">
+      <div className="row align-items-center mt-1">
         <div className="col-md-6">
           {excelData.length > 0 && !showProgress && (
-            <h4>Select An Excel File</h4>
+            <h6>Select An Excel File</h6>
           )}
         </div>
-        <div className="col-md-4">
+        <div className="col-md-4 ">
           {errorResponses.length > 0 &&
             excelData.length > 0 &&
             !clearForm &&
@@ -706,6 +741,7 @@ const UploadExcel = () => {
                   textDecoration: "underline",
                   fontWeight: "bold",
                 }}
+                className="pt-2"
               >
                 Error Excel
               </span>
@@ -713,7 +749,11 @@ const UploadExcel = () => {
         </div>
         <div className="col-md-1">
           {!verified && excelData.length > 0 && !clearForm && !showProgress && (
-            <button className="custBtn" onClick={handleVerify}>
+            <button
+              className="custBtn"
+              onClick={handleVerify}
+              style={{ fontSize: "12px" }}
+            >
               Verify
             </button>
           )}
@@ -722,7 +762,11 @@ const UploadExcel = () => {
             excelData.length > 0 &&
             !clearForm &&
             !showProgress && (
-              <button className="custBtn" onClick={handleDataUpload}>
+              <button
+                className="custBtn"
+                onClick={handleDataUpload}
+                style={{ fontSize: "12px" }}
+              >
                 Upload
               </button>
             )}
@@ -735,12 +779,13 @@ const UploadExcel = () => {
 
       {excelData.length == 0 ? (
         <div className="row justify-content-center align-items-center">
-          <div className="col-md-4 mb-3">
+          <div className="col-md-4">
             <Form.Select
               aria-label="Default select example"
               onChange={handleBankChange}
               className="custom_input"
               required
+              style={{ fontSize: "12px" }}
             >
               <option value="" disabled selected>
                 Choose a Bank
@@ -753,12 +798,31 @@ const UploadExcel = () => {
             </Form.Select>
           </div>
 
-          <div className="col-md-4 mb-3">
+          <div className="col-md-4 ">
             <Form.Select
               aria-label="Default select example"
               onChange={handleProductChange}
               className="custom_input"
               required
+              style={{ fontSize: "12px" }}
+              value={selectedProductID} // ✅ Bind value here
+            >
+              <option value="" disabled>
+                Choose a Product
+              </option>
+              {selectedProduct.map((item) => (
+                <option key={item.Product_id} value={item.Product_id}>
+                  {item.Product_name}
+                </option>
+              ))}
+            </Form.Select>
+
+            {/* <Form.Select
+              aria-label="Default select example"
+              onChange={handleProductChange}
+              className="custom_input"
+              required
+              style={{fontSize:"12px"}}
             >
               <option value="" disabled selected>
                 Choose a Product
@@ -768,16 +832,17 @@ const UploadExcel = () => {
                   {item.Product_name}
                 </option>
               ))}
-            </Form.Select>
+            </Form.Select> */}
           </div>
 
-          <div className="col-md-4 mb-3">
+          <div className="col-md-4">
             {valid ? (
               <ExcelFileUpload
                 onFileChange={handleFileChange}
                 onErrorFileGenerated={handleErrorFileGenerated}
                 onErrorCount={handleErrorCount}
                 bankId={bankId}
+                selectedProductID={selectedProductID}
               />
             ) : (
               <p style={{ color: "red" }}>Please select a valid product</p>

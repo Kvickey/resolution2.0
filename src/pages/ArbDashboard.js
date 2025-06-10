@@ -92,8 +92,11 @@ const ArbDashboard = () => {
         }, 
         {
             name: 'Award Pass',
-            icon: <GoNote />,
-            link: '/arbdashboard/awardPass',
+            icon: <FaHandshake />,
+            submenu: [
+                { name: 'Lotwise', link: '/arbdashboard/awardPass/lotwise', icon: <RiAiGenerate /> },
+                { name: 'Casewise', link: '/arbdashboard/awardPass/casewise', icon: <RiCustomerService2Line /> },
+            ]
         },
         {
             name: 'Terminate',

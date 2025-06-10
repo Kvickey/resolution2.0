@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap is imported
@@ -13,6 +13,8 @@ import { IoMdAdd } from "react-icons/io";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { format } from "date-fns";
+import { generateTimeOptions } from "../utils/timeUtils";
+import { useAuth } from "../components/AuthProvider";
 
 const VirtualMeetingForThirdHearing = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -40,6 +42,7 @@ const VirtualMeetingForThirdHearing = () => {
   const [filteredData, setFilteredData] = useState([]); // For holding filtered data
   const [searchQuery, setSearchQuery] = useState(""); // Search query state
   const [showSecondModal, setShowSecondModal] = useState(false);
+    const [arbId, setArbId] = useState(null);
 
   const videoInputRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -54,17 +57,24 @@ const VirtualMeetingForThirdHearing = () => {
   const [distRecords, setDistRecords] = useState([]);
   // for time setting ends
 
+  const { user, logout } = useAuth();
+
   const defaultDummyLink =
-    "https://us05web.zoom.us/j/82064910816?pwd=irnBsMk470Z2Uws7dxxZri8jrhdUG3.1";
+    "";
   const [zoomMeetingLink, setZoomMeetingLink] = useState(defaultDummyLink);
-  const defaultZoomID = " 820 6491 0816"; // Define your default Zoom meeting ID
+  const defaultZoomID = ""; // Define your default Zoom meeting ID
   const [zoomMeetingId, setZoomMeetingId] = useState(defaultZoomID); // Initialize state with the default value
   const [zoomId, setZoomId] = useState(defaultZoomID); // Initialize state with the default value
-  const [zoomMeetingPassword, setZoomMeetingPassword] = useState("4ExYPe");
+  const [zoomMeetingPassword, setZoomMeetingPassword] = useState("");
+
+  useEffect(() => {
+    // console.log(user);
+    setArbId(user[0].Ref_id);
+  }, [user]);
 
   // Dummy function to fetch Zoom meeting ID based on the selected date
   const fetchZoomMeetingId = (date) => {
-    const dummyZoomMeetingId = "870 8879 5363"; // Example Zoom meeting ID
+    const dummyZoomMeetingId = ""; // Example Zoom meeting ID
     return dummyZoomMeetingId;
   };
 
@@ -145,23 +155,24 @@ const VirtualMeetingForThirdHearing = () => {
   const handleAppointments = async (date) => {
     const meetingId = fetchZoomMeetingId(date);
 
-    const dataAppointments = { Hearing_date: formattedDate };
+    const dataAppointments = {
+      Hearing_date: formattedDate,
+      Arb_id: arbId,
+      Meeting_No: 3,
+    };
     console.log(dataAppointments);
     // console.log(formattedDate);
     setLoading(true);
     console.log(loading);
     try {
       // setLoading(true);
-      const response = await fetch(
-        `${API_BASE_URL}/api/GetOppforSecondHearing`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dataAppointments),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/GetOppforNextHearing`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataAppointments),
+      });
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(
@@ -174,8 +185,6 @@ const VirtualMeetingForThirdHearing = () => {
       const parsedData = Array.isArray(result) ? result : JSON.parse(result);
       const updatedData = parsedData.map((item) => {
         const {
-          // SR_No,
-
           Acc_id,
           Arb_Assign_id,
           Acc_date,
@@ -187,14 +196,23 @@ const VirtualMeetingForThirdHearing = () => {
           Rate,
           Hearing_Time_from,
           Hearing_Time_to,
+          Meeting_No,
+          Upload_date,
+          Comment,
+          File_path,	
+          Second_Hearing_Time_from,
+          Reference_No,
+          Case_id,
+          FH_id,
+          Present,
+          Second_Hearing_Time_to,
+          Cust_name,
           ...rest
         } = item;
         return {
-          // action: (
-          //   <button className="custBtn" onClick={handleAddDetails}>
-          //     Add Details
-          //   </button>
-          // ),
+          Case_id,
+          Reference_No,
+          Cust_name,
           ...rest,
         };
       });
@@ -277,9 +295,12 @@ const VirtualMeetingForThirdHearing = () => {
       // Construct the upload URL
       const url = `https://api.resolutionexperts.in/api/FirstHearing?Case_id=${caseId}&Comment=${encodeURIComponent(
         comment
-      )}&Second_Date=${encodeURIComponent(
-        formattedDate
-      )}&Second_date_time_from=${startTime}&Second_date_time_to=${endTime}&Video_link=${zoomMeetingLink}&Link_id=${zoomMeetingId}&Password=${zoomMeetingPassword}`;
+      )}&Second_Date=null&Second_date_time_from=null&Second_date_time_to=null&Video_link=null&Link_id=null&Password=null&Meeting_No=3`;
+      // const url = `https://api.resolutionexperts.in/api/FirstHearing?Case_id=${caseId}&Comment=${encodeURIComponent(
+      //   comment
+      // )}&Second_Date=${encodeURIComponent(
+      //   date2
+      // )}&Second_date_time_from=${startTime}&Second_date_time_to=${endTime}&Video_link=${zoomMeetingLink}&Link_id=${zoomMeetingId}&Password=${zoomMeetingPassword}`;
 
       console.log(url);
       // Perform the upload request
@@ -298,6 +319,7 @@ const VirtualMeetingForThirdHearing = () => {
         }, 5);
 
         // Clear the form fields
+        handleAppointments();
         setVideos([]);
         setFiles([]);
         setComment("");
@@ -370,20 +392,6 @@ const VirtualMeetingForThirdHearing = () => {
   };
 
   // the logic of assigning time slot start here
-  const generateTimeOptions = () => {
-    const times = [];
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minutes = 0; minutes <= 30; minutes += 30) {
-        const hour12 = hour % 12 === 0 ? 12 : hour % 12;
-        const ampm = hour < 12 ? "AM" : "PM";
-        const hourStr = hour12 < 10 ? `0${hour12}` : `${hour12}`;
-        const minutesStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
-        times.push(`${hourStr}:${minutesStr} ${ampm}`);
-      }
-    }
-    return times;
-  };
-
   const timeOptions = generateTimeOptions();
   // the logic of assigning time slot ends here
 
@@ -444,242 +452,18 @@ const VirtualMeetingForThirdHearing = () => {
   };
   //  Calcualte the time difference between the start time & end  time starts here
 
-  // To distribute records starts here
-  const distributeRecords = () => {
-    if (
-      !startTime ||
-      !endTime ||
-      !selectedDate ||
-      timeDifference <= 0 ||
-      filteredData.length === 0
-    ) {
-      setErrorMessage("All fields are required and must be valid.");
-      setDistRecords([]);
-      return;
-    }
 
-    const totalRecords = filteredData.length;
-    const fullHours = Math.floor(timeDifference); // Full hours
-    const fractionalHour = timeDifference % 1; // Fractional part of the hour
 
-    const recordsPerFullHour = Math.floor(
-      totalRecords / (fullHours + fractionalHour)
-    );
 
-    const recordsForFractionalHour = Math.floor(
-      recordsPerFullHour * fractionalHour
-    );
 
-    let assignedRecordsCount = 0; // Counter to track assigned records
-    const distributed = [];
-    let currentStartTime = parseTimeStringToDate(startTime);
-    const formattedDate = format(selectedDate, "MM/dd/yyyy");
 
-    for (let hour = 0; hour < fullHours; hour++) {
-      const slotStartTime = new Date(currentStartTime.getTime());
-      const slotEndTime = new Date(currentStartTime.getTime());
-      slotEndTime.setHours(slotEndTime.getHours() + 1);
-
-      for (let i = 0; i < recordsPerFullHour; i++) {
-        const recordIndex = hour * recordsPerFullHour + i;
-        if (recordIndex < totalRecords) {
-          const formattedStartTime = format(slotStartTime, "hh:mm a");
-          const formattedEndTime = format(slotEndTime, "hh:mm a");
-
-          distributed.push({
-            ...filteredData[recordIndex],
-            Hearing_date: formattedDate,
-            Hearing_time_From: formattedStartTime,
-            Hearing_time_To: formattedEndTime,
-            Video_link:
-              "https://us05web.zoom.us/j/82064910816?pwd=irnBsMk470Z2Uws7dxxZri8jrhdUG3.1",
-            Link_ID: "820 6491 0816",
-            Password: "4ExYPe",
-            // Acc_Date: new Date().toISOString().split("T")[0],
-            No_of_cases: "1810",
-            Rate: "1000",
-          });
-          assignedRecordsCount++;
-        }
-      }
-      currentStartTime.setHours(currentStartTime.getHours() + 1);
-    }
-
-    if (fractionalHour > 0) {
-      const slotStartTime = new Date(currentStartTime.getTime());
-      const slotEndTime = new Date(currentStartTime.getTime());
-      slotEndTime.setMinutes(Math.floor(60 * fractionalHour));
-
-      for (let i = 0; i < recordsForFractionalHour; i++) {
-        const recordIndex = fullHours * recordsPerFullHour + i;
-        if (recordIndex < totalRecords) {
-          const formattedStartTime = format(slotStartTime, "hh:mm a");
-          const formattedEndTime = format(slotEndTime, "hh:mm a");
-
-          distributed.push({
-            ...filteredData[recordIndex],
-            Hearing_date: formattedDate,
-            Hearing_time_From: formattedStartTime,
-            Hearing_time_To: formattedEndTime,
-            Video_link:
-              "https://us05web.zoom.us/j/82064910816?pwd=irnBsMk470Z2Uws7dxxZri8jrhdUG3.1",
-            Link_ID: "820 6491 0816",
-            Password: "4ExYPe",
-            // Acc_Date: new Date().toISOString().split("T")[0],
-            // No_of_cases: "1810",
-            // Rate: "1000",
-          });
-          assignedRecordsCount++;
-        }
-      }
-    }
-
-    if (assignedRecordsCount < totalRecords) {
-      const remainingRecordsCount = totalRecords - assignedRecordsCount;
-      const lastSlotStartTime =
-        distributed[distributed.length - 1]?.Virtual_Hearing_Time_From ||
-        startTime;
-      const lastSlotEndTime =
-        distributed[distributed.length - 1]?.Virtual_Hearing_Time_To || endTime;
-
-      for (let i = 0; i < remainingRecordsCount; i++) {
-        const recordIndex = assignedRecordsCount + i;
-
-        distributed.push({
-          ...records[recordIndex],
-          Hearing_date: formattedDate,
-          Hearing_time_From: lastSlotStartTime,
-          Hearing_time_To: lastSlotEndTime,
-          Video_link:
-            "https://us05web.zoom.us/j/82064910816?pwd=irnBsMk470Z2Uws7dxxZri8jrhdUG3.1",
-          Link_ID: "820 6491 0816",
-          Password: "4ExYPe",
-          // Acc_Date: new Date().toISOString().split("T")[0],
-          // No_of_cases: "1810",
-          // Rate: "1000",
-        });
-      }
-    }
-
-    console.log(`Total Records Assigned: ${assignedRecordsCount}`);
-    setDistRecords(distributed);
-    setShowDistributed(true);
-  };
-
-  // console.log(distributedRecords);
-
-  console.log(distRecords);
-  // To distribute records starts here
-
-  // To handleZoomLink starts here
-  const handleZoomLink = (e) => {
-    setZoomMeetingLink(e.target.value);
-  };
-  // To handleZoomLink ends here
-  // console.log(zoomMeetingLink);
-
-  // To handleZoomID starts here
-  const handleZoomID = (e) => {
-    setZoomId(e.target.value);
-  };
-  // To handleZoomID ends here
-  // console.log(zoomMeetingId);
-
-  // To handleZoomPassword starts here
-  const handleZoomPassword = (e) => {
-    setZoomMeetingPassword(e.target.value);
-  };
-  // To handleZoomID ends here
   // console.log(zoomMeetingPassword);
 
   // for Pagination for second table
   const headers1 = distRecords.length > 0 ? Object.keys(distRecords[0]) : [];
+// for Pagination for second table
 
-  const indexOfLastItem1 = currentPage * itemsPerPage;
-  const indexOfFirstItem1 = indexOfLastItem - itemsPerPage;
-  const currentItems1 = distRecords.slice(indexOfFirstItem, indexOfLastItem);
 
-  console.log(currentItems);
-
-  const totalPagesToShow1 = 5; // Maximum number of page buttons to show
-
-  const generatePaginationItems1 = () => {
-    const pageItems = [];
-    let startPage = Math.max(1, currentPage - Math.floor(totalPagesToShow / 2));
-    let endPage = Math.min(totalPages, startPage + totalPagesToShow1 - 1);
-
-    if (endPage - startPage + 1 < totalPagesToShow) {
-      startPage = Math.max(1, endPage - totalPagesToShow + 1);
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pageItems.push(
-        <Pagination.Item
-          key={i}
-          active={i === currentPage}
-          onClick={() => setCurrentPage(i)}
-        >
-          {i}
-        </Pagination.Item>
-      );
-    }
-    return pageItems;
-  };
-  // for Pagination for second table
-
-  // function for bulk second date assign starts here
-  const handleBulkSecHearing = async () => {
-    // console.log(distRecords);
-    const dataForAssign = distRecords.map((item) => ({
-      Case_id: item.Case_id,
-      Reference_No: item.Reference_No,
-      Cust_name: item.Cust_name,
-      Second_Hearing_date: formattedDate,
-      Hearing_time_From: startTime,
-      Hearing_time_To: endTime,
-      Video_link: zoomMeetingLink,
-      Link_ID: zoomId,
-      Password: zoomMeetingPassword,
-      No_of_cases: "1810",
-      Rate: "1000",
-    }));
-    console.log(dataForAssign);
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/AssignSecond_date`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataForAssign),
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-        );
-      }
-      const result = await response.json();
-      console.log("Upload response:", result);
-      // setMailDone(true);
-      setShowSecondModal(false);
-      setTimeout(() => {
-        toast.success("Second Hearing Date Assigned Successfully", {
-          // position: toast.POSITION.BOTTOM_RIGHT,
-          theme: "colored",
-        });
-        // window.location.reload();
-      }, 5);
-    } catch (error) {
-      console.error("Error uploading data:", error);
-      setTimeout(() => {
-        toast.error(`Error: ${error.message}`, { theme: "colored" });
-      }, 50);
-    } finally {
-      setLoading(false);
-    }
-  };
-  // function for bulk second date assign Ends here
 
   return (
     <div className="container mt-4">
@@ -710,30 +494,8 @@ const VirtualMeetingForThirdHearing = () => {
                 Appointments
               </button>
             </div>
-            {zoomMeetingId && (
-              <div className="col-md-3">
-                <button
-                  // className="btn btn-primary"
-                  className="custBtn"
-                  onClick={handleMeetingIdClick}
-                >
-                  Join Zoom Meeting
-                  {/* : {zoomMeetingId} */}
-                </button>
-              </div>
-            )}
             <div className="col-md-3">
-              {filteredData.length > 0 && (
-                <button
-                  className="custBtn"
-                  onClick={() => {
-                    // handleAssign();
-                    handleShowSecondModal();
-                  }}
-                >
-                  Assign Second Hearing
-                </button>
-              )}
+
             </div>
           </div>
         )}
@@ -941,138 +703,6 @@ const VirtualMeetingForThirdHearing = () => {
                   )}
                 </div>
               </div>
-
-              <div className="row mb-3 d-flex align-items-center">
-                <div className="col-md-6">
-                  <label htmlFor="datePicker" className="form-label">
-                    Second Hearing Date :-
-                  </label>
-                </div>
-                <div className="col-md-6">
-                  <DatePicker
-                    id="datePicker"
-                    selected={selectedDate2}
-                    onChange={handleDateChange2}
-                    placeholderText="Select a date"
-                    dateFormat="MMMM d, yyyy"
-                    // dateFormat="MM/dd/yyyy"
-                    className="form-control date-picker-sm" // Apply custom class for size adjustment
-                  />
-                </div>
-              </div>
-
-              {/* To assign StartTime and End Time Starts here */}
-              <div className="row mb-3 d-flex align-items-center">
-                <div className="col-md-3">
-                  <label htmlFor="datePicker" className="form-label">
-                    Start Time
-                  </label>
-                </div>
-                {/* The Start time Picker */}
-                <div className="col-md-3">
-                  <Form.Control
-                    as="select"
-                    value={startTime}
-                    onChange={handleStartTimeChange}
-                  >
-                    <option value="">Start Time</option>
-                    {timeOptions.map((time) => (
-                      <option key={time} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </Form.Control>
-                </div>
-
-                <div className="col-md-3">
-                  <label htmlFor="datePicker" className="form-label">
-                    End Time
-                  </label>
-                </div>
-                {/* the end time picker */}
-                <div className="col-md-3">
-                  <Form.Control
-                    as="select"
-                    value={endTime}
-                    onChange={handleEndTimeChange}
-                    disabled={!startTime}
-                  >
-                    <option value="">End time</option>
-                    {timeOptions.map((time, index) => (
-                      <option key={index} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </Form.Control>
-                </div>
-              </div>
-              {/* To assign StartTime and End Time Ends here */}
-
-              <div className="customBorder">
-                {/* To assign ZoomLink Starts here */}
-                <div className="row mb-3 d-flex align-items-center ">
-                  <div className="col-md-3">
-                    <label
-                      htmlFor="datePicker"
-                      className="form-label small-font"
-                    >
-                      Zoom Link
-                    </label>
-                  </div>
-                  <div className="col-md-9">
-                    <input
-                      id="zoomLink"
-                      className="form-control small-font"
-                      value={zoomMeetingLink}
-                      onChange={handleZoomLink}
-                      disabled
-                    ></input>
-                  </div>
-                </div>
-                {/* To assign ZoomLink Ends here */}
-
-                {/* To assign ZoomLink Starts here */}
-                <div className="row mb-3 d-flex align-items-center">
-                  <div className="col-md-3">
-                    <label htmlFor="zoomId" className="form-label small-font">
-                      Zoom Id
-                    </label>
-                  </div>
-                  <div className="col-md-9">
-                    <input
-                      // type="number"
-                      id="zoomId"
-                      className="form-control small-font"
-                      value={zoomId} // Bind input value to state
-                      onChange={handleZoomID} // Handle input change
-                      disabled
-                    />
-                  </div>
-                </div>
-                {/* To assign ZoomLink Ends here */}
-
-                {/* To assign ZoomLink Starts here */}
-                <div className="row mb-3 d-flex align-items-center">
-                  <div className="col-md-3">
-                    <label
-                      htmlFor="datePicker"
-                      className="form-label small-font"
-                    >
-                      Zoom Password
-                    </label>
-                  </div>
-                  <div className="col-md-9">
-                    <input
-                      id="zoomLink"
-                      className="form-control small-font"
-                      value={zoomMeetingPassword}
-                      onChange={handleZoomPassword}
-                      disabled
-                    ></input>
-                  </div>
-                </div>
-                {/* To assign ZoomLink Ends here */}
-              </div>
             </form>
           </Modal.Body>
           <Modal.Footer className="mx-auto d-flex justify-content-center">
@@ -1086,223 +716,7 @@ const VirtualMeetingForThirdHearing = () => {
         </Modal>
         {/* First Modal Ends Here  */}
 
-        {/* Second Modal starts here */}
-        <Modal
-          show={showSecondModal}
-          onHide={handleCloseSecondModal}
-          className="modal-lg"
-        >
-          <Modal.Header
-            className="customModal"
-            style={{ position: "relative" }}
-          >
-            <Modal.Title className="">Assign Second Hearing Date</Modal.Title>
-            <Button
-              style={{
-                position: "absolute",
-                right: "15px",
-                color: "orange",
-                backgroundColor: "transparent",
-                border: "none",
-                fontSize: "40px",
-              }}
-              aria-label="Close"
-              onClick={handleCloseSecondModal}
-            >
-              &times;
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            {!showDistributed && (
-              <div className="row mt-3">
-                {/* the date picker */}
-                <div className="col-md-3">
-                  <DatePicker
-                    selected={selectedDate3}
-                    onChange={handleDateChange3}
-                    placeholderText="Select a date"
-                    dateFormat="MM/dd/yyyy"
-                    className="form-control custom_input" // Smaller size
-                    id="datePicker"
-                    style={{
-                      width: "100%",
-                      height: "calc(1.5em + .75rem + 2px)",
-                      padding: ".375rem .75rem",
-                      fontSize: "1rem",
-                      borderRadius: ".25rem",
-                      border: "1px solid #ced4da",
-                      boxSizing: "border-box",
-                    }}
-                  />
-                </div>
 
-                {/* The Start time Picker */}
-                <div className="col-md-3">
-                  <Form.Control
-                    as="select"
-                    value={startTime}
-                    onChange={handleStartTimeChange}
-                  >
-                    <option value="">Select Start Time</option>
-                    {timeOptions.map((time) => (
-                      <option key={time} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </Form.Control>
-                </div>
-
-                {/* the end time picker */}
-                <div className="col-md-3">
-                  <Form.Control
-                    as="select"
-                    value={endTime}
-                    onChange={handleEndTimeChange}
-                    disabled={!startTime}
-                  >
-                    <option value="">Select end time</option>
-                    {timeOptions.map((time, index) => (
-                      <option key={index} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </Form.Control>
-                </div>
-
-                {/* button Goes here */}
-                <div className="col-md-3">
-                  <Button className="custBtn" onClick={distributeRecords}>
-                    Assign Time Slot
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {showDistributed && (
-              <div className="row">
-                <div className="col-md-3"></div>
-                <div className="col-md-3"></div>
-                <div className="col-md-3"></div>
-                <div className="col-md-3">
-                  <Button className="custBtn" onClick={handleBulkSecHearing}>
-                    Assign
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            <div className="row">
-              {!showDistributed && (
-                <div className="col-md-12">
-                  <div className="table-responsive">
-                    {filteredData.length > 0 && (
-                      <table className="table table-striped table-bordered table-hover mt-3 text-center">
-                        <thead>
-                          <tr>
-                            {/* <th>Action</th> */}
-                            {headers.map((header) => (
-                              <th key={header}>{header}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filteredData.map((item, index) => (
-                            <tr
-                              key={index}
-                              style={{
-                                maxHeight: "50px",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                              }}
-                              className="text-center custom_fz"
-                            >
-                              {headers.map((header) => (
-                                <td key={header}>{item[header]}</td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    )}
-                  </div>
-                  {totalPages > 1 && (
-                    <Pagination className="justify-content-center">
-                      <Pagination.Prev
-                        onClick={() =>
-                          setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
-                        }
-                      />
-                      {generatePaginationItems()}
-                      <Pagination.Next
-                        onClick={() =>
-                          setCurrentPage((prev) =>
-                            prev < totalPages ? prev + 1 : prev
-                          )
-                        }
-                      />
-                    </Pagination>
-                  )}
-                </div>
-              )}
-
-              {showDistributed && (
-                <div className="col-md-12">
-                  <div className="table-responsive">
-                    {distRecords.length > 0 && (
-                      <table className="table table-striped table-bordered table-hover mt-3 text-center">
-                        <thead>
-                          <tr>
-                            {/* <th>Action</th> */}
-                            {headers1.map((header) => (
-                              <th key={header}>{header}</th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {distRecords.map((item, index) => (
-                            <tr
-                              key={index}
-                              style={{
-                                maxHeight: "50px",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                              }}
-                              className="text-center custom_fz"
-                            >
-                              {headers1.map((header) => (
-                                <td key={header}>{item[header]}</td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    )}
-                  </div>
-                  {totalPages > 1 && (
-                    <Pagination className="justify-content-center">
-                      <Pagination.Prev
-                        onClick={() =>
-                          setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
-                        }
-                      />
-                      {generatePaginationItems()}
-                      <Pagination.Next
-                        onClick={() =>
-                          setCurrentPage((prev) =>
-                            prev < totalPages ? prev + 1 : prev
-                          )
-                        }
-                      />
-                    </Pagination>
-                  )}
-                </div>
-              )}
-            </div>
-          </Modal.Body>
-        </Modal>
-        {/* Second Modal ends here */}
       </div>
       <ToastContainer />
     </div>
@@ -1310,4 +724,3 @@ const VirtualMeetingForThirdHearing = () => {
 };
 
 export default VirtualMeetingForThirdHearing;
-

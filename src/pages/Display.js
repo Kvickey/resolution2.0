@@ -8,8 +8,6 @@ import OurMission from "../pages/OurMission";
 import OurDiffer from "../pages/OurDiffer";
 import ContactUs from "../pages/ContactUs";
 import video from "../assets/videos/9.mp4";
-import image from "../assets/images/Hero_Illustration.png";
-import { Element } from "react-scroll";
 import CustomNavbar from "./Navbar";
 
 
@@ -58,34 +56,7 @@ function Display() {
             <div className="hero-content w-100">
               {/* Your content goes here */}
 
-              {/* <div className=' animatedText  '>
-                <h1 className='mb-3'>Legal Access Any Time Any Where</h1>
-                <Button variant="dark shadow">Call to Action</Button>
-              </div> */}
-              {/* <div className=' animatedText1 '>
-                <h1 className='mb-3'>Legal Access Any Time Any Where</h1>
-                 <Button variant="dark shadow">Call to Action</Button>
-              </div> */}
-
-              {/* Sliding Text ANimation Code Starts  */}
-
-              {/* <div class="animated-title ">
-                <div class="text-top">
-                  <div>
-                    <span>Legal Access</span>
-                    <span>Any Time</span>
-                  </div>
-                </div>
-                <div class="text-bottom">
-                  <div>Anywhere</div>
-
-                </div>
-                <div style={{ position: 'relative', top: '240px' }}>
-
-                  <Button variant="dark shadow">Call to Action</Button>
-                </div>
-              </div> */}
-
+           
               {/* Sliding Text ANimation Code Ends here  */}
 
               {/* Fade In Down  Animation start here  */}
@@ -109,28 +80,6 @@ function Display() {
                   </Col>
                 </Row>
               </div>
-
-
-              {/* Fade in DOwn animation end here  */}
-
-              {/* SVG Text Animation Starts */}
-              {/* <div className="svganimate">
-                <svg viewBox="0 0 1320 300">
-                  <text x="5  0%" y="50%" dy=".35em" text-anchor="middle">
-                    Legal Access Any Time Anywhere
-                  </text>
-                </svg>
-              </div> */}
-
-              {/* SVG Text Animation Ends */}
-
-              {/* TEXT REVEALING ANIMATION Start */}
-              {/* <div className="revealingTextAnimation">
-                <div className='inlineText'>Legal Access</div>
-                <div > 
-                  <span>Any Time Any Where</span>
-                </div>
-              </div> */}
 
               {/* TEXT REVEALING ANIMATION End */}
             </div>

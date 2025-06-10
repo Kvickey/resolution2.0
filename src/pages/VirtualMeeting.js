@@ -12,6 +12,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 // import { formatDate } from "react-datepicker/dist/date_utils";
 // import {formatDate} from "../utils/FormatDate";
 import { formatDate as customFormatDate } from "../utils/FormatDate";
+import { generateTimeOptions } from '../utils/timeUtils';
 
 const VirtualMeeting = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -67,20 +68,6 @@ const VirtualMeeting = () => {
   const [currentPage1, setCurrentPage1] = useState(1);
 
   // the logic of assigning time slot start here
-  const generateTimeOptions = () => {
-    const times = [];
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minutes = 0; minutes <= 30; minutes += 30) {
-        const hour12 = hour % 12 === 0 ? 12 : hour % 12;
-        const ampm = hour < 12 ? "AM" : "PM";
-        const hourStr = hour12 < 10 ? `0${hour12}` : `${hour12}`;
-        const minutesStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
-        times.push(`${hourStr}:${minutesStr} ${ampm}`);
-      }
-    }
-    return times;
-  };
-
   const timeOptions = generateTimeOptions();
 
   useEffect(() => {
@@ -512,59 +499,59 @@ const VirtualMeeting = () => {
 
   // const createZoomMeet =()=>{}
 
-  const createZoomMeet = async () => {
-    // console.log(selectedDate3);
-    // console.log(startTimeBulk);
-    const formattedDateTime = formatDateTime(selectedDate3, startTimeBulk);
-    // console.log(formattedDateTime);
-    const dataToGenerateZoomMeet = {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      topic: "Zoom Meeting",
-      start_time: formattedDateTime,
-      duration: "720",
-      timezone: "Asia/Kolkata",
-      agenda: "The Resolution Metting for dispute resolving",
-      Arb_id: arbId,
-    };
-    // console.log(dataToGenerateZoomMeet);
-    try {
-      setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/Zoom`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToGenerateZoomMeet),
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-        );
-      }
-      const result = await response.json(); // Process the response
-      // console.log("Upload response:", result);
-      const parsedZoomMeet = Array.isArray(result)
-        ? result
-        : JSON.parse(result);
-      console.log(parsedZoomMeet);
-      // setJoinUrl(parsedZoomMeet.join_url);
-      // setCustZoomId(parsedZoomMeet.id);
-      // setCustPassword(parsedZoomMeet.password);
-      // setCustStartTime(parsedZoomMeet.start_time);
-      toast.success("Data Uploaded Successfully", {
-        theme: "colored",
-        autoClose: 1000,
-      });
-      setZoomMeet(true);
-      // console.log(save);
-    } catch (error) {
-      console.error("Error uploading data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const createZoomMeet = async () => {
+  //   // console.log(selectedDate3);
+  //   // console.log(startTimeBulk);
+  //   const formattedDateTime = formatDateTime(selectedDate3, startTimeBulk);
+  //   // console.log(formattedDateTime);
+  //   const dataToGenerateZoomMeet = {
+  //     accessToken: accessToken,
+  //     refreshToken: refreshToken,
+  //     topic: "Zoom Meeting",
+  //     start_time: formattedDateTime,
+  //     duration: "720",
+  //     timezone: "Asia/Kolkata",
+  //     agenda: "The Resolution Metting for dispute resolving",
+  //     Arb_id: arbId,
+  //   };
+  //   // console.log(dataToGenerateZoomMeet);
+  //   try {
+  //     setLoading(true);
+  //     const response = await fetch(`${API_BASE_URL}/api/Zoom`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(dataToGenerateZoomMeet),
+  //     });
+  //     if (!response.ok) {
+  //       const errorText = await response.text();
+  //       throw new Error(
+  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+  //       );
+  //     }
+  //     const result = await response.json(); // Process the response
+  //     // console.log("Upload response:", result);
+  //     const parsedZoomMeet = Array.isArray(result)
+  //       ? result
+  //       : JSON.parse(result);
+  //     console.log(parsedZoomMeet);
+  //     // setJoinUrl(parsedZoomMeet.join_url);
+  //     // setCustZoomId(parsedZoomMeet.id);
+  //     // setCustPassword(parsedZoomMeet.password);
+  //     // setCustStartTime(parsedZoomMeet.start_time);
+  //     toast.success("Data Uploaded Successfully", {
+  //       theme: "colored",
+  //       autoClose: 1000,
+  //     });
+  //     setZoomMeet(true);
+  //     // console.log(save);
+  //   } catch (error) {
+  //     console.error("Error uploading data:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const distributeRecords = () => {};
 
@@ -726,7 +713,7 @@ const VirtualMeeting = () => {
             </button>
           </div>
         )} */}
-        <div className="col-md-3">
+        <div className="col-md-5">
           {filteredData.length > 0 && (
             <button
               className="custBtn"
