@@ -81,6 +81,7 @@ import SOCReports from "./pages/SOCReports";
 import SOCData from "./pages/SOCData";
 import AwardPassLotwise from "./pages/AwardPassLotwise";
 import AwardPassCasewise from "./pages/AwardPassCasewise";
+import "react-datepicker/dist/react-datepicker.css";
 
 const App = () => {
   // useEffect(() => {

@@ -7,6 +7,8 @@ import "./Arbitrator.css";
 import { API_BASE_URL as url } from "../utils/constants";
 import LoadingSpinner from "../components/LoadingSpinner";
 import "../components/animationStyle.css";
+import DatePicker from "react-datepicker";
+import { formatDate } from "../utils/FormatDate";
 
 const ArbitratorList = () => {
   const [arbitrators, setArbitrators] = useState([]);
@@ -29,16 +31,17 @@ const ArbitratorList = () => {
     Signature: null,
     Photo: null,
     Stamp: null,
-    Status: 0,
-    Created_by: null,
-    experience_date: "",
-    Arb_start_date: "",
+    Status: 1,
+    Created_by: "Admin",
+    Post_qualification: "",
+    experience_date: new Date(),
+    Arb_start_date: new Date(),
   };
   const [formData, setFormData] = useState(initialFormData);
   const [warnData, setWarnData] = useState(initialFormData);
-  const photoRef = useRef("");
-  const signatureRef = useRef("");
-  const stampRef = useRef("");
+  const photoRef = useRef(null);
+  const signatureRef = useRef(null);
+  const stampRef = useRef(null);
 
   useEffect(() => {
     const fetchArbitrators = async () => {
@@ -64,12 +67,12 @@ const ArbitratorList = () => {
     fetchArbitrators();
   }, [apiRecall]);
 
-  const postData = async () => {
+  const postData = async (data) => {
     try {
       const response = await fetch(url + "/api/Arb", {
         headers: { "Content-type": "application/json;charset=UTF-8" },
         method: updateForm === "Update" ? "PUT" : "POST",
-        body: JSON.stringify(formData),
+        body: JSON.stringify(data),
       });
       if (response.ok) {
         setToggleForm((preValue) => !preValue);
@@ -88,6 +91,7 @@ const ArbitratorList = () => {
       Contact_no: "",
       Email_id: "",
       Designation: "",
+      Post_qualification: "",
       Education: "",
       Firm_name: "",
       Passing_Year: "",
@@ -125,38 +129,38 @@ const ArbitratorList = () => {
       warning = { ...warning, Passing_Year: "*Invalid Year" };
       valid = false;
     }
-    if (
-      formData.Photo &&
-      (formData.Photo.size > 0.5 * 1024 * 1024 ||
-        (formData.Photo.type !== "image/jpg" &&
-          formData.Photo.type !== "image/jpeg"))
-    ) {
-      warning = { ...warning, Photo: "*Invalid Image" };
-      valid = false;
-      photoRef.current.value = "";
-    }
+    // if (
+    //   formData.Photo &&
+    //   (formData.Photo.size > 0.5 * 1024 * 1024 ||
+    //     (formData.Photo.type !== "image/jpg" &&
+    //       formData.Photo.type !== "image/jpeg"))
+    // ) {
+    //   warning = { ...warning, Photo: "*Invalid Image" };
+    //   valid = false;
+    //   photoRef.current.value = null;
+    // }
 
-    if (
-      formData.Signature &&
-      (formData.Signature.size > 0.5 * 1024 * 1024 ||
-        (formData.Signature.type !== "image/jpg" &&
-          formData.Signature.type !== "image/jpeg"))
-    ) {
-      warning = { ...warning, Signature: "*Invalid Signature" };
-      valid = false;
-      signatureRef.current.value = "";
-    }
+    // if (
+    //   formData.Signature &&
+    //   (formData.Signature.size > 0.5 * 1024 * 1024 ||
+    //     (formData.Signature.type !== "image/jpg" &&
+    //       formData.Signature.type !== "image/jpeg"))
+    // ) {
+    //   warning = { ...warning, Signature: "*Invalid Signature" };
+    //   valid = false;
+    //   signatureRef.current.value = null;
+    // }
 
-    if (
-      formData.Stamp &&
-      (formData.Stamp.size > 0.5 * 1024 * 1024 ||
-        (formData.Stamp.type !== "image/jpg" &&
-          formData.Stamp.type !== "image/jpeg"))
-    ) {
-      warning = { ...warning, Stamp: "*Invalid Stamp" };
-      valid = false;
-      stampRef.current.value = "";
-    }
+    // if (
+    //   formData.Stamp &&
+    //   (formData.Stamp.size > 0.5 * 1024 * 1024 ||
+    //     (formData.Stamp.type !== "image/jpg" &&
+    //       formData.Stamp.type !== "image/jpeg"))
+    // ) {
+    //   warning = { ...warning, Stamp: "*Invalid Stamp" };
+    //   valid = false;
+    //   stampRef.current.value = null;
+    // }
 
     setWarnData(warning);
     return valid;
@@ -177,15 +181,18 @@ const ArbitratorList = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormData((prev) => ({
-      ...prev,
+    const data = {
+      ...formData,
+      Arb_start_date : formatDate(formData.Arb_start_date),
+      experience_date : formatDate(formData.experience_date),
       Signature: null,
       Photo: null,
       Stamp: null,
-    }));
+    };
+    console.log(data);
     if (formValidation()) {
       setLoading(true);
-      await postData();
+      await postData(data);
       setLoading(false);
     }
   };
@@ -194,7 +201,7 @@ const ArbitratorList = () => {
     return (
       <div className="row justify-content-center py-3 customShadow fadeIn formHeight">
         <div className="col col-md-11 rounded">
-          <h3 className="mt-2 mb-4" style={{ color: "var(--primary-color)" }}>
+          <h3 className="mt-2 mb-3" style={{ color: "var(--primary-color)" }}>
             {updateForm === "Update" ? "UPDATE" : "ADD"} ARBITRATOR
           </h3>
           <form onSubmit={handleSubmit}>
@@ -243,7 +250,6 @@ const ArbitratorList = () => {
                 </span>
               </div>
             </div>
-
             <div className="row my-2">
               <div className="col-12 col-md ">
                 <div className="form-floating">
@@ -289,7 +295,6 @@ const ArbitratorList = () => {
                 </span>
               </div>
             </div>
-
             <div className="row my-2">
               <div className="col-12 col-md">
                 <div className="form-floating">
@@ -357,7 +362,73 @@ const ArbitratorList = () => {
                 </span>
               </div>
             </div>
+            <div className="row my-2">
+              <div className="col-12 col-md-6 datePickerZindex">
+                <div className="border shadow rounded dateContainer">
+                  <label htmlFor="floatingInputGroup1 ">Experience Date</label>
+                  <div className=" ">
+                    <DatePicker
+                      selected={formData.experience_date}
+                      dateFormat={"dd/MM/yyyy"}
+                      onChange={(date) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          experience_date: date,
+                        }))
+                      }
+                      className="border-0 focus-ring focus-ring-light bg-transparent"
+                    />
+                  </div>
+                </div>
 
+              </div>
+              <div className="col-12 col-md-6 datePickerZindex">
+                <div className="border shadow rounded dateContainer">
+                  <label htmlFor="floatingInputGroup1 ">Arbitration Start Date</label>
+                  <div className="datePickerZindex ">
+                    <DatePicker
+                      selected={formData.Arb_start_date}
+                      dateFormat={"dd/MM/yyyy"}
+                      onChange={(date) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          Arb_start_date: date,
+                        }))
+                      }
+                      className="border-0 focus-ring focus-ring-light bg-transparent"
+                    />
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div className="row my-2">
+              <div className="col-12 ">
+                <div className="form-floating">
+                  <input
+                    placeholder="Post Qualification"
+                    className="form-control custom_input"
+                    id="floatingInputGroup8"
+                    value={formData.Post_qualification}
+                    name="Post_qualification"
+                    onChange={handleChange}
+                  />
+                  <label
+                    htmlFor="floatingInputGroup8"
+                  >
+                    Post Qualification
+                  </label>
+                </div>
+                <span
+                  className={`${
+                    window.innerWidth < 700 ? "ms-1" : ""
+                  } text-danger`}
+                  style={{ fontSize: "12px" }}
+                >
+                  {warnData.Post_qualification}
+                </span>
+              </div>
+            </div>
             <div className="row">
               <div className="col-12 col-md-5">
                 <div className="form-floating">
@@ -529,7 +600,7 @@ const ArbitratorList = () => {
       ) : (
         <>
           <div className="row justify-content-end slideDown ">
-            <div className="col-12 col-md-4 col-lg-3  ">
+            <div className="col-12 col-md-4 col-lg-3 text-end ">
               <button
                 onClick={() => {
                   setToggleForm((preValue) => !preValue);
@@ -537,16 +608,16 @@ const ArbitratorList = () => {
                   setUpdateForm("");
                   setWarnData({});
                 }}
-                className="custBtn text-nowrap px-4"
+                className="custBtn text-nowrap px-4 me-4"
               >
                 Add Arbitrator
               </button>
             </div>
           </div>
           <div className="row justify-content-center my-3 cust-row-arb  mt-4 slideUp gap-4">
-            {arbitrators.map((arbitrator) => (
+            {arbitrators.length && arbitrators.map((arbitrator) => (
               <div
-                className="col-md-10 border rounded customShadow hoverZoom "
+                className="col-md-11 border rounded customShadow hoverZoom "
                 key={arbitrator.Arb_id}
               >
                 <div className="row my-3">
@@ -560,28 +631,28 @@ const ArbitratorList = () => {
 
                   <div className="col-md-8 my-md-0 my-3">
                     <div className="row">
-                      <div className="col-md-5">
-                          <h5
-                            className=" m-0 fw-bold "
-                            style={{
-                              // color: "var(--primary-color)",
-                              fontSize: "17px",
-                            }}
-                          >
-                            {arbitrator.Arb_name}
-                          </h5>
-                          <p className="m-0" style={{ fontSize: "14px" }}>
-                            {arbitrator.Designation}
-                          </p>
-                          {/* <p className="m-0 cardTitle"> Mobile No :</p> */}
-                          <span className="cardContent"> +91-9876543210</span>
-                          {/* <p className="m-0 cardTitle"> E-mail :</p> */}
-                          <span className="cardContent">
-                            {arbitrator.Email_id}
-                          </span>
+                      <div className="col-md">
+                        <h5
+                          className=" m-0 fw-bold "
+                          style={{
+                            // color: "var(--primary-color)",
+                            fontSize: "17px",
+                          }}
+                        >
+                          {arbitrator.Arb_name}
+                        </h5>
+                        <p className="m-0" style={{ fontSize: "14px" }}>
+                          {arbitrator.Designation}
+                        </p>
+                        {/* <p className="m-0 cardTitle"> Mobile No :</p> */}
+                        <span className="cardContent"> +91-9876543210 &nbsp; &nbsp;</span>
+                        {/* <p className="m-0 cardTitle"> E-mail :</p> */}
+                        <span className="cardContent">
+                          {arbitrator.Email_id}
+                        </span>
                       </div>
                       {window.innerWidth > 700 && (
-                        <div className="col-md-7">
+                        <div className="col-md-4">
                           <div className="row justify-content-end row-cols-auto">
                             <div className="col">
                               <button
@@ -604,8 +675,8 @@ const ArbitratorList = () => {
                         </div>
                       )}
                     </div>
-                    <div className="row my-4">
-                      <div className="col dottedBorder">
+                    <div className="row my-3">
+                      <div className="col col-md-3 dottedBorder">
                         <div className="row ">
                           <p className="m-0 cardTitle font-monospace">
                             Qualification :
@@ -614,9 +685,7 @@ const ArbitratorList = () => {
                             {arbitrator.Education}{" "}
                           </span>
                         </div>
-                      </div>
-                      <div className="col dottedBorder">
-                        <div className="row">
+                         <div className="row mt-2">
                           <p className="m-0 cardTitle font-monospace">
                             Year Of Passing :
                           </p>
