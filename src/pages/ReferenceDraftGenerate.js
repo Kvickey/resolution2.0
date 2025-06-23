@@ -387,7 +387,7 @@ const ReferenceDraftGenerate = () => {
             </table>
 
             {/* Pagination */}
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center p-2" >
               <nav>
                 <ul className="pagination">
                   {Array.from({ length: totalPages }, (_, i) => (
@@ -396,10 +396,12 @@ const ReferenceDraftGenerate = () => {
                       className={`page-item ${
                         currentPage === i + 1 ? "active" : ""
                       }`}
+                      
                     >
                       <button
                         className="page-link"
                         onClick={() => handlePageChange(i + 1)}
+                        style={{fontSize:"12px"}}
                       >
                         {i + 1}
                       </button>

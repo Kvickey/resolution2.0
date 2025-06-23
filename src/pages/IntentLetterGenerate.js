@@ -10,12 +10,12 @@ import { Pagination } from "react-bootstrap";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const IntentLetterGenerate = () => {
-  const {
-    data: draftNotCreatedData,
-    loading: loading1,
-    error: error1,
-    fetchData,
-  } = useFetch();
+  // const {
+  //   data: draftNotCreatedData,
+  //   loading: loading1,
+  //   error: error1,
+  //   fetchData,
+  // } = useFetch();
   const [unassignedLots, setUnassignedLots] = useState([]);
   const [intentData, setIntentData] = useState([]);
   const [receivedData, setReceivedData] = useState([]);
@@ -244,7 +244,7 @@ const IntentLetterGenerate = () => {
   // For the customStepper starts Here
   const steps = [
     "Select Lot",
-    "View INtent Letter",
+    "View Intent Letter",
     "Generate Intent Letter",
     "Upload Intent Letter",
   ];

@@ -43,6 +43,7 @@ const ArbDashboard = () => {
             icon: <FaHandshake />,
             submenu: [
                 { name: 'Generate AL', link: '/arbdashboard/acceptletter/generate_al', icon: <RiAiGenerate /> },
+                { name: 'Upload AL', link: '/arbdashboard/acceptletter/signedaccupload', icon: <RiAiGenerate /> },
                 { name: 'Services', link: '/arbdashboard/acceptletter/services', icon: <RiCustomerService2Line /> },
                 { name: 'Reports', link: '/arbdashboard/acceptletter/reports', icon: <TbReportAnalytics /> },
                 { name: 'Scheduled Mettings', link: '/arbdashboard/acceptletter/list', icon: <TbReportAnalytics /> },
@@ -58,6 +59,7 @@ const ArbDashboard = () => {
             icon: <FaHandshake />,
             submenu: [
                 { name: 'Generate Sec 17 Order', link: '/arbdashboard/section17order/generatesection17order', icon: <RiAiGenerate /> },
+                { name: 'Upload Sec 17 Order', link: '/arbdashboard/section17order/signedsec17order', icon: <RiAiGenerate /> },
                 { name: 'Services', link: '/arbdashboard/section17order/services', icon: <RiCustomerService2Line /> },
                 { name: 'Reports', link: '/arbdashboard/section17order/reports', icon: <TbReportAnalytics /> },
                 { name: 'Section 17 Orders', link: '/arbdashboard/section17order/list', icon: <TbReportAnalytics /> },

@@ -12,7 +12,8 @@ import LoadingSpinner from "../components/LoadingSpinner";
 // import { formatDate } from "react-datepicker/dist/date_utils";
 // import {formatDate} from "../utils/FormatDate";
 import { formatDate as customFormatDate } from "../utils/FormatDate";
-import { generateTimeOptions } from '../utils/timeUtils';
+import { generateTimeOptions } from "../utils/timeUtils";
+import SelectZoomModal from "../components/SelectZoomModal";
 
 const VirtualMeeting = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -121,19 +122,56 @@ const VirtualMeeting = () => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+
         const result = await response.json();
         const parsedAccessTokenArray = Array.isArray(result)
           ? result
-          : JSON.parse(result); // Ensure parsedArbitrators is an array
-        setMeeting(parsedAccessTokenArray);
-        // console.log(parsedAccessTokenArray);
+          : JSON.parse(result);
+
+          console.log(parsedAccessTokenArray);
+          
+
+        // Filter meetings that are today or later
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // remove time portion
+
+        const upcomingMeetings = parsedAccessTokenArray.filter((meeting) => {
+          const meetingDate = new Date(meeting.Date); // replace 'date' with your field name
+          return meetingDate >= today;
+        });
+
+        setMeeting(upcomingMeetings);
       } catch (error) {
-        // setError1(error.message);
+        console.error("Error fetching meetings:", error);
       }
     };
 
     fetchAccessToken();
   }, [arbId]);
+
+  // useEffect(() => {
+  //   const fetchAccessToken = async () => {
+  //     if (!arbId) return;
+  //     try {
+  //       const response = await fetch(
+  //         `${API_BASE_URL}/api/Meetings?Arb_id=${arbId}`
+  //       );
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       const result = await response.json();
+  //       const parsedAccessTokenArray = Array.isArray(result)
+  //         ? result
+  //         : JSON.parse(result); // Ensure parsedArbitrators is an array
+  //       setMeeting(parsedAccessTokenArray);
+  //       // console.log(parsedAccessTokenArray);
+  //     } catch (error) {
+  //       // setError1(error.message);
+  //     }
+  //   };
+
+  //   fetchAccessToken();
+  // }, [arbId]);
 
   // console.log(meeting);
 
@@ -291,27 +329,6 @@ const VirtualMeeting = () => {
     }
   };
 
-  const handleFileUploadCompletion = () => {
-    setAddDetails(false);
-    setFileUploadCompleted(true);
-    window.location.reload();
-    // setSelectedDate("")
-  };
-
-  // handle Date 2
-  const handleDateChange2 = (date) => {
-    setSelectedDate2(date);
-    if (date) {
-      // const options = { year: "numeric", month: "short", day: "numeric" };
-      const formatted = date.toLocaleDateString("en-US");
-      // const formatted = date.toLocaleDateString("en-US", options);
-      setDate2(formatted);
-    } else {
-      setDate2("");
-    }
-  };
-  // console.log(date2);
-
   // to handle Start Time starts here
   const handleStartTimeChange = (e) => {
     setStartTime(e.target.value);
@@ -354,8 +371,6 @@ const VirtualMeeting = () => {
 
     return `${year}-${month}-${day}T${hours}:${minutes}:${minutes}Z`;
   };
-
-
 
   // console.log(zoomResponse);
   // console.log(joinUrl);
@@ -444,171 +459,6 @@ const VirtualMeeting = () => {
   };
   // console.log(date3);
 
-  // to handle Start Time For Bulk Upload starts here
-  const handleBulkStartTimeChange = (e) => {
-    setStartTimeBulk(e.target.value);
-    setErrorMessage("");
-    setTimeDifference(null);
-    setDistRecords([]);
-  };
-
-  // to handle End Time Starts here
-  const handleBulkEndTimeChange = (e) => {
-    const selectedEndTime = e.target.value;
-    setEndTimeBulk(selectedEndTime);
-    setErrorMessage("");
-    if (startTimeBulk) {
-      calculateTimeDifference(startTimeBulk, selectedEndTime);
-    }
-  };
-  // console.log(endTimeBulk);
-  // to handle End Time Ends here
-
-  //  Calcualte the time difference between the start time & end time starts here
-  const calculateTimeDifference = (start, end) => {
-    const startDate = parseTimeStringToDate(start);
-    const endDate = parseTimeStringToDate(end);
-
-    if (endDate <= startDate) {
-      setErrorMessage("The end time must be greater than the start time.");
-      setTimeDifference(null);
-      setDistRecords([]);
-    } else {
-      const differenceInMilliseconds = endDate - startDate;
-      const differenceInMinutes = differenceInMilliseconds / (1000 * 60);
-      const differenceInHours = differenceInMinutes / 60;
-      console.log(differenceInHours);
-      setTimeDifference(differenceInHours);
-    }
-  };
-  // console.log(timeDifference);
-  //  Calcualte the time difference between the start time & end  time starts here
-
-  // to handle ParsedTimestring Time Starts here
-  const parseTimeStringToDate = (timeString) => {
-    const [time, modifier] = timeString.split(" ");
-    let [hours, minutes] = time.split(":").map(Number);
-    if (modifier === "PM" && hours !== 12) {
-      hours += 12;
-    } else if (modifier === "AM" && hours === 12) {
-      hours = 0;
-    }
-    return new Date(1970, 0, 1, hours, minutes);
-  };
-  // to handle ParsedTimestring Time Starts here
-
-  // const createZoomMeet =()=>{}
-
-  // const createZoomMeet = async () => {
-  //   // console.log(selectedDate3);
-  //   // console.log(startTimeBulk);
-  //   const formattedDateTime = formatDateTime(selectedDate3, startTimeBulk);
-  //   // console.log(formattedDateTime);
-  //   const dataToGenerateZoomMeet = {
-  //     accessToken: accessToken,
-  //     refreshToken: refreshToken,
-  //     topic: "Zoom Meeting",
-  //     start_time: formattedDateTime,
-  //     duration: "720",
-  //     timezone: "Asia/Kolkata",
-  //     agenda: "The Resolution Metting for dispute resolving",
-  //     Arb_id: arbId,
-  //   };
-  //   // console.log(dataToGenerateZoomMeet);
-  //   try {
-  //     setLoading(true);
-  //     const response = await fetch(`${API_BASE_URL}/api/Zoom`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(dataToGenerateZoomMeet),
-  //     });
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(
-  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-  //       );
-  //     }
-  //     const result = await response.json(); // Process the response
-  //     // console.log("Upload response:", result);
-  //     const parsedZoomMeet = Array.isArray(result)
-  //       ? result
-  //       : JSON.parse(result);
-  //     console.log(parsedZoomMeet);
-  //     // setJoinUrl(parsedZoomMeet.join_url);
-  //     // setCustZoomId(parsedZoomMeet.id);
-  //     // setCustPassword(parsedZoomMeet.password);
-  //     // setCustStartTime(parsedZoomMeet.start_time);
-  //     toast.success("Data Uploaded Successfully", {
-  //       theme: "colored",
-  //       autoClose: 1000,
-  //     });
-  //     setZoomMeet(true);
-  //     // console.log(save);
-  //   } catch (error) {
-  //     console.error("Error uploading data:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  const distributeRecords = () => {};
-
-  // function for bulk second date assign starts here
-  const handleBulkSecHearing = async () => {
-    // console.log(distRecords);
-    const dataForAssign = distRecords.map((item) => ({
-      Case_id: item.Case_id,
-      Reference_No: item.Reference_No,
-      Cust_name: item.Cust_name,
-      Second_Hearing_date: formattedDate,
-      Hearing_time_From: startTime,
-      Hearing_time_To: endTime,
-      // Video_link: zoomMeetingLink,
-      // Link_ID: zoomId,
-      // Password: zoomMeetingPassword,
-      No_of_cases: "1810",
-      Rate: "1000",
-    }));
-    console.log(dataForAssign);
-    setLoading(true);
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/AssignSecond_date`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataForAssign),
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-        );
-      }
-      const result = await response.json();
-      console.log("Upload response:", result);
-      // setMailDone(true);
-      setShowSecondModal(false);
-      setTimeout(() => {
-        toast.success("Second Hearing Date Assigned Successfully", {
-          // position: toast.POSITION.BOTTOM_RIGHT,
-          theme: "colored",
-        });
-        // window.location.reload();
-      }, 5);
-    } catch (error) {
-      console.error("Error uploading data:", error);
-      setTimeout(() => {
-        toast.error(`Error: ${error.message}`, { theme: "colored" });
-      }, 50);
-    } finally {
-      setLoading(false);
-    }
-  };
-  // function for bulk second date assign Ends here
-
   const handleSelectZoomMeet = () => {
     setShowSelectModal(true);
   };
@@ -623,7 +473,7 @@ const VirtualMeeting = () => {
     setMeetingId(record.Meeting_id);
     setCustZoomId(record.Link_id);
     setCustPassword(record.Password);
-    const MeetingDate = customFormatDate(record.Date)
+    const MeetingDate = customFormatDate(record.Date);
     console.log(MeetingDate);
     setCustStartTime(MeetingDate);
     setJoinUrl(record.Link);
@@ -634,7 +484,27 @@ const VirtualMeeting = () => {
   // console.log(custStartTime);
 
   // Pagination For the Main Table Starts Here
-  const headers1 = meeting.length > 0 ? Object.keys(meeting[0]) : [];
+
+  const updatedMeetings = meeting.map((item) => {
+    const {
+      Meeting_id,
+      Arb_id,
+      Date,
+      ...rest
+    } = item;
+
+    const formattedDate = Date ? Date.split("T")[0] : "";
+    
+    return {
+      Date,
+      ...rest,
+    };
+  });
+
+  // console.log(updatedMeetings);
+  
+
+  const headers1 = updatedMeetings.length > 0 ? Object.keys(updatedMeetings[0]) : [];
 
   console.log(headers1);
 
@@ -1070,7 +940,7 @@ const VirtualMeeting = () => {
       {/* Second Modal ends here */}
 
       {/*Modal starts here */}
-      <Modal
+      {/* <Modal
         show={showSelectModal}
         onHide={handleCloseSelectModal}
         className="modal-xl"
@@ -1134,26 +1004,15 @@ const VirtualMeeting = () => {
               </table>
             )}
           </div>
-
-          {/* {totalPages > 1 && (
-                  <Pagination className="justify-content-center">
-                    <Pagination.Prev
-                      onClick={() =>
-                        setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
-                      }
-                    />
-                    {generatePaginationItems1()}
-                    <Pagination.Next
-                      onClick={() =>
-                        setCurrentPage((prev) =>
-                          prev < totalPages ? prev + 1 : prev
-                        )
-                      }
-                    />
-                  </Pagination>
-                )} */}
         </Modal.Body>
-      </Modal>
+      </Modal> */}
+      <SelectZoomModal
+        show={showSelectModal}
+        onHide={() => setShowSelectModal(false)}
+        headers={headers1}
+        items={currentItems3}
+        onSelect={handleSelect}
+      />
       {/*Modal ends here */}
     </div>
   );

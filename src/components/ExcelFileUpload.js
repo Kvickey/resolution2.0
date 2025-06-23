@@ -10,9 +10,9 @@ const ExcelFileUpload = ({
   onErrorFileGenerated,
   onErrorCount,
   bankId,
-  selectedProductID
+  selectedProductID,
+  setIsDataPresent,
 }) => {
-
   const [validationErrors, setValidationErrors] = useState([]);
 
   // console.log(bankId);
@@ -46,13 +46,11 @@ const ExcelFileUpload = ({
     return blob;
   };
 
-
   // Function to validate data based on header rules
-  const validateData = (headers, data) => {
+  const validateData = (data) => {
     const errors = [];
 
     console.log(data);
-    
 
     if (!data || data.length === 0) {
       console.error("No data available for validation.");
@@ -66,15 +64,14 @@ const ExcelFileUpload = ({
 
     // console.log(bankId);
     // console.log(excelHeaders);
-    
 
-    if (bankId === "1" && selectedProductID === "1" ) {
-      console.log("Axis CV");      
+    if (bankId == "1" && selectedProductID == "1") {
+      console.log("Axis CV");
       savedHeaders = headers.map((header) => header.name); // Extract header names from headers.js when bankid is 1
-    } else if (bankId === "2" && selectedProductID === "2") {
+    } else if (bankId == "2" && selectedProductID == "2") {
       console.log("Kotak CDR");
       savedHeaders = kotakheaders.map((header) => header.name); // Extract header names from kotakheaders.js when bankid is 2
-    } else if (bankId === "2" && selectedProductID === "3") {
+    } else if (bankId == "2" && selectedProductID == "3") {
       console.log("Kotak CC");
       savedHeaders = kotakccheaders.map((header) => header.name);
     }
@@ -291,33 +288,98 @@ const ExcelFileUpload = ({
     const file = e.target.files[0];
     const reader = new FileReader();
 
+    // Helper to convert 'dd-mm-yyyy' ➜ 'mm-dd-yyyy'
+    const convertToMMDDYYYY = (dateStr) => {
+      const parts = dateStr.split("-");
+      if (parts.length === 3) {
+        const [dd, mm, yyyy] = parts;
+        return `${mm}-${dd}-${yyyy}`;
+      }
+      return dateStr;
+    };
+
     reader.onload = (event) => {
       const data = new Uint8Array(event.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
+
+      // Read workbook
+      const workbook = XLSX.read(data, {
+        type: "array",
+        cellDates: true,
+        dateNF: "dd-mm-yyyy", // Ensures dates are read in DD-MM-YYYY
+      });
 
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
-      const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
-      // console.log(jsonData);
-      
+      // Convert to JSON with stringified dates
+      const jsonData = XLSX.utils.sheet_to_json(sheet, {
+        defval: "",
+        raw: false,
+      });
 
-      // Validate the data and collect all errors
-      const allErrors = validateData(headers, jsonData);
+      // Reformat date fields
+      const reformattedData = jsonData.map((row) => ({
+        ...row,
+        LRN_date: convertToMMDDYYYY(row.LRN_date),
+        Ref_date: convertToMMDDYYYY(row.Ref_date),
+        // Add more date fields here if needed
+      }));
+
+      if (reformattedData.length > 0) {
+        setIsDataPresent(true);
+      }
+
+      // Run validation
+      const allErrors = validateData(reformattedData);
       setValidationErrors(allErrors);
 
       if (allErrors.length > 0) {
         const errorFile = generateErrorExcel(allErrors);
-        onErrorFileGenerated(errorFile); // Send the error Excel file to parent component
-        onErrorCount(allErrors.length); // Send the error count to parent component
+        onErrorFileGenerated(errorFile);
+        onErrorCount(allErrors.length);
       } else {
-        onFileChange(jsonData); // Pass data to parent if no errors
-        onErrorCount(0); // Reset error count if there are no errors
+        onFileChange(reformattedData);
+        onErrorCount(0);
       }
     };
 
-    reader.readAsArrayBuffer(file); // Read the file as a buffer
+    reader.readAsArrayBuffer(file);
   };
+
+  // const handleFileUpload = (e) => {
+  //   const file = e.target.files[0];
+  //   const reader = new FileReader();
+
+  //   reader.onload = (event) => {
+  //     const data = new Uint8Array(event.target.result);
+  //     const workbook = XLSX.read(data, { type: "array" });
+
+  //     const sheetName = workbook.SheetNames[0];
+  //     const sheet = workbook.Sheets[sheetName];
+  //     const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+  //     if(jsonData.length>0){
+  //       setIsDataPresent(true);
+  //     }
+
+  //     // console.log(jsonData);
+
+  //     // Validate the data and collect all errors
+  //     const allErrors = validateData(jsonData);
+  //     // const allErrors = validateData(headers, jsonData);
+  //     setValidationErrors(allErrors);
+
+  //     if (allErrors.length > 0) {
+  //       const errorFile = generateErrorExcel(allErrors);
+  //       onErrorFileGenerated(errorFile); // Send the error Excel file to parent component
+  //       onErrorCount(allErrors.length); // Send the error count to parent component
+  //     } else {
+  //       onFileChange(jsonData); // Pass data to parent if no errors
+  //       onErrorCount(0); // Reset error count if there are no errors
+  //     }
+  //   };
+
+  //   reader.readAsArrayBuffer(file); // Read the file as a buffer
+  // };
 
   return (
     <div>
@@ -327,7 +389,7 @@ const ExcelFileUpload = ({
           accept=".xlsx, .xls"
           onChange={handleFileUpload}
           className="custom_input"
-          style={{fontSize:"12px"}}
+          style={{ fontSize: "12px" }}
         />
       </Form.Group>
     </div>

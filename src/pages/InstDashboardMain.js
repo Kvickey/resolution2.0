@@ -32,7 +32,7 @@ const InstDashboardMain = () => {
       <div className="stats">
         <div className="statsItem p-2">
           <div className="statsTitle pregress ms-2"> 2</div>
-          <div className="statsContainer pe-3">Unassigned Lots</div>
+          <div className="statsContainer pe-3" >Unassigned Lots</div>
         </div>
 
         <div className="statsItem p-2">
@@ -50,7 +50,7 @@ const InstDashboardMain = () => {
         <div className="dashboard-content">
           <div className="arb-panel">
             <div className="arb-header">
-              <h4 className="pt-2">Arbitrators</h4>
+              <h6 className="pt-2">Arbitrators</h6>
             </div>
             <div className="arb-list">
               {arbitrators.map((item, index) => (
@@ -72,7 +72,7 @@ const InstDashboardMain = () => {
 
           <div className="chart-area">
             <div className="arb-header">
-              <h4 className="pt-2">Case Tracker</h4>
+              <h6 className="pt-2">Case Tracker</h6>
             </div>
             <div className="chart-header mt-5">
               {/* <h2>Case Tracker</h2> */}
@@ -82,7 +82,7 @@ const InstDashboardMain = () => {
 
           <div className="arb-panel">
             <div className="arb-header">
-              <h4 className="pt-2">Pending Cases</h4>
+              <h6 className="pt-2">Pending Cases</h6>
             </div>
             <div className="arb-list">
               <div className="list-item">

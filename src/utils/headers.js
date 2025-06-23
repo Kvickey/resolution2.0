@@ -214,6 +214,16 @@ export const headers = [
     ],
   },
   {
+    name: "Ref_date",
+    validations: [
+      { type: "notEmpty", message: "Reference Date cannot be empty" },
+    //   {
+    //     type: "dateOnly",
+    //     message: "LOAN_START_DATE must be an date in dd-mm-yyyy format only",
+    //   },
+    ],
+  },
+  {
     name: "WORK_FINAL_CITY",
   },
   {

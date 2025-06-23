@@ -44,6 +44,7 @@ const AcceptanceLetter = () => {
   const [arbId, setArbId] = useState("");
   const [rate, setRate] = useState(null);
   const [noOfCases, setNoOfCases] = useState(null);
+  const [noOfAwardPassCases, setNoOfAwardPassCases] = useState(null);
   const [showSecondModal, setShowSecondModal] = useState(false);
 
   // for time setting starts
@@ -241,6 +242,10 @@ const AcceptanceLetter = () => {
     setNoOfCases(e.target.value);
   };
 
+  const handleAwardPassCasesChange = (e) => {
+    setNoOfAwardPassCases(e.target.value);
+  };
+
   //   for the getting data of selected lot to create refernce Draft starts
   const handleRowAction = async (item) => {
     setSelectedLotNo(item.Lot_no);
@@ -408,6 +413,7 @@ const AcceptanceLetter = () => {
           Password: password,
           No_of_cases: noOfCases,
           Rate: rate,
+          Award_pass_cases:noOfAwardPassCases,
         });
         recordIndex++;
       }
@@ -432,10 +438,11 @@ const AcceptanceLetter = () => {
       Video_link: item.Video_link,
       Link_id: item.Link_ID,
       Password: item.Password,
-      No_of_cases: "1810",
-      Rate: "1000",
+      No_of_cases: noOfCases,
+      Rate: rate,
+      Award_pass_cases:noOfAwardPassCases,
     }));
-    // console.log(dataToGenerateAL);
+    console.log(dataToGenerateAL);
     handleStepChange(3);
     try {
       setLoading(true);
@@ -696,7 +703,7 @@ const AcceptanceLetter = () => {
       {!showTable && (
         <div className="row">
           <div className="col-md-12">
-            <div className="row table-container">
+            <div className="row table-container mt-3">
               <div className="col-md-12 mx-auto table-wrapper">
                 {/* Search Input */}
                 <div className="d-flex justify-content-start">
@@ -708,13 +715,13 @@ const AcceptanceLetter = () => {
                       setSearchTerm(e.target.value);
                       setCurrentPage(1); // reset to first page on search
                     }}
-                    className="form-control"
+                    className="form-control mb-2"
                     style={{ maxWidth: "300px", fontSize: '0.85rem' }}
                   />
                 </div>
 
                 {/* Table */}
-                <table className="responsive-table">
+                <table className="responsive-table mb-2">
                   <thead className="text-center">
                     <tr className="table-info">
                       <th scope="col" className="text-center">
@@ -778,7 +785,7 @@ const AcceptanceLetter = () => {
                 </table>
 
                 {/* Pagination */}
-                <div className="d-flex justify-content-center">
+                <div className="d-flex justify-content-center ">
                   <nav>
                     <ul className="pagination">
                       {Array.from({ length: totalPages }, (_, i) => (
@@ -950,7 +957,7 @@ const AcceptanceLetter = () => {
       {zoomMeet && !showDistributed && (
         <>
           <div className="row my-3">
-            <div className="col-md-2">
+            <div className="col-md-3">
               <div className="">
                 <Form.Control
                   type="number"
@@ -962,17 +969,7 @@ const AcceptanceLetter = () => {
                 />
               </div>
             </div>
-            <div className="col-md-2">
-              <Form.Control
-                type="number"
-                className="custom_input"
-                placeholder="No Of Cases"
-                onChange={handleNoOfCasesChange}
-                value={noOfCases}
-                style={{fontSize:"12px"}}
-              />
-            </div>
-            <div className="col-md-2">
+            <div className="col-md-3">
               <Form.Control
                 type="number"
                 className="custom_input"
@@ -982,17 +979,17 @@ const AcceptanceLetter = () => {
                 style={{fontSize:"12px"}}
               />
             </div>
-            <div className="col-md-2">
+            <div className="col-md-3">
               <Form.Control
                 type="number"
                 className="custom_input"
-                placeholder="Ongoing Cases"
-                onChange={handleNoOfCasesChange}
-                value={noOfCases}
+                placeholder="Award Pass Cases"
+                onChange={handleAwardPassCasesChange}
+                value={noOfAwardPassCases}
                 style={{fontSize:"12px"}}
               />
             </div>
-            <div className="col-md-2">
+            <div className="col-md-3">
               <Button className="custBtn" onClick={distributeRecords}>
                 Assign
               </Button>

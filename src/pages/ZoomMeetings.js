@@ -5,7 +5,7 @@ import { useAuth } from "../components/AuthProvider";
 import { API_BASE_URL } from "../utils/constants";
 import { toast } from "react-toastify";
 import ClearForm from "../components/Clearform";
-import { generateTimeOptions } from '../utils/timeUtils';
+import { generateTimeOptions } from "../utils/timeUtils";
 
 const ZoomMeetings = () => {
   const [startTime, setStartTime] = useState("");
@@ -126,7 +126,6 @@ const ZoomMeetings = () => {
     // console.log(getDate); // Outputs in MM/dd/yyyy format
     return;
   };
-
 
   const timeOptions = generateTimeOptions();
 
@@ -288,7 +287,8 @@ const ZoomMeetings = () => {
                 onChange={handleDateChange}
                 placeholderText="Select a date"
                 dateFormat="MM/dd/yyyy"
-                className="form-control custom_input" // Smaller size
+                className="form-control custom_input"
+                minDate={new Date()} // ✅ Prevent past dates
                 id="datePicker"
                 style={{
                   width: "100%",
@@ -337,7 +337,11 @@ const ZoomMeetings = () => {
 
             {/* button Goes here */}
             <div className="col-md-3">
-              <Button className="custBtn" onClick={handleZoomMeet}  disabled={!startTime || !endTime || !selectedDate}>
+              <Button
+                className="custBtn"
+                onClick={handleZoomMeet}
+                disabled={!startTime || !endTime || !selectedDate}
+              >
                 Create Zoom Meet
               </Button>
             </div>

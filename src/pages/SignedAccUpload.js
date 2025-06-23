@@ -6,7 +6,7 @@ import { API_BASE_URL } from "../utils/constants";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ClearForm from "../components/Clearform";
 
-const SOC = () => {
+const SignedAccUpload = () => {
   const [activeStep, setActiveStep] = useState(0);
 
   const [verifyData, setVerifyData] = useState(false);
@@ -48,10 +48,6 @@ const SOC = () => {
       name: "CUST_NAME",
       validations: [{ type: "notEmpty", message: "CUST_NAME cannot be empty" }],
     },
-    {
-      name: "Soc_date",
-      validations: [{ type: "notEmpty", message: "SOC Date cannot be empty" }],
-    },
   ];
 
   const handleFileChange = (event) => {
@@ -74,7 +70,7 @@ const SOC = () => {
       reader.readAsArrayBuffer(file);
     }
   };
-  console.log(excelData);
+  // console.log(excelData);
 
   const handlePdfFileUpload = (event) => {
     const file = event.target.files[0];
@@ -155,7 +151,6 @@ const SOC = () => {
   const handleUpload = async () => {
     const data = excelData.map((item) => ({
       Reference_no: item.REFERENCE_NO,
-      Soc_date: item.Soc_date,
     }));
 
     const formData = new FormData();
@@ -328,8 +323,8 @@ const SOC = () => {
         <div className="row">
           <div className="col-md-12 d-flex justify-content-center ">
             <ClearForm
-              message="SOC Uploaded Sucessfully!"
-              redirectPath="/lawyerdashboard"
+              message="Acceptance Letter Uploaded Sucessfully!"
+              redirectPath="/arbdashboard"
             />
           </div>
         </div>
@@ -338,4 +333,6 @@ const SOC = () => {
   );
 };
 
-export default SOC;
+export default SignedAccUpload;
+
+
