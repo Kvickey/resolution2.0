@@ -9,6 +9,9 @@ import ClearForm from "../components/Clearform";
 import LoadingSpinner from "../components/LoadingSpinner";
 import CustomStepper from "../components/CustomStepper";
 import ProgressBar from "../components/ProgressBar";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import KotakCCUpload from "./KotakCCUpload";
 
 const UploadExcel = () => {
   const [bank, setBank] = useState([]);
@@ -17,12 +20,17 @@ const UploadExcel = () => {
   const [selectedProductID, setSelectedProductID] = useState(null);
   const [loading, setLoading] = useState(false);
   const [shouldUpload, setShouldUpload] = useState(false);
+  const [axisCV, setAxisCV] = useState(false);
+  const [kotakCDR, setKotakCDR] = useState(false);
+  const [kotakCC, setKotakCC] = useState(false);
+  const [valid, setValid] = useState(false);
   const [error, setError] = useState(null);
   const [excelData, setExcelData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10; // Set to 10 records per page
   const [errorCount, setErrorCount] = useState(0);
   const [errorExcelBlob, setErrorExcelBlob] = useState(null);
+  const [verified, setVerified] = useState(false);
   const [clearForm, setClearForm] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
@@ -30,6 +38,7 @@ const UploadExcel = () => {
   const [prog, setProg] = useState(0);
   const [totalRecords, setTotalRecords] = useState(0);
   const [uploadStatus, setUploadStatus] = useState({ success: 0, failed: 0 });
+  const [errorResponses, setErrorResponses] = useState([]);
 
   // To fetch Banks Data
   useEffect(() => {
@@ -49,8 +58,6 @@ const UploadExcel = () => {
 
     fetchClient();
   }, []);
-
-  // console.log(bank);
 
   const handleBankChange = (e) => {
     const selectedID = e.target.value;
@@ -73,6 +80,7 @@ const UploadExcel = () => {
         const products = Array.isArray(result) ? result : JSON.parse(result);
         // console.log(products);
         setSelectedProduct(products); // Set products data
+        setSelectedProductID(products[0].Product_id);
       } catch (error) {
         setError(error);
       } finally {
@@ -88,9 +96,55 @@ const UploadExcel = () => {
     setSelectedProductID(selectedID);
   };
 
+  console.log(bankId);
+  console.log(selectedProductID);
   // For the customStepper starts Here
 
-  const steps = ["Select Excel", "Upload Excel"];
+  useEffect(() => {
+    if (
+      bankId &&
+      selectedProductID &&
+      ((Number(bankId) === 1 && Number(selectedProductID) === 1) ||
+        (Number(bankId) === 2 && Number(selectedProductID) === 2))
+    ) {
+      setValid(true);
+    } else {
+      setValid(false);
+    }
+  }, [bankId, selectedProductID]);
+
+  useEffect(() => {
+    const validCombinations = [
+      { bankId: 1, productId: 1, setter: setAxisCV, value: true },
+      { bankId: 2, productId: 2, setter: setKotakCDR, value: true },
+      { bankId: 2, productId: 3, setter: setKotakCC, value: true },
+      // Add more combinations as needed
+    ];
+
+    const matched = validCombinations.find(
+      (combo) =>
+        Number(bankId) === combo.bankId &&
+        Number(selectedProductID) === combo.productId
+    );
+
+    // Reset all values first (optional, if you need only one to be true at a time)
+    setAxisCV(false);
+    setKotakCDR(false);
+    setKotakCC(false);
+
+    if (matched) {
+      setValid(true);
+      matched.setter(matched.value);
+    } else {
+      setValid(false);
+    }
+  }, [bankId, selectedProductID]);
+
+  // console.log(axisCV);
+  // console.log(kotakCC);
+  // console.log(kotakCDR);
+
+  const steps = ["Select Excel", "Verify Data", "Upload Excel"];
 
   // Function to move to a specific step in Stepper Component
   const handleStepChange = (step) => {
@@ -110,7 +164,7 @@ const UploadExcel = () => {
     const updatedData = data.map((item, index) => {
       const { SR_NO, ...rest } = item;
       return {
-        SrNo: index + 1,
+        // SrNo: index + 1,
         ...rest,
       };
     });
@@ -143,10 +197,6 @@ const UploadExcel = () => {
     }
   };
 
-  const handleUpload = () => {
-    setShouldUpload(true); // Trigger the upload process
-  };
-
   // if (loading) return <LoadingSpinner />;
 
   // For Pagination
@@ -175,29 +225,14 @@ const UploadExcel = () => {
   const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
   const displayedPages = pageNumbers.slice(startPage - 1, endPage);
 
-  // Handlers for pagination
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handleFormClear = () => {
-    setClearForm(true); // Set a flag to clear the form
-    console.log("Form cleared!");
-  };
-
   // For Excel Upload Starts here
   // Create a record object for the API
-  const createRecordObject = (row, borrowerArray, branchId) => {
-    console.log(row);
-    return {
+  const createRecordObject = (row, borrowerArray, kotakCdrArray) => {
+    // console.log(row);
+    // console.log(borrowerArray);
+    // console.log(bankId);
+    // Common properties for both branchId "1" and "2"
+    const commonData = {
       Lot_no: row.Lot_No,
       Acc_no: row.ACC_NO,
       Reference_no: row.REFERENCE_NO,
@@ -207,76 +242,49 @@ const UploadExcel = () => {
       LRN_Date: row.LRN_date,
       LRN_ref_no: row.LRN_REFERENCE_NO,
       Uploaded_by: "Admin",
-  
-      // Conditional Axis_cv assignment
-      Axis_cv: bankId === "1" ? {
-        Product: row.PRODUCT,
-        Registration_no: row.REGISTRATION_NO,
-        Engine_no: row.ENGINE_NUMBER,
-        Chessi_no: row.CHASSIS_NUMBER,
-        Model_1: row.MODEL1,
-        Model_2: row.MODEL2,
-        Manufacture: row.MANUFACTURER,
-        Dealer: row.DEALER,
-        Interest_rate: row.INTEREST_RATE,
-        Disburstment_amt: row.DISBURSEMENT_AMOUNT,
-        Disbustment_amt_in_word: row.DISB_AMOUNT_IN_WORDS,
-        Disburstmet_date: row.DISBURSEMENT_DATE,
-        Tenure: row.TENURE,
-        EMI_amount: row.EMI_AMT,
-        Emi_start_date: row.EMI_START_DATE,
-        Foreclosure_amt: row.FORCLOSER_AMT_ROUNDUP,
-        Foreclosure_amt_in_word: row.FORCLOSER_AMT_IN_WORDS,
-        Loan_start_date: row.LOAN_START_DATE,
-        Work_final_city: row.WORK_FINAL_CITY,
-        Branch_RAC_name: row.BRANCH_RAC_NAME,
-        Final_city: row.FINAL_CITY,
-        State: row.STATE,
-      } : null, // If bankId is not "1", Axis_cv will be null
-  
       Borrower: borrowerArray,
     };
-  };
-  
-//   const createRecordObject = (row, borrowerArray,branchId) => {
-//     return {
-//       Lot_no: row.Lot_No,
-//       Acc_no: row.ACC_NO,
-//       Reference_no: row.REFERENCE_NO,
-//       Cust_id: row.CUST_ID,
-//       Client_id: bankId,
-//       Product_id: selectedProductID,
-//       LRN_Date: row.LRN_date,
-//       LRN_ref_no: row.LRN_REFERENCE_NO,
-//       Uploaded_by: "Admin",
-//       Axis_cv: {
-//         Product: row.PRODUCT,
-//         Registration_no: row.REGISTRATION_NO,
-//         Engine_no: row.ENGINE_NUMBER,
-//         Chessi_no: row.CHASSIS_NUMBER,
-//         Model_1: row.MODEL1,
-//         Model_2: row.MODEL2,
-//         Manufacture: row.MANUFACTURER,
-//         Dealer: row.DEALER,
-//         Interest_rate: row.INTEREST_RATE,
-//         Disburstment_amt: row.DISBURSEMENT_AMOUNT,
-//         Disbustment_amt_in_word: row.DISB_AMOUNT_IN_WORDS,
-//         Disburstmet_date: row.DISBURSEMENT_DATE,
-//         Tenure: row.TENURE,
-//         EMI_amount: row.EMI_AMT,
-//         Emi_start_date: row.EMI_START_DATE,
-//         Foreclosure_amt: row.FORCLOSER_AMT_ROUNDUP,
-//         Foreclosure_amt_in_word: row.FORCLOSER_AMT_IN_WORDS,
-//         Loan_start_date: row.LOAN_START_DATE,
-//         Work_final_city: row.WORK_FINAL_CITY,
-//         Branch_RAC_name: row.BRANCH_RAC_NAME,
-//         Final_city: row.FINAL_CITY,
-//         State: row.STATE,
-//       },
-//       Borrower: borrowerArray,
-//     };
-//   };
 
+    if (bankId === "1") {
+      return {
+        ...commonData,
+        Axis_cv: {
+          Product: row.PRODUCT,
+          Registration_no: row.REGISTRATION_NO,
+          Engine_no: row.ENGINE_NUMBER,
+          Chessi_no: row.CHASSIS_NUMBER,
+          Model_1: row.MODEL1,
+          Model_2: row.MODEL2,
+          Manufacture: row.MANUFACTURER,
+          Dealer: row.DEALER,
+          Interest_rate: row.INTEREST_RATE,
+          Disburstment_amt: row.DISBURSEMENT_AMOUNT,
+          Disbustment_amt_in_word: row.DISB_AMOUNT_IN_WORDS,
+          Disburstmet_date: row.DISBURSEMENT_DATE,
+          Tenure: row.TENURE,
+          EMI_amount: row.EMI_AMT,
+          Emi_start_date: row.EMI_START_DATE,
+          Foreclosure_amt: row.FORCLOSER_AMT_ROUNDUP,
+          Foreclosure_amt_in_word: row.FORCLOSER_AMT_IN_WORDS,
+          Loan_start_date: row.LOAN_START_DATE,
+          Work_final_city: row.WORK_FINAL_CITY,
+          Branch_RAC_name: row.BRANCH_RAC_NAME,
+          Final_city: row.FINAL_CITY,
+          State: row.STATE,
+        },
+      };
+    } else if (bankId === "2") {
+      return {
+        ...commonData,
+        Kotak_cdr:
+          kotakCdrArray.length > 0
+            ? [kotakCdrArray[kotakCdrArray.length - 1]]
+            : [],
+      };
+    }
+  };
+
+  // Function to send Data row by row starts  here
   const sendRowData = async (rowData) => {
     console.log(rowData);
     try {
@@ -293,133 +301,246 @@ const UploadExcel = () => {
       return false;
     }
   };
+  // Function to send Data row by row starts  here
 
-  console.log(prog);
+  const verifyData = async (rowData) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/Validate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(rowData),
+      });
 
-  // setTotalRecords(excelData.length) ;
+      const responseBody = await response.json();
 
-  // const handleDataUpload = async () => {
-  //   setShowProgress(true);
+      if (!response.ok) {
+        setErrorResponses((prev) => [...prev, responseBody]); // append to error state
+      }
+      setVerified(true);
+      return response.ok;
+    } catch (error) {
+      console.error("Error sending data:", error);
+      setErrorResponses((prev) => [
+        ...prev,
+        { error: error.message, data: rowData },
+      ]);
+      return false;
+    }
+  };
 
-  //   handleStepChange(2);
-  //   let prevAcc = null;
-  //   let borrowerArray = [];
-  //   let success = 0,
-  //     failed = 0;
+  // console.log(errorResponses);
 
-  //   for (let i = 0; i < excelData.length; i++) {
-  //     const row = excelData[i];
-  //     const totalRecord = excelData.length;
-  //     setTotalRecords(excelData.length);
-  //     setProgress(Math.round(((i + 1) / totalRecords) * 100));
+  const exportErrorsToExcel = () => {
+    if (errorResponses.length === 0) {
+      alert("No errors to export.");
+      return;
+    }
 
-  //     if (row.ACC_NO !== prevAcc) {
-  //       if (borrowerArray.length > 0) {
-  //         const record = createRecordObject(excelData[i - 1], borrowerArray);
-  //         const isSuccess = await sendRowData(record);
-  //         setProg((prevProg) => prevProg + 1);
-  //         isSuccess ? success++ : failed++;
-  //       }
-  //       borrowerArray = [];
-  //       prevAcc = row.ACC_NO;
+    // Format data (optional - flatten nested data)
+    const formattedErrors = errorResponses.map((err, index) => ({
+      Index: index + 1,
+      Error: err.error || err.message || "Validation error",
+      Data:
+        typeof err.data === "object"
+          ? JSON.stringify(err.data)
+          : err.data || JSON.stringify(err),
+    }));
 
-  //       borrowerArray.push({
-  //         Type: "B",
-  //         Cust_name: row.CUST_NAME,
-  //         Mobile_no: row.Mobile_no,
-  //         Work_mobile_no: row.WORK_MOBILE_2,
-  //         Email_id: row.E_MAIL_ID,
-  //         Comm_add: row.Communication_address,
-  //       });
-  //     } else {
-  //       borrowerArray.push({
-  //         Type: "C",
-  //         Cust_name: row.CUST_NAME,
-  //         Mobile_no: row.Mobile_no,
-  //         Work_mobile_no: row.WORK_MOBILE_2,
-  //         Email_id: row.E_MAIL_ID,
-  //         Comm_add: row.Communication_address,
-  //       });
-  //     }
-  //   }
+    const worksheet = XLSX.utils.json_to_sheet(formattedErrors);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Errors");
 
-  //   if (borrowerArray.length > 0) {
-  //     const lastRecord = createRecordObject(
-  //       excelData[excelData.length - 1],
-  //       borrowerArray
-  //     );
-  //     const isSuccess = await sendRowData(lastRecord);
-  //     isSuccess ? success++ : failed++;
-  //   }
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
 
-  //   setUploadStatus({ success, failed });
-  //   setClearForm(true);
-  //   setLoading(false);
+    const fileData = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
 
-  //   // if (onUploadComplete) {
-  //   //   onUploadComplete();
-  //   // }
-  // };
+    saveAs(fileData, "ValidationErrors.xlsx");
+  };
+
+  // Function to verify the Data Starts here
+  const handleVerify = async () => {
+    // setShowProgress(true);
+    handleStepChange(2);
+    let prevAcc = null;
+    let prevRef = null;
+    let borrowerArray = [];
+    let kotakCdrArray = [];
+    // let success = 0,
+    //   failed = 0;
+
+    if (bankId === "1") {
+      for (let i = 0; i < excelData.length; i++) {
+        const row = excelData[i];
+        const totalRecord = excelData.length;
+        setTotalRecords(excelData.length);
+        // setProgress(Math.round(((i + 1) / totalRecords) * 100));
+
+        if (row.ACC_NO !== prevAcc) {
+          if (borrowerArray.length > 0) {
+            const record = createRecordObject(excelData[i - 1], borrowerArray);
+            const isSuccess = await verifyData(record);
+            // setProg((prevProg) => prevProg + 1);
+            // isSuccess ? success++ : failed++;
+          }
+          borrowerArray = [];
+          prevAcc = row.ACC_NO;
+
+          borrowerArray.push({
+            Type: "B",
+            Cust_name: row.CUST_NAME,
+            Mobile_no: row.Mobile_no,
+            Work_mobile_no: row.WORK_MOBILE_2,
+            Email_id: row.E_MAIL_ID,
+            Comm_add: row.Communication_address,
+          });
+        } else {
+          borrowerArray.push({
+            Type: "C",
+            Cust_name: row.CUST_NAME,
+            Mobile_no: row.Mobile_no,
+            Work_mobile_no: row.WORK_MOBILE_2,
+            Email_id: row.E_MAIL_ID,
+            Comm_add: row.Communication_address,
+          });
+        }
+      }
+
+      if (borrowerArray.length > 0) {
+        const lastRecord = createRecordObject(
+          excelData[excelData.length - 1],
+          borrowerArray
+        );
+        const isSuccess = await verifyData(lastRecord);
+        // isSuccess ? success++ : failed++;
+      }
+
+      // setUploadStatus({ success, failed });
+      // setClearForm(true);
+      setLoading(false);
+    } else if (bankId === "2") {
+      let prevRef = null;
+      let prevCustId = null;
+      let borrowerArray = [];
+      let kotakCdrArray = [];
+      let finalRecords = [];
+
+      for (let i = 0; i < excelData.length; i++) {
+        const row = excelData[i];
+        console.log(row);
+
+        const nextRow = excelData[i + 1]; // Get next row (undefined if last row)
+        const totalRecord = excelData.length;
+
+        setTotalRecords(totalRecord);
+        // setProgress(Math.round(((i + 1) / totalRecord) * 100));
+
+        // If it's a new REFERENCE_NO, finalize previous record
+        if (row.REFERENCE_NO !== prevRef) {
+          if (borrowerArray.length > 0) {
+            // Finalize and send previous record
+            const record = {
+              Lot_no: row.Lot_No,
+              Acc_no: kotakCdrArray[0]?.Loan_Acc_no || "",
+              Reference_no: prevRef,
+              Cust_id: prevCustId,
+              Client_id: bankId,
+              Product_id: selectedProductID,
+              Uploaded_by: "Admin",
+              Borrower: borrowerArray, // Only one borrower entry
+              Kotak_Cdrs: kotakCdrArray,
+            };
+
+            console.log(record);
+            const isSuccess = await verifyData(record);
+            // setProg((prevProg) => prevProg + 1);
+            finalRecords.push(record);
+          }
+
+          // Reset for new reference
+          borrowerArray = [];
+          kotakCdrArray = [];
+          prevRef = row.REFERENCE_NO;
+          prevCustId = row.CUST_ID;
+
+          // **Add Borrower Only Once (First Row for REFERENCE_NO)**
+          borrowerArray.push({
+            Type: "B",
+            Cust_name: row.CUST_NAME,
+            Mobile_no: row.Mobile_no,
+            Work_mobile_no: row.WORK_MOBILE_2,
+            Email_id: row.E_MAIL_ID,
+            Comm_add: row.Communication_address,
+            And_also_at: row.And_Also_At_address1,
+            And_also_at2: row.And_Also_At_address2,
+            And_also_at3: row.And_Also_At_address3,
+            Work_add: row.Work_Address,
+          });
+        }
+
+        // Add loan details to Kotak_cdr
+        kotakCdrArray.push({
+          Loan_Acc_no: row.Loan_Acc_No,
+          Product: row.Product,
+          Aggrement_date: row.Aggrement_Date,
+          Aggrement_value: row.Aggrement_Value,
+          Total_Value: row.Total_Aggrement_Value,
+          Download_date: row.Download_date,
+          FR_amount: row.FR_Amount,
+          Total_outstading_amount: row.Total_Outstanding_Amount,
+          CM_Name: row.COLLECTION_MANAGER_NAME,
+          CM_Email_id: row.Collection_Manager_Email_Id,
+          CM_No: row.COLLECTION_MANAGER_NO,
+        });
+
+        // **At the last row, ensure we send the final record**
+        if (i === excelData.length - 1) {
+          const lastRecord = {
+            Lot_no: row.Lot_No,
+            Acc_no: kotakCdrArray[0]?.Loan_Acc_no || "",
+            Reference_no: row.REFERENCE_NO,
+            Cust_id: prevCustId,
+            Client_id: bankId,
+            Product_id: selectedProductID,
+            Uploaded_by: "Admin",
+            Borrower: borrowerArray,
+            Kotak_Cdrs: kotakCdrArray,
+          };
+          // console.log(lastRecord);
+          await verifyData(lastRecord);
+          finalRecords.push(lastRecord);
+        }
+      }
+
+      console.log("Final Records:", finalRecords);
+
+      // setClearForm(true);
+      setVerified(true);
+
+      // setLoading(false);
+    }
+  };
+  // Function to verify the Data Starts here
+
+  // Function  to handle the Excel Data upload starts Here
   const handleDataUpload = async () => {
     setShowProgress(true);
 
-    handleStepChange(2);
+    handleStepChange(3);
     let prevAcc = null;
+    let prevRef = null;
     let borrowerArray = [];
+    let kotakCdrArray = [];
     let success = 0,
       failed = 0;
 
     if (bankId === "1") {
-      // for (let i = 0; i < excelData.length; i++) {
-      //   const row = excelData[i];
-      //   const totalRecord = excelData.length;
-      //   setTotalRecords(excelData.length);
-      //   setProgress(Math.round(((i + 1) / totalRecords) * 100));
-
-      //   if (row.ACC_NO !== prevAcc) {
-      //     if (borrowerArray.length > 0) {
-      //       const record = createRecordObject(excelData[i - 1], borrowerArray);
-      //       const isSuccess = await sendRowData(record);
-      //       setProg((prevProg) => prevProg + 1);
-      //       isSuccess ? success++ : failed++;
-      //     }
-      //     borrowerArray = [];
-      //     prevAcc = row.ACC_NO;
-
-      //     borrowerArray.push({
-      //       Type: "B",
-      //       Cust_name: row.CUST_NAME,
-      //       Mobile_no: row.Mobile_no,
-      //       Work_mobile_no: row.WORK_MOBILE_2,
-      //       Email_id: row.E_MAIL_ID,
-      //       Comm_add: row.Communication_address,
-      //     });
-      //   } else {
-      //     borrowerArray.push({
-      //       Type: "C",
-      //       Cust_name: row.CUST_NAME,
-      //       Mobile_no: row.Mobile_no,
-      //       Work_mobile_no: row.WORK_MOBILE_2,
-      //       Email_id: row.E_MAIL_ID,
-      //       Comm_add: row.Communication_address,
-      //     });
-      //   }
-      // }
-
-      // if (borrowerArray.length > 0) {
-      //   const lastRecord = createRecordObject(
-      //     excelData[excelData.length - 1],
-      //     borrowerArray
-      //   );
-      //   const isSuccess = await sendRowData(lastRecord);
-      //   isSuccess ? success++ : failed++;
-      // }
-
-      // setUploadStatus({ success, failed });
-      // setClearForm(true);
-      // setLoading(false);
-      alert
-    } else if (bankId === "2") {
       for (let i = 0; i < excelData.length; i++) {
         const row = excelData[i];
         const totalRecord = excelData.length;
@@ -466,13 +587,107 @@ const UploadExcel = () => {
       }
 
       setUploadStatus({ success, failed });
-      // setClearForm(true);
+      setClearForm(true);
       setLoading(false);
-    }
+    } else if (bankId === "2") {
+      let prevRef = null;
+      let prevCustId = null;
+      let borrowerArray = [];
+      let kotakCdrArray = [];
+      let finalRecords = [];
 
-    // if (onUploadComplete) {
-    //   onUploadComplete();
-    // }
+      for (let i = 0; i < excelData.length; i++) {
+        const row = excelData[i];
+        console.log(row);
+
+        const nextRow = excelData[i + 1]; // Get next row (undefined if last row)
+        const totalRecord = excelData.length;
+
+        setTotalRecords(totalRecord);
+        setProgress(Math.round(((i + 1) / totalRecord) * 100));
+
+        // If it's a new REFERENCE_NO, finalize previous record
+        if (row.REFERENCE_NO !== prevRef) {
+          if (borrowerArray.length > 0) {
+            // Finalize and send previous record
+            const record = {
+              Lot_no: row.Lot_No,
+              Acc_no: kotakCdrArray[0]?.Loan_Acc_no || "",
+              Reference_no: prevRef,
+              Cust_id: prevCustId,
+              Client_id: bankId,
+              Product_id: selectedProductID,
+              Uploaded_by: "Admin",
+              Borrower: borrowerArray,
+              Kotak_Cdrs: kotakCdrArray,
+            };
+
+            console.log(record);
+            const isSuccess = await sendRowData(record);
+            setProg((prevProg) => prevProg + 1);
+            finalRecords.push(record);
+          }
+
+          // Reset for new reference
+          borrowerArray = [];
+          kotakCdrArray = [];
+          prevRef = row.REFERENCE_NO;
+          prevCustId = row.CUST_ID;
+
+          // **Add Borrower Only Once (First Row for REFERENCE_NO)**
+          borrowerArray.push({
+            Type: "B",
+            Cust_name: row.CUST_NAME,
+            Mobile_no: row.Mobile_no,
+            Work_mobile_no: row.WORK_MOBILE_2,
+            Email_id: row.E_MAIL_ID,
+            Comm_add: row.Communication_address,
+            And_also_at: row.And_Also_At_address1,
+            And_also_at2: row.And_Also_At_address2,
+            And_also_at3: row.And_Also_At_address3,
+            Work_add: row.Work_Address,
+          });
+        }
+
+        // Add loan details to Kotak_cdr
+        kotakCdrArray.push({
+          Loan_Acc_no: row.Loan_Acc_No,
+          Product: row.Product,
+          Aggrement_date: row.Aggrement_Date,
+          Aggrement_value: row.Aggrement_Value,
+          Total_Value: row.Total_Aggrement_Value,
+          Download_date: row.Download_date,
+          FR_amount: row.FR_Amount,
+          Total_outstading_amount: row.Total_Outstanding_Amount,
+          CM_Name: row.COLLECTION_MANAGER_NAME,
+          CM_Email_id: row.Collection_Manager_Email_Id,
+          CM_No: row.COLLECTION_MANAGER_NO,
+        });
+
+        // **At the last row, ensure we send the final record**
+        if (i === excelData.length - 1) {
+          const lastRecord = {
+            Lot_no: row.Lot_No,
+            Acc_no: kotakCdrArray[0]?.Loan_Acc_no || "",
+            Reference_no: row.REFERENCE_NO,
+            Cust_id: prevCustId,
+            Client_id: bankId,
+            Product_id: selectedProductID,
+            Uploaded_by: "Admin",
+            Borrower: borrowerArray,
+            Kotak_Cdrs: kotakCdrArray,
+          };
+          // console.log(lastRecord);
+          await sendRowData(lastRecord);
+          finalRecords.push(lastRecord);
+        }
+      }
+
+      console.log("Final Records:", finalRecords);
+
+      setClearForm(true);
+      // setLoading(false);
+    }
   };
   // For Excel Upload ends here
 
@@ -483,7 +698,8 @@ const UploadExcel = () => {
           <CustomStepper steps={steps} activeStep={activeStep} />
         </div>
       </div>
-      <div className="row">
+
+      <div className="row mt-2">
         <div className="col-md-12">
           {excelData.length > 0 && !clearForm && showProgress && (
             <>
@@ -507,44 +723,70 @@ const UploadExcel = () => {
         </div>
       </div>
 
-      <div className="row align-items-center mb-3">
+      <div className="row align-items-center mt-1">
         <div className="col-md-6">
-          {/* {excelData.length == 0 ? (
-            <h4>Select An Excel File</h4>
-          ) : (
-            <h4>Upload A File</h4>
-          )} */}
-          {/* {excelData.length == 0 && !clearform && <h4>Select An Excel File</h4>} */}
           {excelData.length > 0 && !showProgress && (
-            <h4>Select An Excel File</h4>
+            <h6>Select An Excel File</h6>
           )}
         </div>
-        <div className="col-md-4"></div>
+        <div className="col-md-4 ">
+          {errorResponses.length > 0 &&
+            excelData.length > 0 &&
+            !clearForm &&
+            !showProgress && (
+              <span
+                onClick={exportErrorsToExcel}
+                style={{
+                  cursor: "pointer",
+                  color: "#007bff",
+                  textDecoration: "underline",
+                  fontWeight: "bold",
+                }}
+                className="pt-2"
+              >
+                Error Excel
+              </span>
+            )}
+        </div>
         <div className="col-md-1">
-          {/* {excelData.length > 0 ? (
-            <button className="custBtn" onClick={handleUpload}>
-              Upload
-            </button>
-          ) : (
-            ""
-          )} */}
-          {excelData.length > 0 && !clearForm && !showProgress && (
-            <button className="custBtn" onClick={handleDataUpload}>
-              Upload
+          {!verified && excelData.length > 0 && !clearForm && !showProgress && !kotakCC && (
+            <button
+              className="custBtn"
+              onClick={handleVerify}
+              style={{ fontSize: "12px" }}
+            >
+              Verify
             </button>
           )}
+          {!errorResponses.length > 0 &&
+            verified &&
+            excelData.length > 0 &&
+            !clearForm &&
+            !showProgress && (
+              <button
+                className="custBtn"
+                onClick={handleDataUpload}
+                style={{ fontSize: "12px" }}
+              >
+                Upload
+              </button>
+            )}
         </div>
+        {/* <div className="col-md-1">
+         
+        </div> */}
         <div className="col-md-1"></div>
       </div>
 
       {excelData.length == 0 ? (
         <div className="row justify-content-center align-items-center">
-          <div className="col-md-4 mb-3">
+          <div className="col-md-4">
             <Form.Select
               aria-label="Default select example"
               onChange={handleBankChange}
               className="custom_input"
               required
+              style={{ fontSize: "12px" }}
             >
               <option value="" disabled selected>
                 Choose a Bank
@@ -557,12 +799,31 @@ const UploadExcel = () => {
             </Form.Select>
           </div>
 
-          <div className="col-md-4 mb-3">
+          <div className="col-md-4 ">
             <Form.Select
               aria-label="Default select example"
               onChange={handleProductChange}
               className="custom_input"
               required
+              style={{ fontSize: "12px" }}
+              value={selectedProductID} // ✅ Bind value here
+            >
+              <option value="" disabled>
+                Choose a Product
+              </option>
+              {selectedProduct.map((item) => (
+                <option key={item.Product_id} value={item.Product_id}>
+                  {item.Product_name}
+                </option>
+              ))}
+            </Form.Select>
+
+            {/* <Form.Select
+              aria-label="Default select example"
+              onChange={handleProductChange}
+              className="custom_input"
+              required
+              style={{fontSize:"12px"}}
             >
               <option value="" disabled selected>
                 Choose a Product
@@ -572,20 +833,20 @@ const UploadExcel = () => {
                   {item.Product_name}
                 </option>
               ))}
-            </Form.Select>
+            </Form.Select> */}
           </div>
 
-          <div className="col-md-4 mb-3">
-            {bankId && selectedProductID ? (
-              // <ExcelFileUpload onFileChange={handleFileChange} />
+          <div className="col-md-4">
+            {valid ? (
               <ExcelFileUpload
                 onFileChange={handleFileChange}
                 onErrorFileGenerated={handleErrorFileGenerated}
                 onErrorCount={handleErrorCount}
                 bankId={bankId}
+                selectedProductID={selectedProductID}
               />
             ) : (
-              ""
+              <p style={{ color: "red" }}>Please select a valid product</p>
             )}
           </div>
         </div>
@@ -618,33 +879,22 @@ const UploadExcel = () => {
         </div>
       )}
 
-      {/* {excelData.length == 0 && clearForm ? (
-        ""
-      ) : (
-        <div className="row">
-          <div className="col-md-12">
-            <ReusableTable
-              data={currentRows}
-              currentPage={currentPage}
-              pageNumbers={pageNumbers}
-              setCurrentPage={setCurrentPage}
-            />
+      {!errorResponses.length > 0 &&
+        verified &&
+        excelData.length > 0 &&
+        !showProgress &&
+        !clearForm && (
+          <div className="row">
+            <div className="col-md-12">
+              <ReusableTable
+                data={currentRows}
+                currentPage={currentPage}
+                pageNumbers={pageNumbers}
+                setCurrentPage={setCurrentPage}
+              />
+            </div>
           </div>
-        </div>
-      )} */}
-
-      {excelData.length > 0 && !showProgress && !clearForm && (
-        <div className="row">
-          <div className="col-md-12">
-            <ReusableTable
-              data={currentRows}
-              currentPage={currentPage}
-              pageNumbers={pageNumbers}
-              setCurrentPage={setCurrentPage}
-            />
-          </div>
-        </div>
-      )}
+        )}
 
       {shouldUpload && !clearForm && (
         <div className="row">
@@ -661,7 +911,11 @@ const UploadExcel = () => {
         </div>
       )}
 
-      {/* {clearForm && (
+      {kotakCC && (
+        <KotakCCUpload />
+      )}
+
+      {clearForm && (
         <div className="row">
           <div className="col-md-12 d-flex justify-content-center ">
             <ClearForm
@@ -670,7 +924,7 @@ const UploadExcel = () => {
             />
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

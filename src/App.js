@@ -81,6 +81,8 @@ import SOCReports from "./pages/SOCReports";
 import SOCData from "./pages/SOCData";
 import AwardPassLotwise from "./pages/AwardPassLotwise";
 import AwardPassCasewise from "./pages/AwardPassCasewise";
+import SignedAccUpload from "./pages/SignedAccUpload";
+import SignedSec17Order from "./pages/SignedSec17Order";
 
 const App = () => {
   // useEffect(() => {
@@ -172,6 +174,7 @@ const App = () => {
           <Route path="acceptletter" element={<AcceptanceLetter />} />
           <Route path="acceptletter">
             <Route path="generate_al" element={<AcceptanceLetter />} />
+            <Route path="signedaccupload" element={<SignedAccUpload />} />
             <Route path="services" element={<AcceptanceLetterService />} />
             <Route path="reports" element={<AcceptanceLetterReports />} />
             <Route path="list" element={<AccScheduledMeets />} />
@@ -179,6 +182,7 @@ const App = () => {
           {/* <Route path="section17order" element={<Section17Order />} /> */}
           <Route path="section17order">
             <Route path="generatesection17order" element={<Section17Order />} />
+            <Route path="signedsec17order" element={<SignedSec17Order />} />
             <Route path="services" element={<Section17OrderService />} />
             <Route path="reports" element={<Section17OrderReports />} />
             <Route path="list" element={<Section17OrderData />} />

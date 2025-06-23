@@ -11,10 +11,11 @@ import CustomStepper from "../components/CustomStepper";
 import ProgressBar from "../components/ProgressBar";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import KotakCCUpload from "./KotakCCUpload";
 
 const UploadExcel = () => {
   const [bank, setBank] = useState([]);
-  const [bankId, setBankId] = useState([]);
+  const [bankId, setBankId] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState([]);
   const [selectedProductID, setSelectedProductID] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -38,6 +39,7 @@ const UploadExcel = () => {
   const [totalRecords, setTotalRecords] = useState(0);
   const [uploadStatus, setUploadStatus] = useState({ success: 0, failed: 0 });
   const [errorResponses, setErrorResponses] = useState([]);
+  const [isDataPresent, setIsDataPresent] = useState(false);
 
   // To fetch Banks Data
   useEffect(() => {
@@ -95,8 +97,9 @@ const UploadExcel = () => {
     setSelectedProductID(selectedID);
   };
 
-  console.log(bankId);
-  console.log(selectedProductID);
+  // console.log(bankId);
+  // console.log(selectedProductID);
+  // console.log(isDataPresent);
   // For the customStepper starts Here
 
   useEffect(() => {
@@ -169,9 +172,11 @@ const UploadExcel = () => {
     });
     setExcelData(updatedData);
     setTotalRecords(excelData.length);
+    setIsDataPresent(updatedData.length > 0);
     handleStepChange(1);
   };
   // console.log(excelData);
+  console.log(isDataPresent);
 
   const handleErrorFileGenerated = (errorFile) => {
     // Store the error Excel Blob in state
@@ -239,6 +244,7 @@ const UploadExcel = () => {
       Client_id: bankId,
       Product_id: selectedProductID,
       LRN_Date: row.LRN_date,
+      Ref_date: row.Ref_date,
       LRN_ref_no: row.LRN_REFERENCE_NO,
       Uploaded_by: "Admin",
       Borrower: borrowerArray,
@@ -539,6 +545,8 @@ const UploadExcel = () => {
     let success = 0,
       failed = 0;
 
+    console.log(excelData);
+
     if (bankId === "1") {
       for (let i = 0; i < excelData.length; i++) {
         const row = excelData[i];
@@ -724,7 +732,7 @@ const UploadExcel = () => {
 
       <div className="row align-items-center mt-1">
         <div className="col-md-6">
-          {excelData.length > 0 && !showProgress && (
+          {excelData.length > 0 && !showProgress && !kotakCC && (
             <h6>Select An Excel File</h6>
           )}
         </div>
@@ -748,15 +756,19 @@ const UploadExcel = () => {
             )}
         </div>
         <div className="col-md-1">
-          {!verified && excelData.length > 0 && !clearForm && !showProgress && (
-            <button
-              className="custBtn"
-              onClick={handleVerify}
-              style={{ fontSize: "12px" }}
-            >
-              Verify
-            </button>
-          )}
+          {!verified &&
+            excelData.length > 0 &&
+            !clearForm &&
+            !showProgress &&
+            !kotakCC && (
+              <button
+                className="custBtn"
+                onClick={handleVerify}
+                style={{ fontSize: "12px" }}
+              >
+                Verify
+              </button>
+            )}
           {!errorResponses.length > 0 &&
             verified &&
             excelData.length > 0 &&
@@ -805,7 +817,7 @@ const UploadExcel = () => {
               className="custom_input"
               required
               style={{ fontSize: "12px" }}
-              value={selectedProductID} // ✅ Bind value here
+              value={selectedProductID} 
             >
               <option value="" disabled>
                 Choose a Product
@@ -843,6 +855,7 @@ const UploadExcel = () => {
                 onErrorCount={handleErrorCount}
                 bankId={bankId}
                 selectedProductID={selectedProductID}
+                setIsDataPresent={setIsDataPresent}
               />
             ) : (
               <p style={{ color: "red" }}>Please select a valid product</p>
@@ -908,6 +921,15 @@ const UploadExcel = () => {
             />
           </div>
         </div>
+      )}
+
+      {kotakCC && (
+        <KotakCCUpload
+          excelData={excelData}
+          bankId={bankId}
+          selectedProductID={selectedProductID}
+          isDataPresent={isDataPresent}
+        />
       )}
 
       {clearForm && (

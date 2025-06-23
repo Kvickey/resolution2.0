@@ -65,7 +65,7 @@ const Sidebar = ({
       </div>
 
       <div className="sidebar-scroll">
-        <ListGroup className={`cust-bg mt-3 `}>
+        <ListGroup className={`cust-bg`}>
           {menuItems.map((item, index) => (
             <React.Fragment key={index}>
               {item.submenu ? (

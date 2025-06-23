@@ -116,6 +116,16 @@ export const kotakccheaders = [
       ],
     },
     {
+      name: "Ref_date",
+      validations: [
+        { type: "notEmpty", message: "Reference Date cannot be empty" },
+      //   {
+      //     type: "dateOnly",
+      //     message: "LOAN_START_DATE must be an date in dd-mm-yyyy format only",
+      //   },
+      ],
+    },
+    {
       name: "LRN_date",
       validations: [
         { type: "notEmpty", message: "LRN Date cannot be empty" },
