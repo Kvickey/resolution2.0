@@ -4,45 +4,81 @@ import LineChar from "../components/Linechar";
 import { API_BASE_URL } from "../utils/constants";
 
 const InstDashboardMain = () => {
+  
+  const [dashboardCount, setDashboardCount] = useState([]);
   const [arbitrators, setArbitrators] = useState([]);
+  const [len, setLen] = useState(false);
   useEffect(() => {
+    const fetchDashboardCount = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/DashboardCount`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const result = await response.json();
+        const parsedDashboardCount = Array.isArray(result)
+        ? result
+        : JSON.parse(result); // Ensure parsedArbitrators is an array
+        // console.log(parsedDashboardCount);
+        setDashboardCount(parsedDashboardCount);
+      } catch (error) {
+        // setError(error.message);
+      }
+    };
+    
     const fetchArbitrators = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/arbitrator`);
+        const response = await fetch(`${API_BASE_URL}/api/ArbListWithCaseCount`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const result = await response.json();
         const parsedArbitrators = Array.isArray(result)
-          ? result
-          : JSON.parse(result); // Ensure parsedArbitrators is an array
+        ? result
+        : JSON.parse(result); // Ensure parsedArbitrators is an array
         // console.log(parsedArbitrators);
         setArbitrators(parsedArbitrators);
       } catch (error) {
         // setError(error.message);
       }
     };
-
+    
+    fetchDashboardCount();
     fetchArbitrators();
   }, []);
-  // console.log(arbitrators);
+  
+  console.log("dashboardCount:", dashboardCount);
+  if(dashboardCount.length > 0){
+    setLen(true);
+  }
+  
 
   return (
     <>
       <div className="stats">
         <div className="statsItem p-2">
-          <div className="statsTitle pregress ms-2"> 2</div>
-          <div className="statsContainer pe-3" >Unassigned Lots</div>
+          {len ? (
+          <><div className="statsTitle pregress ms-2">{dashboardCount[0].Unassigned_lots}</div>
+          <div className="statsContainer pe-3" >Unassigned Lots</div></>          
+          ) : ""}
         </div>
 
         <div className="statsItem p-2">
-          <div className="statsTitle pending ms-2"> 200 </div>
+          {len ? (
+          <>
+          <div className="statsTitle pending ms-2">{dashboardCount[0].Pending_cases}</div>
           <div className="statsContainer pe-3">Pending Cases</div>
+          </>          
+          ) : ""}
         </div>
 
         <div className="statsItem p-2">
-          <div className="statsTitle complete ms-2">500</div>
+          {len ? (
+          <>
+          <div className="statsTitle complete ms-2">{dashboardCount[0].Resolved_cases}</div>
           <div className="statsContainer pe-3"> Cases Resolved this week </div>
+          </>          
+          ) : ""}
         </div>
       </div>
 
@@ -56,7 +92,7 @@ const InstDashboardMain = () => {
               {arbitrators.map((item, index) => (
                 <div className="list-item" key={index}>
                   <p>
-                    {item.Arb_name} <span>185</span>
+                    {item.Arb_name} <span>{item.Cases}</span>
                   </p>
                 </div>
               ))}
@@ -70,17 +106,17 @@ const InstDashboardMain = () => {
             </div>
           </div>
 
-          <div className="chart-area">
+          <div className="chart-area" style={{ display: "none" }}>
             <div className="arb-header">
               <h6 className="pt-2">Case Tracker</h6>
             </div>
             <div className="chart-header mt-5">
-              {/* <h2>Case Tracker</h2> */}
+              {}
               <LineChar className="" />
             </div>
           </div>
 
-          <div className="arb-panel">
+          <div className="arb-panel" style={{ display: "none" }}>
             <div className="arb-header">
               <h6 className="pt-2">Pending Cases</h6>
             </div>
