@@ -4,81 +4,88 @@ import LineChar from "../components/Linechar";
 import { API_BASE_URL } from "../utils/constants";
 
 const InstDashboardMain = () => {
-  
   const [dashboardCount, setDashboardCount] = useState([]);
   const [arbitrators, setArbitrators] = useState([]);
-  const [len, setLen] = useState(false);
+  const len = Array.isArray(dashboardCount) && dashboardCount.length > 0;
+
   useEffect(() => {
-    const fetchDashboardCount = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/DashboardCount`);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        const parsedDashboardCount = Array.isArray(result)
-        ? result
-        : JSON.parse(result); // Ensure parsedArbitrators is an array
-        // console.log(parsedDashboardCount);
-        setDashboardCount(parsedDashboardCount);
-      } catch (error) {
-        // setError(error.message);
-      }
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const fetchJsonAsArray = async (url) => {
+      const resp = await fetch(url, { signal });
+      if (!resp.ok)
+        throw new Error(`Network response was not ok (${resp.status})`);
+      const json = await resp.json();
+
+      if (Array.isArray(json)) return json;
+      if (!json) return [];
+      if (Array.isArray(json.data)) return json.data;
+      if (Array.isArray(json.result)) return json.result;
+      // fallback: wrap single object into array
+      return [json];
     };
-    
-    const fetchArbitrators = async () => {
+
+    (async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/ArbListWithCaseCount`);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        const parsedArbitrators = Array.isArray(result)
-        ? result
-        : JSON.parse(result); // Ensure parsedArbitrators is an array
-        // console.log(parsedArbitrators);
-        setArbitrators(parsedArbitrators);
-      } catch (error) {
-        // setError(error.message);
+        const [counts, arbs] = await Promise.all([
+          fetchJsonAsArray(`${API_BASE_URL}/api/DashboardCount`),
+          fetchJsonAsArray(`${API_BASE_URL}/api/ArbListWithCaseCount`),
+        ]);
+        setDashboardCount(counts);
+        setArbitrators(arbs);
+      } catch (err) {
+        if (err.name !== "AbortError") console.error("Fetch error:", err);
       }
-    };
-    
-    fetchDashboardCount();
-    fetchArbitrators();
+    })();
+
+    return () => controller.abort();
   }, []);
-  
-  console.log("dashboardCount:", dashboardCount);
-  if(dashboardCount.length > 0){
-    setLen(true);
-  }
-  
+
+  // console.log("dashboardCount:", dashboardCount);
 
   return (
     <>
       <div className="stats">
         <div className="statsItem p-2">
-          {len ? (
-          <><div className="statsTitle pregress ms-2">{dashboardCount[0].Unassigned_lots}</div>
-          <div className="statsContainer pe-3" >Unassigned Lots</div></>          
-          ) : ""}
+          {len && dashboardCount[0] ? (
+            <>
+              <div className="statsTitle pregress ms-2">
+                {dashboardCount[0]?.Unassigned_lots ?? 0}
+              </div>
+              <div className="statsContainer pe-3">Unassigned Lots</div>
+            </>
+          ) : (
+            <div className="statsContainer pe-3">Loading…</div>
+          )}
         </div>
 
         <div className="statsItem p-2">
-          {len ? (
-          <>
-          <div className="statsTitle pending ms-2">{dashboardCount[0].Pending_cases}</div>
-          <div className="statsContainer pe-3">Pending Cases</div>
-          </>          
-          ) : ""}
+          {len && dashboardCount[0] ? (
+            <>
+              <div className="statsTitle pending ms-2">
+                {dashboardCount[0]?.Pending_cases ?? 0}
+              </div>
+              <div className="statsContainer pe-3">Pending Cases</div>
+            </>
+          ) : (
+            <div className="statsContainer pe-3">Loading…</div>
+          )}
         </div>
 
         <div className="statsItem p-2">
-          {len ? (
-          <>
-          <div className="statsTitle complete ms-2">{dashboardCount[0].Resolved_cases}</div>
-          <div className="statsContainer pe-3"> Cases Resolved this week </div>
-          </>          
-          ) : ""}
+          {len && dashboardCount[0] ? (
+            <>
+              <div className="statsTitle complete ms-2">
+                {dashboardCount[0]?.Resolved_cases ?? 0}
+              </div>
+              <div className="statsContainer pe-3">
+                Cases Resolved this week
+              </div>
+            </>
+          ) : (
+            <div className="statsContainer pe-3">Loading…</div>
+          )}
         </div>
       </div>
 
