@@ -21,6 +21,7 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
     Arb_start_date: "",
     Created_by: 1,
   });
+  const [errors, setErrors] = useState({});
 
   // ✅ Fill form if editing
   useEffect(() => {
@@ -43,6 +44,14 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
       ...prev,
       [name]: value,
     }));
+
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
   };
 
   // Handle file input changes
@@ -54,8 +63,69 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
     }));
   };
 
-  // Handle Save - Create multipart FormData
+// Handle Validation Part
+  const validateForm = () => {
+    let newErrors = {};
+
+    if (!formData.Arb_name.trim()) newErrors.Arb_name = "Name is required";
+    if (!formData.Designation.trim())
+      newErrors.Designation = "Designation is required";
+    if (!formData.Education.trim())
+      newErrors.Education = "Education is required";
+
+    if (!formData.Passing_Year) {
+      newErrors.Passing_Year = "Passing Year is required";
+    } else if (
+      isNaN(formData.Passing_Year) ||
+      formData.Passing_Year.length !== 4
+    ) {
+      newErrors.Passing_Year = "Enter a valid 4-digit year";
+    }
+
+    if (!formData.Fees) {
+      newErrors.Fees = "Fees is required";
+    } else if (isNaN(formData.Fees) || Number(formData.Fees) <= 0) {
+      newErrors.Fees = "Enter a valid fee amount";
+    }
+
+    if (!formData.Firm_name.trim())
+      newErrors.Firm_name = "Firm name is required";
+    if (!formData.Address.trim()) newErrors.Address = "Address is required";
+
+    if (!formData.pin) {
+      newErrors.pin = "Pincode is required";
+    } else if (!/^\d{6}$/.test(formData.pin)) {
+      newErrors.pin = "Enter a valid 6-digit pincode";
+    }
+
+    if (!formData.Contact) {
+      newErrors.Contact = "Contact number is required";
+    } else if (!/^\d{10}$/.test(formData.Contact)) {
+      newErrors.Contact = "Enter a valid 10-digit contact number";
+    }
+
+    if (!formData.Email_id.trim()) {
+      newErrors.Email_id = "Email is required";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.Email_id)
+    ) {
+      newErrors.Email_id = "Enter a valid email";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Handle Save 
   const handleSave = () => {
+    const isValid = validateForm();
+
+    if (!isValid) {
+      return; 
+    }
+    // alert("clicked");
+
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
       if (formData[key] !== null && formData[key] !== "") {
@@ -114,7 +184,6 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
       Created_by: 1,
     });
 
-    // clear file inputs visually
     ["Photo", "Sign", "Stamp"].forEach((id) => {
       const input = document.getElementById(id);
       if (input) input.value = "";
@@ -131,7 +200,6 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
         </h3>
       </div>
 
-      {/* Form fields */}
       <div className="row px-3">
         <div className="col-md-6 mb-3">
           <input
@@ -142,6 +210,9 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
             name="Arb_name"
             onChange={handleChange}
           />
+          {errors.Arb_name && (
+            <small className="text-danger">{errors.Arb_name}</small>
+          )}
         </div>
         <div className="col-md-6 mb-3">
           <input
@@ -152,6 +223,9 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
             name="Designation"
             onChange={handleChange}
           />
+          {errors.Designation && (
+            <small className="text-danger">{errors.Designation}</small>
+          )}
         </div>
       </div>
 
@@ -165,6 +239,9 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
             name="Education"
             onChange={handleChange}
           />
+          {errors.Education && (
+            <small className="text-danger">{errors.Education}</small>
+          )}
         </div>
         <div className="col-md-4 mb-3">
           <input
@@ -176,6 +253,9 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
             name="Passing_Year"
             onChange={handleChange}
           />
+          {errors.Passing_Year && (
+            <small className="text-danger">{errors.Passing_Year}</small>
+          )}
         </div>
         <div className="col-md-4 mb-3">
           <input
@@ -187,6 +267,7 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
             name="Fees"
             onChange={handleChange}
           />
+          {errors.Fees && <small className="text-danger">{errors.Fees}</small>}
         </div>
       </div>
 
@@ -200,6 +281,9 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
             name="Firm_name"
             onChange={handleChange}
           />
+          {errors.Firm_name && (
+            <small className="text-danger">{errors.Firm_name}</small>
+          )}
         </div>
         <div className="col-md-6 mb-3">
           <input
@@ -210,6 +294,9 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
             name="Address"
             onChange={handleChange}
           />
+          {errors.Address && (
+            <small className="text-danger">{errors.Address}</small>
+          )}
         </div>
       </div>
 
@@ -223,6 +310,7 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
             name="pin"
             onChange={handleChange}
           />
+          {errors.pin && <small className="text-danger">{errors.pin}</small>}
         </div>
         <div className="col-md-4 mb-3">
           <input
@@ -234,6 +322,9 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
             name="Contact"
             onChange={handleChange}
           />
+          {errors.Contact && (
+            <small className="text-danger">{errors.Contact}</small>
+          )}
         </div>
         <div className="col-md-4 mb-3">
           <input
@@ -245,13 +336,18 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
             name="Email_id"
             onChange={handleChange}
           />
+          {errors.Email_id && (
+            <small className="text-danger">{errors.Email_id}</small>
+          )}
         </div>
       </div>
 
       {/* File uploads */}
       <div className="row px-3">
         <div className="col-md-4 mb-3">
-          <label htmlFor="Photo" className="form-label">Photo</label>
+          <label htmlFor="Photo" className="form-label">
+            Photo
+          </label>
           <input
             type="file"
             accept="image/*"
@@ -263,7 +359,9 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
         </div>
 
         <div className="col-md-4 mb-3">
-          <label htmlFor="Sign" className="form-label">Signature</label>
+          <label htmlFor="Sign" className="form-label">
+            Signature
+          </label>
           <input
             type="file"
             accept="image/*"
@@ -275,7 +373,9 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
         </div>
 
         <div className="col-md-4 mb-3">
-          <label htmlFor="Stamp" className="form-label">Stamp</label>
+          <label htmlFor="Stamp" className="form-label">
+            Stamp
+          </label>
           <input
             type="file"
             accept="image/*"
@@ -290,11 +390,19 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
       {/* Buttons */}
       <div className="row py-3">
         <div className=" d-flex justify-content-center gap-2">
-        {/* <div className="col-md-12 d-flex justify-content-end gap-2"> */}
-          <button type="button" className="btn btn-success" onClick={handleSave}>
+          {/* <div className="col-md-12 d-flex justify-content-end gap-2"> */}
+          <button
+            type="button"
+            className="btn btn-success"
+            onClick={handleSave}
+          >
             {initialData ? "Update" : "Save"}
           </button>
-          <button type="button" className="btn btn-secondary" onClick={handleCancel}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleCancel}
+          >
             Cancel
           </button>
         </div>

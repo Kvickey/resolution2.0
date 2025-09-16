@@ -6,11 +6,10 @@ import { API_BASE_URL } from "../utils/constants";
 const InstDashboardMain = () => {
   const [dashboardCount, setDashboardCount] = useState([]);
   const [arbitrators, setArbitrators] = useState([]);
-<<<<<<< HEAD
+
   const [pendinglots, setPendinglots] = useState([]);
-=======
+
   const len = Array.isArray(dashboardCount) && dashboardCount.length > 0;
->>>>>>> 8116bc0a978ffb56d732fcc9414c90825b52a286
 
   useEffect(() => {
     const controller = new AbortController();
