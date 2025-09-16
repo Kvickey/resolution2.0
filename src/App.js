@@ -80,6 +80,7 @@ import SOCReports from "./pages/SOCReports";
 import SOCData from "./pages/SOCData";
 import AwardPassLotwise from "./pages/AwardPassLotwise";
 import AwardPassCasewise from "./pages/AwardPassCasewise";
+import "react-datepicker/dist/react-datepicker.css";
 import SignedAccUpload from "./pages/SignedAccUpload";
 import SignedSec17Order from "./pages/SignedSec17Order";
 import Arbitrator from "./pages/arbitrator/Arbitrator";

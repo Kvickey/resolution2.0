@@ -4,30 +4,49 @@ import LineChar from "../components/Linechar";
 import { API_BASE_URL } from "../utils/constants";
 
 const InstDashboardMain = () => {
+  const [dashboardCount, setDashboardCount] = useState([]);
   const [arbitrators, setArbitrators] = useState([]);
+<<<<<<< HEAD
   const [pendinglots, setPendinglots] = useState([]);
+=======
+  const len = Array.isArray(dashboardCount) && dashboardCount.length > 0;
+>>>>>>> 8116bc0a978ffb56d732fcc9414c90825b52a286
 
   useEffect(() => {
-    const fetchArbitrators = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/arbitrator`);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        const parsedArbitrators = Array.isArray(result)
-          ? result
-          : JSON.parse(result); // Ensure parsedArbitrators is an array
-        // console.log(parsedArbitrators);
-        setArbitrators(parsedArbitrators);
-      } catch (error) {
-        // setError(error.message);
-      }
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const fetchJsonAsArray = async (url) => {
+      const resp = await fetch(url, { signal });
+      if (!resp.ok)
+        throw new Error(`Network response was not ok (${resp.status})`);
+      const json = await resp.json();
+
+      if (Array.isArray(json)) return json;
+      if (!json) return [];
+      if (Array.isArray(json.data)) return json.data;
+      if (Array.isArray(json.result)) return json.result;
+      // fallback: wrap single object into array
+      return [json];
     };
 
-    fetchArbitrators();
+    (async () => {
+      try {
+        const [counts, arbs] = await Promise.all([
+          fetchJsonAsArray(`${API_BASE_URL}/api/DashboardCount`),
+          fetchJsonAsArray(`${API_BASE_URL}/api/ArbListWithCaseCount`),
+        ]);
+        setDashboardCount(counts);
+        setArbitrators(arbs);
+      } catch (err) {
+        if (err.name !== "AbortError") console.error("Fetch error:", err);
+      }
+    })();
+
+    return () => controller.abort();
   }, []);
-  // console.log(arbitrators);
+
+  // console.log("dashboardCount:", dashboardCount);
 
   useEffect(() => {
     const fetchPendingLots = async () => {
@@ -55,18 +74,44 @@ const InstDashboardMain = () => {
     <>
       <div className="stats">
         <div className="statsItem p-2">
-          <div className="statsTitle pregress ms-2"> 2</div>
-          <div className="statsContainer pe-3" >Unassigned Lots</div>
+          {len && dashboardCount[0] ? (
+            <>
+              <div className="statsTitle pregress ms-2">
+                {dashboardCount[0]?.Unassigned_lots ?? 0}
+              </div>
+              <div className="statsContainer pe-3">Unassigned Lots</div>
+            </>
+          ) : (
+            <div className="statsContainer pe-3">Loading…</div>
+          )}
         </div>
 
         <div className="statsItem p-2">
-          <div className="statsTitle pending ms-2"> 200 </div>
-          <div className="statsContainer pe-3">Pending Cases</div>
+          {len && dashboardCount[0] ? (
+            <>
+              <div className="statsTitle pending ms-2">
+                {dashboardCount[0]?.Pending_cases ?? 0}
+              </div>
+              <div className="statsContainer pe-3">Pending Cases</div>
+            </>
+          ) : (
+            <div className="statsContainer pe-3">Loading…</div>
+          )}
         </div>
 
         <div className="statsItem p-2">
-          <div className="statsTitle complete ms-2">500</div>
-          <div className="statsContainer pe-3"> Cases Resolved this week </div>
+          {len && dashboardCount[0] ? (
+            <>
+              <div className="statsTitle complete ms-2">
+                {dashboardCount[0]?.Resolved_cases ?? 0}
+              </div>
+              <div className="statsContainer pe-3">
+                Cases Resolved this week
+              </div>
+            </>
+          ) : (
+            <div className="statsContainer pe-3">Loading…</div>
+          )}
         </div>
       </div>
 
@@ -80,7 +125,7 @@ const InstDashboardMain = () => {
               {arbitrators.map((item, index) => (
                 <div className="list-item" key={index}>
                   <p>
-                    {item.Arb_name} <span>185</span>
+                    {item.Arb_name} <span>{item.Cases}</span>
                   </p>
                 </div>
               ))}
@@ -94,17 +139,17 @@ const InstDashboardMain = () => {
             </div>
           </div>
 
-          <div className="chart-area">
+          <div className="chart-area" style={{ display: "none" }}>
             <div className="arb-header">
               <h6 className="pt-2">Case Tracker</h6>
             </div>
             <div className="chart-header mt-5">
-              {/* <h2>Case Tracker</h2> */}
+              {}
               <LineChar className="" />
             </div>
           </div>
 
-          <div className="arb-panel">
+          <div className="arb-panel" style={{ display: "none" }}>
             <div className="arb-header">
               <h6 className="pt-2">Pending Cases</h6>
             </div>
