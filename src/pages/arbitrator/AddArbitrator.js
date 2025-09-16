@@ -81,7 +81,7 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
       newErrors.Passing_Year = "Passing Year is required";
     } else if (
       isNaN(formData.Passing_Year) ||
-      formData.Passing_Year.length !== 4
+      String(formData.Passing_Year).length !== 4
     ) {
       newErrors.Passing_Year = "Enter a valid 4-digit year";
     }
@@ -132,29 +132,27 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
     // alert("clicked");
 
     const data = new FormData();
-    // Object.keys(formData).forEach((key) => {
-    //   if (formData[key] !== null && formData[key] !== "") {
-    //     data.append(key, formData[key]);
-    //   }
-    // });
-
     Object.keys(formData).forEach((key) => {
       const value = formData[key];
-    
+
       //Remove Fields
-      if (key === "Created_date"|| key === "PhotoURL" || key === "SignatureURL" || key === "Status") {
+      if (
+        key === "Created_date" ||
+        key === "PhotoURL" ||
+        key === "SignatureURL" ||
+        key === "Status"
+      ) {
         return;
       }
-    
+
       //  set these fields to empty
       if (key === "Photo" || key === "Sign" || key === "Stamp") {
         data.append(key, "");
         return;
       }
-    
+
       // date formating
       if (value !== null && value !== "" && value !== "0001-01-01T00:00:00") {
-      
         if (key === "experience_date" || key === "Arb_start_date") {
           const date = new Date(value);
           if (!isNaN(date.getTime())) {
@@ -173,20 +171,15 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
     });
 
     data.append("Post_qualification", "");
-    
+
 
     for (let pair of data.entries()) {
       console.log(pair[0], pair[1]);
     }
 
-    if (initialData?.Arb_id) {
-      data.append("Arb_id", initialData.Arb_id);
-    }
-
     const endpoint = initialData?.Arb_id
       ? `${API_BASE_URL}/api/UpArb` // update API
       : `${API_BASE_URL}/api/Arb`; // add API
-
 
     fetch(endpoint, {
       method: "POST",
