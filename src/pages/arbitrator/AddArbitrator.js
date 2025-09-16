@@ -10,8 +10,8 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
     Fees: "",
     Firm_name: "",
     Address: "",
-    pin: "",
-    Contact: "",
+    Pin: "",
+    Contact_no: "",
     Email_id: "",
     Photo: null,
     Sign: null,
@@ -34,8 +34,12 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
         Stamp: null,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialData]);
+
+  // useEffect(() => {
+  //   console.log("Initial Data:", initialData);
+  //   console.log("Updated formData:", formData);
+  // }, [formData]);
 
   // Handle text input changes
   const handleChange = (e) => {
@@ -59,11 +63,11 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
     const { name, files } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: files[0], // store first selected file
+      [name]: files[0],
     }));
   };
 
-// Handle Validation Part
+  // Handle Validation Part
   const validateForm = () => {
     let newErrors = {};
 
@@ -92,16 +96,16 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
       newErrors.Firm_name = "Firm name is required";
     if (!formData.Address.trim()) newErrors.Address = "Address is required";
 
-    if (!formData.pin) {
-      newErrors.pin = "Pincode is required";
-    } else if (!/^\d{6}$/.test(formData.pin)) {
+    if (!formData.Pin) {
+      newErrors.Pin = "Pincode is required";
+    } else if (!/^\d{6}$/.test(formData.Pin)) {
       newErrors.pin = "Enter a valid 6-digit pincode";
     }
 
-    if (!formData.Contact) {
-      newErrors.Contact = "Contact number is required";
-    } else if (!/^\d{10}$/.test(formData.Contact)) {
-      newErrors.Contact = "Enter a valid 10-digit contact number";
+    if (!formData.Contact_no) {
+      newErrors.Contact_no = "Contact number is required";
+    } else if (!/^\d{10}$/.test(formData.Contact_no)) {
+      newErrors.Contact_no = "Enter a valid 10-digit contact number";
     }
 
     if (!formData.Email_id.trim()) {
@@ -113,27 +117,68 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
     }
 
     setErrors(newErrors);
+    console.log(newErrors);
 
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle Save 
+  // Handle Save
   const handleSave = () => {
     const isValid = validateForm();
 
     if (!isValid) {
-      return; 
+      return;
     }
     // alert("clicked");
 
     const data = new FormData();
+    // Object.keys(formData).forEach((key) => {
+    //   if (formData[key] !== null && formData[key] !== "") {
+    //     data.append(key, formData[key]);
+    //   }
+    // });
+
     Object.keys(formData).forEach((key) => {
-      if (formData[key] !== null && formData[key] !== "") {
-        data.append(key, formData[key]);
+      const value = formData[key];
+    
+      //Remove Fields
+      if (key === "Created_date"|| key === "PhotoURL" || key === "SignatureURL" || key === "Status") {
+        return;
+      }
+    
+      //  set these fields to empty
+      if (key === "Photo" || key === "Sign" || key === "Stamp") {
+        data.append(key, "");
+        return;
+      }
+    
+      // date formating
+      if (value !== null && value !== "" && value !== "0001-01-01T00:00:00") {
+      
+        if (key === "experience_date" || key === "Arb_start_date") {
+          const date = new Date(value);
+          if (!isNaN(date.getTime())) {
+            const day = String(date.getDate()).padStart(2, "0");
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const year = date.getFullYear();
+            const formattedDate = `${month}/${day}/${year}`;
+            data.append(key, formattedDate);
+          }
+        } else if (key === "Contact_no") {
+          data.append("Contact", value);
+        } else {
+          data.append(key, value);
+        }
       }
     });
 
-    // ✅ If editing, include Arb_id
+    data.append("Post_qualification", "");
+    
+
+    for (let pair of data.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
     if (initialData?.Arb_id) {
       data.append("Arb_id", initialData.Arb_id);
     }
@@ -141,6 +186,7 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
     const endpoint = initialData?.Arb_id
       ? `${API_BASE_URL}/api/UpArb` // update API
       : `${API_BASE_URL}/api/Arb`; // add API
+
 
     fetch(endpoint, {
       method: "POST",
@@ -172,8 +218,8 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
       Fees: "",
       Firm_name: "",
       Address: "",
-      pin: "",
-      Contact: "",
+      Pin: "",
+      Contact_no: "",
       Email_id: "",
       Photo: null,
       Sign: null,
@@ -305,25 +351,25 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
           <input
             placeholder="Pincode"
             className="form-control custom_input"
-            id="pin"
-            value={formData.pin}
-            name="pin"
+            id="Pin"
+            value={formData.Pin}
+            name="Pin"
             onChange={handleChange}
           />
-          {errors.pin && <small className="text-danger">{errors.pin}</small>}
+          {errors.pin && <small className="text-danger">{errors.Pin}</small>}
         </div>
         <div className="col-md-4 mb-3">
           <input
             type="number"
             placeholder="Contact"
             className="form-control custom_input"
-            id="Contact"
-            value={formData.Contact}
-            name="Contact"
+            id="Contact_no"
+            value={formData.Contact_no}
+            name="Contact_no"
             onChange={handleChange}
           />
           {errors.Contact && (
-            <small className="text-danger">{errors.Contact}</small>
+            <small className="text-danger">{errors.Contact_no}</small>
           )}
         </div>
         <div className="col-md-4 mb-3">

@@ -28,7 +28,7 @@ const Arbitrator = () => {
     fetchArbitrators();
   }, [refreshFlag]);
 
-  console.log(arbitrators);
+  // console.log(arbitrators);
   
 
   // Save or update record
