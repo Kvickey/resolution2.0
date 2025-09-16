@@ -316,6 +316,9 @@ const ExcelFileUpload = ({
         defval: "",
         raw: false,
       });
+      
+      console.log(jsonData);
+      
 
       // Reformat date fields
       const reformattedData = jsonData.map((row) => ({
@@ -346,40 +349,7 @@ const ExcelFileUpload = ({
     reader.readAsArrayBuffer(file);
   };
 
-  // const handleFileUpload = (e) => {
-  //   const file = e.target.files[0];
-  //   const reader = new FileReader();
 
-  //   reader.onload = (event) => {
-  //     const data = new Uint8Array(event.target.result);
-  //     const workbook = XLSX.read(data, { type: "array" });
-
-  //     const sheetName = workbook.SheetNames[0];
-  //     const sheet = workbook.Sheets[sheetName];
-  //     const jsonData = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-  //     if(jsonData.length>0){
-  //       setIsDataPresent(true);
-  //     }
-
-  //     // console.log(jsonData);
-
-  //     // Validate the data and collect all errors
-  //     const allErrors = validateData(jsonData);
-  //     // const allErrors = validateData(headers, jsonData);
-  //     setValidationErrors(allErrors);
-
-  //     if (allErrors.length > 0) {
-  //       const errorFile = generateErrorExcel(allErrors);
-  //       onErrorFileGenerated(errorFile); // Send the error Excel file to parent component
-  //       onErrorCount(allErrors.length); // Send the error count to parent component
-  //     } else {
-  //       onFileChange(jsonData); // Pass data to parent if no errors
-  //       onErrorCount(0); // Reset error count if there are no errors
-  //     }
-  //   };
-
-  //   reader.readAsArrayBuffer(file); // Read the file as a buffer
-  // };
 
   return (
     <div>

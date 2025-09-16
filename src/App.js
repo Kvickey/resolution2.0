@@ -65,7 +65,6 @@ import AssignArbitratorByIntent from "./pages/AssignArbitratorByIntent";
 import IntentLetterGenerate from "./pages/IntentLetterGenerate";
 import IntentLetterServices from "./pages/IntentLetterServices";
 import IntentLetterReports from "./pages/IntentLetterReports";
-import ArbitratorList from "./components/ArbitratorList";
 import UploadedLotList from "./pages/UploadedLotList";
 import IntentLetterList from "./pages/IntentLetterList";
 import AccScheduledMeets from "./pages/AccScheduledMeets";
@@ -83,6 +82,13 @@ import AwardPassLotwise from "./pages/AwardPassLotwise";
 import AwardPassCasewise from "./pages/AwardPassCasewise";
 import SignedAccUpload from "./pages/SignedAccUpload";
 import SignedSec17Order from "./pages/SignedSec17Order";
+import Arbitrator from "./pages/arbitrator/Arbitrator";
+import ArbitratorList from "./pages/arbitrator/ArbitratorList";
+import AddArbitrator from "./pages/arbitrator/AddArbitrator";
+// import AddArbitrator from "./components/AddArbitrator";
+// import Arbitrator from "./components/Arbitrator";
+// import ArbitratorList from "./components/ArbitratorList";
+
 
 const App = () => {
   // useEffect(() => {
@@ -132,7 +138,9 @@ const App = () => {
         <Route path="/instdashboard" element={<InstDashboard />}>
           <Route index element={<InstDashboardMain />} />
           <Route path="dashboard" element={<InstDashboardMain />} />
-          <Route path="arbitrator" element={<ArbitratorList />} />
+          <Route path="arbitrator" element={<Arbitrator />} />
+          <Route path="arbitratorlist" element={<ArbitratorList />} />
+          <Route path="addarbitrator" element={<AddArbitrator />} />
           {/* <Route path="uploadalot" element={<UploadExcel />} /> */}
           <Route path="uploadalot">
             <Route path="uploadnewlot" element={<UploadExcel />} />

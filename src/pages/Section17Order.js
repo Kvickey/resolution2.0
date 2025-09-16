@@ -8,6 +8,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import DatePicker from "react-datepicker";
 import { useAuth } from "../components/AuthProvider";
 import ClearForm from "../components/Clearform";
+import { Form } from "react-bootstrap";
 
 const Section17Order = () => {
   const [sec17OrderNotCreatedLots, setSec17OrderNotCreatedLots] = useState([]);
@@ -20,12 +21,13 @@ const Section17Order = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [selectedDate, setSelectedDate] = useState(null);
   const [theDate, setTheDate] = useState([]);
-  const {
-    data: Sec17OrderNotCreatedData,
-    loading: loading1,
-    error: error1,
-    fetchData,
-  } = useFetch();
+  const [nameOfAdvocate, setNameOfAdvocate] = useState(null);
+  // const {
+  //   data: Sec17OrderNotCreatedData,
+  //   loading: loading1,
+  //   error: error1,
+  //   fetchData,
+  // } = useFetch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [showData, setShowData] = useState(false);
@@ -39,7 +41,6 @@ const Section17Order = () => {
   const [receivedData, setReceivedData] = useState([]);
   const [getData, setGetData] = useState([]);
   const [showTable, setShowTable] = useState(false);
-  
 
   const [searchTerm, setSearchTerm] = useState("");
   const rowsPerPage = 10;
@@ -226,7 +227,11 @@ const Section17Order = () => {
 
   // Date Change function Ends Here
 
-  console.log(theDate);
+  // console.log(theDate);
+
+  const handleNameChange = (e) => {
+    setNameOfAdvocate(e.target.value);
+  };
 
   // TO Save the SOC Records  with Date starts
   const handleSaveSec17Order = async () => {
@@ -276,10 +281,11 @@ const Section17Order = () => {
   // for the generation of SOC function starts
   const handleGenerateSec17Order = async () => {
     setLoading(true);
+    const encodedName = encodeURIComponent(nameOfAdvocate);
     try {
       // Fetch the PDF file from the API
       const response = await fetch(
-        `${API_BASE_URL}/api/Sec17Orderletter?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}`
+        `${API_BASE_URL}/api/Sec17Orderletter?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}&adv=${encodedName}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -339,31 +345,7 @@ const Section17Order = () => {
         </div>
       </div>
 
-      {/* <div className="row">
-        <div className="col-md-6">
-          {!Sec17OrderNotCreatedData.length > 0 && !showData && <h5> Select Lot </h5>}
-        </div>
-        <div className="col-md-4"></div>
-        <div className="col-md-2"></div>
-      </div> */}
-
       {!showData && (
-        // <div className="row">
-        //   <div className="col-md-12 mt-3">
-        //     <ReusableTableFixed
-        //       columns={columns}
-        //       data={sec17OrderNotCreatedLots.slice(startIndex, startIndex + 10)}
-        //       currentPage={currentPage}
-        //       totalPages={totalPages}
-        //       displayedPages={displayedPages}
-        //       handlePrevious={handlePrevious}
-        //       handleNext={handleNext}
-        //       setCurrentPage={setCurrentPage}
-        //       handleRowAction={handleRowAction}
-        //       startIndex={startIndex}
-        //     />
-        //   </div>
-        // </div>
         <div className="row table-container mt-3">
           <div className="col-md-12 mx-auto table-wrapper">
             {/* Search Input */}
@@ -484,13 +466,23 @@ const Section17Order = () => {
                 id="datePicker"
                 style={{
                   width: "100%",
-                  height: "calc(1.5em + .75rem + 2px)",
-                  padding: ".375rem .75rem",
-                  fontSize: "1rem",
+                  // height: "calc(1.5em + .75rem + 2px)",
+                  // padding: ".375rem .75rem",
+                  fontSize: "12px",
                   borderRadius: ".25rem",
                   border: "1px solid #ced4da",
                   boxSizing: "border-box",
                 }}
+              />
+            )}
+            {save && !showPDF && (
+              <Form.Control
+                type="text"
+                className="custom_input"
+                placeholder="Advocate Name"
+                onChange={handleNameChange}
+                value={nameOfAdvocate}
+                style={{ fontSize: "12px" }}
               />
             )}
           </div>

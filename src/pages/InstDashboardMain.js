@@ -5,6 +5,8 @@ import { API_BASE_URL } from "../utils/constants";
 
 const InstDashboardMain = () => {
   const [arbitrators, setArbitrators] = useState([]);
+  const [pendinglots, setPendinglots] = useState([]);
+
   useEffect(() => {
     const fetchArbitrators = async () => {
       try {
@@ -24,6 +26,28 @@ const InstDashboardMain = () => {
     };
 
     fetchArbitrators();
+  }, []);
+  // console.log(arbitrators);
+
+  useEffect(() => {
+    const fetchPendingLots = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/arbitrator`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const result = await response.json();
+        const parsedPendingLots = Array.isArray(result)
+          ? result
+          : JSON.parse(result); // Ensure parsedArbitrators is an array
+        // console.log(parsedArbitrators);
+        setPendinglots(parsedPendingLots);
+      } catch (error) {
+        // setError(error.message);
+      }
+    };
+
+    fetchPendingLots();
   }, []);
   // console.log(arbitrators);
 

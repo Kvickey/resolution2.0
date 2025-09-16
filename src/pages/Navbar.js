@@ -149,54 +149,16 @@ const CustomNavbar = ({ isLoggedIn, onLogout }) => {
               <b style={{ fontSize: '1.25rem', marginBottom: '-0.2rem' }}>Experts Alliance</b>
             </div>
           </div>
-
-
         </Navbar.Brand>
         <Navbar.Toggle onClick={() => setExpanded(!expanded)} aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto " style={{ display: 'flex', alignItems: 'center' }}>
-
-            {/* <Link className='linkTag'
-              onClick={handleLinkClick}
-              activeClass="active"
-              to="ourexperties"
-              spy={true}
-              smooth={true}
-              offset={20}
-              duration={500}
-
-            >
-              Demo
-            </Link> */}
             <a className='customNavLink me-3' href='#homePage'>Home</a>
             <a className='customNavLink  me-3' href='#ourexperties' onClick={handleScrollExperties}>Our Expertise</a>
             <a className='customNavLink me-3' href='#aboutUs' onClick={handleScrollAboutUs}>About Us</a>
             <a className='customNavLink me-3' href='#contactUs' onClick={handleScrollContactUs} >Contact Us</a>
 
-            {/* <Nav.Link className='customNavLink border' as={Link} to="/" >
-              Home
-            </Nav.Link>
-
-            <Nav.Link className='customNavLink' as={Link} to="/">
-              Our Experties
-            </Nav.Link>
-
-            <Nav.Link className='customNavLink' as={Link} to="/">
-              About Us
-            </Nav.Link>
-
-            <Nav.Link className='customNavLink' as={Link} to="/">
-              Contact Us
-            </Nav.Link> */}
-
-
-
-
-
-
-
-
-            {isLoggedIn ? (
+           {isLoggedIn ? (
               <Button variant="primary" className='btn-primaty btn ms-3' onClick={handleLogout}>
                 Logout
               </Button>

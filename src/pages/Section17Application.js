@@ -328,7 +328,7 @@ const Section17Application = () => {
         <div className="row">
           <div className="col-md-12 d-flex justify-content-center ">
             <ClearForm
-              message="SOC Uploaded Sucessfully!"
+              message="Section 17 Application Uploaded Sucessfully!"
               redirectPath="/lawyerdashboard"
             />
           </div>

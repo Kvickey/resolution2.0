@@ -160,8 +160,6 @@ const UploadExcel = () => {
   };
   // For progress Bar handling ends here
 
-  const handleFileUpload = () => {};
-
   const handleFileChange = (data) => {
     const updatedData = data.map((item, index) => {
       const { SR_NO, ...rest } = item;
@@ -817,7 +815,7 @@ const UploadExcel = () => {
               className="custom_input"
               required
               style={{ fontSize: "12px" }}
-              value={selectedProductID} 
+              value={selectedProductID}
             >
               <option value="" disabled>
                 Choose a Product
@@ -828,23 +826,6 @@ const UploadExcel = () => {
                 </option>
               ))}
             </Form.Select>
-
-            {/* <Form.Select
-              aria-label="Default select example"
-              onChange={handleProductChange}
-              className="custom_input"
-              required
-              style={{fontSize:"12px"}}
-            >
-              <option value="" disabled selected>
-                Choose a Product
-              </option>
-              {selectedProduct.map((item) => (
-                <option key={item.Product_id} value={item.Product_id}>
-                  {item.Product_name}
-                </option>
-              ))}
-            </Form.Select> */}
           </div>
 
           <div className="col-md-4">

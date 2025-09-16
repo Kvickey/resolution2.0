@@ -1,5 +1,6 @@
 import React from 'react'
-import ArbitratorList from '../components/ArbitratorList'
+import ArbitratorList from './arbitrator/ArbitratorList'
+
 
 const ArbInfo = () => {
   return (
