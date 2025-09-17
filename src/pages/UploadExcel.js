@@ -753,6 +753,7 @@ const UploadExcel = () => {
               </span>
             )}
         </div>
+        
         <div className="col-md-1">
           {!verified &&
             excelData.length > 0 &&
