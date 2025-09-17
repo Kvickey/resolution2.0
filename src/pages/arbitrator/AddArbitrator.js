@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { API_BASE_URL } from "../../utils/constants";
+import LoadingSpinner from "../../components/LoadingSpinner";
+
 
 const AddArbitrator = ({ onSave, onCancel, initialData }) => {
   const [formData, setFormData] = useState({
@@ -22,6 +24,8 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
     Created_by: 1,
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
 
   // ✅ Fill form if editing
   useEffect(() => {
@@ -131,6 +135,8 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
     }
     // alert("clicked");
 
+    setLoading(true); // start loading
+
     const data = new FormData();
     Object.keys(formData).forEach((key) => {
       const value = formData[key];
@@ -147,7 +153,11 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
 
       //  set these fields to empty
       if (key === "Photo" || key === "Sign" || key === "Stamp") {
-        data.append(key, "");
+        if (formData[key] instanceof File) {
+          data.append(key, formData[key]);
+        } else {
+          data.append(key, "");
+        }
         return;
       }
 
@@ -172,7 +182,6 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
 
     data.append("Post_qualification", "");
 
-
     for (let pair of data.entries()) {
       console.log(pair[0], pair[1]);
     }
@@ -181,25 +190,30 @@ const AddArbitrator = ({ onSave, onCancel, initialData }) => {
       ? `${API_BASE_URL}/api/UpArb` // update API
       : `${API_BASE_URL}/api/Arb`; // add API
 
-    fetch(endpoint, {
-      method: "POST",
-      body: data,
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        console.log("Saved successfully:", result);
-        alert(
-          initialData?.Arb_id
-            ? "Arbitrator updated successfully!"
-            : "Arbitrator added successfully!"
-        );
-        if (onSave) onSave(result);
+      fetch(endpoint, {
+        method: "POST",
+        body: data,
       })
-      .catch((err) => {
-        console.error("Error saving arbitrator:", err);
-        alert("Failed to save arbitrator");
-      });
+        .then((res) => res.json())
+        .then((result) => {
+          console.log("Saved successfully:", result);
+          alert(
+            initialData?.Arb_id
+              ? "Arbitrator updated successfully!"
+              : "Arbitrator added successfully!"
+          );
+          if (onSave) onSave(result);
+        })
+        .catch((err) => {
+          console.error("Error saving arbitrator:", err);
+          alert("Failed to save arbitrator");
+        })
+        .finally(() => {
+          setLoading(false); // stop loading
+        });
   };
+
+   if (loading) return <LoadingSpinner />;
 
   // Handle Cancel - Reset + go back
   const handleCancel = () => {
