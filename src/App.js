@@ -86,6 +86,7 @@ import SignedSec17Order from "./pages/SignedSec17Order";
 import Arbitrator from "./pages/arbitrator/Arbitrator";
 import ArbitratorList from "./pages/arbitrator/ArbitratorList";
 import AddArbitrator from "./pages/arbitrator/AddArbitrator";
+import UploadLot from "./pages/lots/UploadLot";
 // import AddArbitrator from "./components/AddArbitrator";
 // import Arbitrator from "./components/Arbitrator";
 // import ArbitratorList from "./components/ArbitratorList";
@@ -144,7 +145,8 @@ const App = () => {
           <Route path="addarbitrator" element={<AddArbitrator />} />
           {/* <Route path="uploadalot" element={<UploadExcel />} /> */}
           <Route path="uploadalot">
-            <Route path="uploadnewlot" element={<UploadExcel />} />
+            <Route path="uploadnewlot" element={<UploadLot />} />
+            {/* <Route path="uploadnewlot" element={<UploadExcel />} /> */}
             <Route path="list" element={<UploadedLotList />} />
           </Route>
           <Route path="intentletter">
