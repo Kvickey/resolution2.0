@@ -3,4 +3,4 @@
 // export const API_BASE_URL = 'http://api.resolutionexperts.in'
 
 export const API_BASE_URL = 'https://api.resolutionexperts.in'
-// export const API_BASE_URL = 'http://localhost:64177/'
+// export const API_BASE_URL = 'http://localhost:64177'
