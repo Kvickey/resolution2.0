@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import * as XLSX from "xlsx";
 import { API_BASE_URL } from "../../utils/constants";
 
 const AxisCV = ({
@@ -11,17 +12,17 @@ const AxisCV = ({
   setProg,
   setTotalRecords,
   setClearForm,
-  setErrorResponses,
   clearForm,
-  showProgress
+  showProgress,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [errorResponses, setErrorResponses] = useState([]);
 
   // ✅ Create Axis CV record
   const createRecordObject = (row, borrowerArray) => {
     return {
       Lot_no: row.Lot_No,
-      Acc_no: row.ACC_NO,
+      Acc_no: borrowerArray[0]?.ACC_NO || row.ACC_NO,
       Reference_no: row.REFERENCE_NO,
       Cust_id: row.CUST_ID,
       Client_id: bankId,
@@ -31,7 +32,7 @@ const AxisCV = ({
       LRN_ref_no: row.LRN_REFERENCE_NO,
       Uploaded_by: "Admin",
       Borrower: borrowerArray,
-      Axis_cv: {
+      Axis_Cv: {
         Product: row.PRODUCT,
         Registration_no: row.REGISTRATION_NO,
         Engine_no: row.ENGINE_NUMBER,
@@ -59,7 +60,7 @@ const AxisCV = ({
   };
 
   // ✅ Verify Data API
-  const verifyData = async (record) => {
+  const verifyData = async (record, rowIndex) => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/Validate`, {
         method: "POST",
@@ -69,14 +70,30 @@ const AxisCV = ({
 
       if (!response.ok) {
         const errorBody = await response.json();
-        setErrorResponses((prev) => [...prev, errorBody]);
+        setErrorResponses((prev) => [
+          ...prev,
+          {
+            RowNo: rowIndex + 1,
+            Reference_no: record.Reference_no,
+            Acc_no: record.Acc_no,
+            Cust_name: record.Borrower?.[0]?.Cust_name || "",
+            // ErrorMessage: errorBody?.message || "Validation failed",
+            ErrorMessage: JSON.stringify(errorBody),
+          },
+        ]);
         return false;
       }
       return true;
     } catch (error) {
       setErrorResponses((prev) => [
         ...prev,
-        { error: error.message, data: record },
+        {
+          RowNo: rowIndex + 1,
+          Reference_no: record.Reference_no,
+          Acc_no: record.Acc_no,
+          Cust_name: record.Borrower?.[0]?.Cust_name || "",
+          ErrorMessage: error.message,
+        },
       ]);
       return false;
     }
@@ -110,7 +127,7 @@ const AxisCV = ({
       if (row.ACC_NO !== prevAcc) {
         if (borrowerArray.length > 0) {
           const record = createRecordObject(excelData[i - 1], borrowerArray);
-          await verifyData(record);
+          await verifyData(record, i - 1);
         }
         borrowerArray = [];
         prevAcc = row.ACC_NO;
@@ -122,6 +139,10 @@ const AxisCV = ({
           Work_mobile_no: row.WORK_MOBILE_2,
           Email_id: row.E_MAIL_ID,
           Comm_add: row.Communication_address,
+          And_also_at: row.And_Also_At_address1,
+          And_also_at2: row.And_Also_At_address2,
+          And_also_at3: row.And_Also_At_address3,
+          Work_add: row.Work_Address,
         });
       } else {
         borrowerArray.push({
@@ -131,20 +152,29 @@ const AxisCV = ({
           Work_mobile_no: row.WORK_MOBILE_2,
           Email_id: row.E_MAIL_ID,
           Comm_add: row.Communication_address,
+          And_also_at: row.And_Also_At_address1,
+          And_also_at2: row.And_Also_At_address2,
+          And_also_at3: row.And_Also_At_address3,
+          Work_add: row.Work_Address,
         });
       }
     }
 
-    // Final record
     if (borrowerArray.length > 0) {
       const lastRecord = createRecordObject(
         excelData[excelData.length - 1],
         borrowerArray
       );
-      await verifyData(lastRecord);
+      await verifyData(lastRecord, excelData.length - 1);
     }
 
-    setVerified(true);
+    if (errorResponses.length > 0) {
+      setVerified(false); // do not show Upload button
+    
+    } else {
+      setVerified(true);
+    }
+
     setLoading(false);
   };
 
@@ -155,22 +185,28 @@ const AxisCV = ({
     setTotalRecords(excelData.length);
 
     let borrowerArray = [];
-    let prevAcc = null;
+    let prevRef = null;
+    let seenAccNos = new Set();
+    let prevRow = null;
     let success = 0,
       failed = 0;
 
     for (let i = 0; i < excelData.length; i++) {
       const row = excelData[i];
 
-      if (row.ACC_NO !== prevAcc) {
-        if (borrowerArray.length > 0) {
-          const record = createRecordObject(excelData[i - 1], borrowerArray);
+      // New reference number → finalize previous record
+      if (row.REFERENCE_NO !== prevRef) {
+        if (borrowerArray.length > 0 && prevRow) {
+          const record = createRecordObject(prevRow, borrowerArray);
           const ok = await sendRowData(record);
           ok ? success++ : failed++;
           setProg((p) => p + 1);
         }
+
         borrowerArray = [];
-        prevAcc = row.ACC_NO;
+        seenAccNos.clear();
+        prevRef = row.REFERENCE_NO;
+        prevRow = row;
 
         borrowerArray.push({
           Type: "B",
@@ -179,39 +215,72 @@ const AxisCV = ({
           Work_mobile_no: row.WORK_MOBILE_2,
           Email_id: row.E_MAIL_ID,
           Comm_add: row.Communication_address,
+          And_also_at: row.And_Also_At_address1,
+          And_also_at2: row.And_Also_At_address2,
+          And_also_at3: row.And_Also_At_address3,
+          Work_add: row.Work_Address,
         });
+        seenAccNos.add(row.ACC_NO);
       } else {
-        borrowerArray.push({
-          Type: "C",
-          Cust_name: row.CUST_NAME,
-          Mobile_no: row.Mobile_no,
-          Work_mobile_no: row.WORK_MOBILE_2,
-          Email_id: row.E_MAIL_ID,
-          Comm_add: row.Communication_address,
-        });
+        if (!seenAccNos.has(row.ACC_NO)) {
+          borrowerArray.push({
+            Type: "C",
+            Cust_name: row.CUST_NAME,
+            Mobile_no: row.Mobile_no,
+            Work_mobile_no: row.WORK_MOBILE_2,
+            Email_id: row.E_MAIL_ID,
+            Comm_add: row.Communication_address,
+            And_also_at: row.And_Also_At_address1,
+            And_also_at2: row.And_Also_At_address2,
+            And_also_at3: row.And_Also_At_address3,
+            Work_add: row.Work_Address,
+          });
+          seenAccNos.add(row.ACC_NO);
+        }
       }
-    }
 
-    // Final record
-    if (borrowerArray.length > 0) {
-      const lastRecord = createRecordObject(
-        excelData[excelData.length - 1],
-        borrowerArray
-      );
-      const ok = await sendRowData(lastRecord);
-      ok ? success++ : failed++;
-      setProg((p) => p + 1);
+      prevRow = row;
+
+      // last row → finalize
+      if (i === excelData.length - 1 && borrowerArray.length > 0) {
+        const record = createRecordObject(row, borrowerArray);
+        const ok = await sendRowData(record);
+        ok ? success++ : failed++;
+        setProg((p) => p + 1);
+      }
     }
 
     console.log(`✅ Uploaded: ${success}, ❌ Failed: ${failed}`);
     setClearForm(true);
   };
 
+  // ✅ Download Error Excel
+  const downloadErrorExcel = () => {
+    if (errorResponses.length === 0) return;
+
+    const worksheet = XLSX.utils.json_to_sheet(errorResponses);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Errors");
+
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ErrorReport.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="mt-3">
       {!loading && (
         <div className="d-flex gap-2 justify-content-end">
-          {excelData.length > 0 && !verified && (
+          {excelData.length > 0 && !verified && errorResponses.length === 0 && (
             <button
               className="custBtn"
               style={{ fontSize: "12px" }}
@@ -220,7 +289,16 @@ const AxisCV = ({
               Verify
             </button>
           )}
-          {verified && !clearForm && !showProgress && (
+          {errorResponses.length > 0 && (
+            <button
+              className="custBtn"
+              style={{ fontSize: "12px" }}
+              onClick={downloadErrorExcel}
+            >
+              Download Error Excel
+            </button>
+          )}
+          {verified && !clearForm && !showProgress && errorResponses.length === 0 && (
             <button
               className="custBtn"
               style={{ fontSize: "12px" }}
