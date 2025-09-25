@@ -1,6 +1,7 @@
 import React from "react";
 import Arbitrator1 from "../../assets/images/Arbitrator1.jpg";
 import "./Arbitrator.css";
+import { API_BASE_URL } from "../../utils/constants";
 
 const ArbitratorList = ({ arbitrators, onAdd, onUpdate, onDelete }) => {
   return (
@@ -23,7 +24,8 @@ const ArbitratorList = ({ arbitrators, onAdd, onUpdate, onDelete }) => {
               <div className="col-md-4">
                 <img
                   loading="lazy"
-                  src={`https://dev.api.resolutionexperts.in/Content/Upload/Arbitrator/Photo/${arbitrator.PhotoURL}?t=${new Date().toISOString().slice(0,10).replace(/-/g,"")}`}
+                  src={`${API_BASE_URL}/Content/Upload/Arbitrator/Photo/${arbitrator.PhotoURL}?t=${new Date().toISOString().slice(0,10).replace(/-/g,"")}`}
+                  // src={`https://api.resolutionexperts.in/Content/Upload/Arbitrator/Photo/${arbitrator.PhotoURL}?t=${new Date().toISOString().slice(0,10).replace(/-/g,"")}`}
                   // src={Arbitrator1}
                   className="img-fluid rounded"
                   alt="Arbitrator"
