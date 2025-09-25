@@ -23,7 +23,7 @@ const ArbitratorList = ({ arbitrators, onAdd, onUpdate, onDelete }) => {
               <div className="col-md-4">
                 <img
                   loading="lazy"
-                  src={`https://api.resolutionexperts.in/Content/Upload/Arbitrator/Photo/${arbitrator.PhotoURL}?t=${new Date().toISOString().slice(0,10).replace(/-/g,"")}`}
+                  src={`https://dev.api.resolutionexperts.in/Content/Upload/Arbitrator/Photo/${arbitrator.PhotoURL}?t=${new Date().toISOString().slice(0,10).replace(/-/g,"")}`}
                   // src={Arbitrator1}
                   className="img-fluid rounded"
                   alt="Arbitrator"
