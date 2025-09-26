@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
 import { API_BASE_URL } from "../../utils/constants";
+import ProgressBar from "../../components/ProgressBar";
 
 const AxisCV = ({
   excelData,
@@ -17,6 +18,7 @@ const AxisCV = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const [errorResponses, setErrorResponses] = useState([]);
+  const [verifyProgress, setVerifyProgress] = useState(0);
 
   // ✅ Create Axis CV record
   const createRecordObject = (row, borrowerArray) => {
@@ -118,6 +120,7 @@ const AxisCV = ({
   const handleVerify = async () => {
     setLoading(true);
     setErrorResponses([]);
+    setVerifyProgress(0);
     let borrowerArray = [];
     let prevAcc = null;
 
@@ -128,6 +131,7 @@ const AxisCV = ({
         if (borrowerArray.length > 0) {
           const record = createRecordObject(excelData[i - 1], borrowerArray);
           await verifyData(record, i - 1);
+          setVerifyProgress((prev) => prev + 1);
         }
         borrowerArray = [];
         prevAcc = row.ACC_NO;
@@ -166,15 +170,14 @@ const AxisCV = ({
         borrowerArray
       );
       await verifyData(lastRecord, excelData.length - 1);
+      setVerifyProgress((prev) => prev + 1);
     }
 
     if (errorResponses.length > 0) {
       setVerified(false); // do not show Upload button
-    
     } else {
       setVerified(true);
     }
-
     setLoading(false);
   };
 
@@ -262,7 +265,10 @@ const AxisCV = ({
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Errors");
 
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
     const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
     const url = URL.createObjectURL(blob);
 
@@ -298,18 +304,29 @@ const AxisCV = ({
               Download Error Excel
             </button>
           )}
-          {verified && !clearForm && !showProgress && errorResponses.length === 0 && (
-            <button
-              className="custBtn"
-              style={{ fontSize: "12px" }}
-              onClick={handleDataUpload}
-            >
-              Upload
-            </button>
-          )}
+          {verified &&
+            !clearForm &&
+            !showProgress &&
+            errorResponses.length === 0 && (
+              <button
+                className="custBtn"
+                style={{ fontSize: "12px" }}
+                onClick={handleDataUpload}
+              >
+                Upload
+              </button>
+            )}
         </div>
       )}
-      {loading && <p>Verifying data...</p>}
+      {loading && (
+        <ProgressBar
+          progress={verifyProgress}
+          total={excelData.length}
+          show={loading && excelData.length > 0}
+          label={`Verified ${verifyProgress} of ${excelData.length}`}
+        />
+      )}
+      {/* {loading && <p>Verifying data...</p>} */}
     </div>
   );
 };

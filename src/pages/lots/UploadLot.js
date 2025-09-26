@@ -5,9 +5,9 @@ import ExcelFileUpload from "../../components/ExcelFileUpload";
 import ReusableTable from "../../components/ReusableTable";
 import ClearForm from "../../components/Clearform";
 import CustomStepper from "../../components/CustomStepper";
-import ProgressBar from "../../components/ProgressBar";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+// import ProgressBar from "../../components/ProgressBar";
+// import * as XLSX from "xlsx";
+// import { saveAs } from "file-saver";
 
 // Product-specific components
 import AxisCV from "./AxisCV";

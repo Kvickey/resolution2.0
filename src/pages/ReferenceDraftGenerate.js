@@ -171,6 +171,7 @@ const ReferenceDraftGenerate = () => {
     }
   };
   // for the generation of draft function ends
+  
 
   //   function to upload the reference Drafts Starts Here
   const handleUploadDraft = async () => {
