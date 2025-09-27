@@ -238,7 +238,7 @@ const UploadLot = () => {
           setErrorResponses={setErrorResponses}
           clearForm={clearForm}
           showProgress={showProgress}
-          
+          setActiveStep={setActiveStep}
         />
       )}
       {/* Table after verification */}

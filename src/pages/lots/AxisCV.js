@@ -15,6 +15,7 @@ const AxisCV = ({
   setClearForm,
   clearForm,
   showProgress,
+  setActiveStep
 }) => {
   const [loading, setLoading] = useState(false);
   const [errorResponses, setErrorResponses] = useState([]);
@@ -177,6 +178,7 @@ const AxisCV = ({
       setVerified(false); // do not show Upload button
     } else {
       setVerified(true);
+      setActiveStep(2)
     }
     setLoading(false);
   };
