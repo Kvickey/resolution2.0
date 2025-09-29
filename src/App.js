@@ -20,7 +20,7 @@ import ReferenceDraftServices from "./pages/ReferenceDraftServices";
 import ReferenceDraftReports from "./pages/ReferenceDraftReports";
 import ReferenceDraftGenerate from "./pages/ReferenceDraftGenerate";
 import ArbDashboard from "./pages/ArbDashboard";
-import ArbDashboardMain from "./pages/ArbDashboardMain";
+import ArbDashboardMain from "./pages/dashboards/ArbitratorDashboard/ArbDashboardMain";
 import AcceptanceLetter from "./pages/AcceptanceLetter";
 import AcceptanceLetterService from "./pages/AcceptanceLetterService";
 import AcceptanceLetterReports from "./pages/AcceptanceLetterReports";
@@ -87,6 +87,7 @@ import Arbitrator from "./pages/arbitrator/Arbitrator";
 import ArbitratorList from "./pages/arbitrator/ArbitratorList";
 import AddArbitrator from "./pages/arbitrator/AddArbitrator";
 import UploadLot from "./pages/lots/UploadLot";
+import ArbitratorDashboard from "./pages/dashboards/ArbitratorDashboard/ArbitratorDashboard";
 // import AddArbitrator from "./components/AddArbitrator";
 // import Arbitrator from "./components/Arbitrator";
 // import ArbitratorList from "./components/ArbitratorList";
@@ -178,7 +179,8 @@ const App = () => {
           {/* <Route path="trial" element={<Trial />} /> */}
         </Route>
 
-        <Route path="/arbdashboard" element={<ArbDashboard />}>
+        <Route path="/arbdashboard" element={<ArbitratorDashboard />}>
+        {/* <Route path="/arbdashboard" element={<ArbDashboard />}> */}
           <Route index element={<ArbDashboardMain />} />
           <Route path="dashboard" element={<ArbDashboardMain />} />
           <Route path="zoommeetings" element={<ZoomMeetings />} />
