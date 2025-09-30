@@ -179,7 +179,7 @@ const ZoomMeetings = () => {
     // console.log(formattedDateTime);
     const dataToGenerateZoomMeet = {
       accessToken: accessToken,
-      refreshToken: refreshToken,
+      refreshToken: "",
       topic: "Zoom Meeting",
       // start_time: "2025-05-08T15:00:00Z",
       start_time: formattedDateTime,

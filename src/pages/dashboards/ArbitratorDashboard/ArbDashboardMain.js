@@ -13,7 +13,7 @@ const ArbDashboardMain = () => {
     setArbId(user[0].Ref_id);
   }, [user]);
 
-  console.log(arbId);
+  // console.log(arbId);
 
   useEffect(() => {
     const fetchDashboardCount = async () => {
@@ -36,7 +36,7 @@ const ArbDashboardMain = () => {
     fetchDashboardCount();
   }, [arbId]);
 
-  // console.log(count);
+  console.log(count);
 
   return (
     <>
@@ -51,7 +51,7 @@ const ArbDashboardMain = () => {
           ) : (
             <div className="statsContainer pe-3">Loading…</div>
           )}
-          <div className="statsContainer1">Unassigned Lots</div>
+          <div className="statsContainer1">Assigned Lots</div>
         </div>
 
         <div className="statsItem1">
@@ -74,7 +74,7 @@ const ArbDashboardMain = () => {
             <div className="statsContainer pe-3">Loading…</div>
           )}
 
-          <div className="statsContainer1"> Cases Resolved this week </div>
+          <div className="statsContainer1"> Resolved Cases </div>
         </div>
       </div>
     </>
