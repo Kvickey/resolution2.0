@@ -166,6 +166,9 @@ const Section17Application = () => {
       return;
     }
 
+    
+    console.log(data);
+
     formData.append("file", files); // PDF file
     formData.append("data", JSON.stringify(data)); // JSON string
 
@@ -205,54 +208,6 @@ const Section17Application = () => {
       setLoading(false); // ✅ Always stop loading
     }
   };
-
-  // const handleUpload = async () => {
-  //   const data = excelData.map((item) => ({
-  //     Reference_no: item.REFERENCE_NO,
-  //   }));
-
-  //   // console.log(data);
-  //   // console.log(files);
-
-  //   const formData = new FormData();
-
-  //   // Append your file
-  //   formData.append("file", files);
-
-  //   formData.append("data", JSON.stringify(data));
-
-  //   for (let pair of formData.entries()) {
-  //     console.log(`${pair[0]}:`, pair[1]);
-  //   }
-
-  //   try {
-  //     const response = await fetch(
-  //       `${API_BASE_URL}/api/UploadSOC?PageInterval=2`,
-  //       {
-  //         method: "POST",
-  //         // headers: {
-  //         //   "Content-Type": "multipart/form-data",
-  //         // },
-  //         body: formData,
-  //       }
-  //     );
-  //     if (!response.ok) {
-  //       const error = await response.json();
-  //       console.error(`Error for REFERENCE_NO :`, error);
-  //     } else {
-  //       const result = await response.json();
-  //       console.log(`Success for REFERENCE_NO :`, result);
-  //     }
-
-  //     // If all succeeded or completed
-  //     setHeaderError("");
-  //     setVerifiedData(true);
-  //   } catch (error) {
-  //     console.error("Network or server error:", error);
-  //     setHeaderError("Error sending data to server.");
-  //     setVerifiedData(false);
-  //   }
-  // };
 
   return (
     <div className="container">

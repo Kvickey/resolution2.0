@@ -88,6 +88,8 @@ import ArbitratorList from "./pages/arbitrator/ArbitratorList";
 import AddArbitrator from "./pages/arbitrator/AddArbitrator";
 import UploadLot from "./pages/lots/UploadLot";
 import ArbitratorDashboard from "./pages/dashboards/ArbitratorDashboard/ArbitratorDashboard";
+import FirstHearing from "./pages/firstHearing/FirstHearing";
+import SecondHearing from "./pages/secondHearing/SecondHearing";
 // import AddArbitrator from "./components/AddArbitrator";
 // import Arbitrator from "./components/Arbitrator";
 // import ArbitratorList from "./components/ArbitratorList";
@@ -201,7 +203,8 @@ const App = () => {
             <Route path="list" element={<Section17OrderData />} />
           </Route>
           <Route path="firstHearing">
-            <Route path="first_Hearing" element={<VirtualMeeting />} />
+            <Route path="first_Hearing" element={<FirstHearing />} />
+            {/* <Route path="first_Hearing" element={<VirtualMeeting />} /> */}
             <Route
               path="createSecondHearingNotice"
               element={<SecondHearingNotice />}
@@ -218,7 +221,8 @@ const App = () => {
           <Route path="secondHearing">
             <Route
               path="second_Hearing"
-              element={<VirtualMeetingForSecondHearing />}
+              element={<SecondHearing />}
+              // element={<VirtualMeetingForSecondHearing />}
             />
             <Route
               path="createThirdHearingNotice"

@@ -293,7 +293,7 @@ const VirtualMeetingForThirdHearing = () => {
       toast.info("Uploading files, please wait...");
 
       // Construct the upload URL
-      const url = `https://api.resolutionexperts.in/api/FirstHearing?Case_id=${caseId}&Comment=${encodeURIComponent(
+      const url = `${API_BASE_URL}/api/FirstHearing?Case_id=${caseId}&Comment=${encodeURIComponent(
         comment
       )}&Second_Date=null&Second_date_time_from=null&Second_date_time_to=null&Video_link=null&Link_id=null&Password=null&Meeting_No=3`;
       // const url = `https://api.resolutionexperts.in/api/FirstHearing?Case_id=${caseId}&Comment=${encodeURIComponent(

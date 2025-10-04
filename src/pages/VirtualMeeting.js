@@ -149,31 +149,6 @@ const VirtualMeeting = () => {
     fetchAccessToken();
   }, [arbId]);
 
-  // useEffect(() => {
-  //   const fetchAccessToken = async () => {
-  //     if (!arbId) return;
-  //     try {
-  //       const response = await fetch(
-  //         `${API_BASE_URL}/api/Meetings?Arb_id=${arbId}`
-  //       );
-  //       if (!response.ok) {
-  //         throw new Error("Network response was not ok");
-  //       }
-  //       const result = await response.json();
-  //       const parsedAccessTokenArray = Array.isArray(result)
-  //         ? result
-  //         : JSON.parse(result); // Ensure parsedArbitrators is an array
-  //       setMeeting(parsedAccessTokenArray);
-  //       // console.log(parsedAccessTokenArray);
-  //     } catch (error) {
-  //       // setError1(error.message);
-  //     }
-  //   };
-
-  //   fetchAccessToken();
-  // }, [arbId]);
-
-  // console.log(meeting);
 
   // For Selecting Date For the Appointments
   const handleDateChange = (date) => {
@@ -349,28 +324,28 @@ const VirtualMeeting = () => {
   // to handle End Time Ends here
 
   // Function to format date and time together
-  const formatDateTime = (date, time) => {
-    const [hour, minute] = time.match(/\d+/g).map(Number);
+  // const formatDateTime = (date, time) => {
+  //   const [hour, minute] = time.match(/\d+/g).map(Number);
 
-    let formattedHour = hour;
-    if (time.includes("PM") && formattedHour !== 12) formattedHour += 12;
-    if (time.includes("AM") && formattedHour === 12) formattedHour = 0;
+  //   let formattedHour = hour;
+  //   if (time.includes("PM") && formattedHour !== 12) formattedHour += 12;
+  //   if (time.includes("AM") && formattedHour === 12) formattedHour = 0;
 
-    // Create a new Date object to prevent modifying the original date
-    const newDate = new Date(date);
+  //   // Create a new Date object to prevent modifying the original date
+  //   const newDate = new Date(date);
 
-    // Set hours and minutes in local time
-    newDate.setHours(formattedHour, minute, 0, 0);
+  //   // Set hours and minutes in local time
+  //   newDate.setHours(formattedHour, minute, 0, 0);
 
-    // Format the date and time manually in YYYY-MM-DDTHH:MM (local time)
-    const year = newDate.getFullYear();
-    const month = String(newDate.getMonth() + 1).padStart(2, "0");
-    const day = String(newDate.getDate()).padStart(2, "0");
-    const hours = String(newDate.getHours()).padStart(2, "0");
-    const minutes = String(newDate.getMinutes()).padStart(2, "0");
+  //   // Format the date and time manually in YYYY-MM-DDTHH:MM (local time)
+  //   const year = newDate.getFullYear();
+  //   const month = String(newDate.getMonth() + 1).padStart(2, "0");
+  //   const day = String(newDate.getDate()).padStart(2, "0");
+  //   const hours = String(newDate.getHours()).padStart(2, "0");
+  //   const minutes = String(newDate.getMinutes()).padStart(2, "0");
 
-    return `${year}-${month}-${day}T${hours}:${minutes}:${minutes}Z`;
-  };
+  //   return `${year}-${month}-${day}T${hours}:${minutes}:${minutes}Z`;
+  // };
 
   // console.log(zoomResponse);
   // console.log(joinUrl);
