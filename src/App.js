@@ -90,6 +90,7 @@ import UploadLot from "./pages/lots/UploadLot";
 import ArbitratorDashboard from "./pages/dashboards/ArbitratorDashboard/ArbitratorDashboard";
 import FirstHearing from "./pages/firstHearing/FirstHearing";
 import SecondHearing from "./pages/secondHearing/SecondHearing";
+import TerminateCase from "./pages/terminate/TerminateCase";
 // import AddArbitrator from "./components/AddArbitrator";
 // import Arbitrator from "./components/Arbitrator";
 // import ArbitratorList from "./components/ArbitratorList";
@@ -283,7 +284,8 @@ const App = () => {
             <Route path="lotwise" element={<AwardPassLotwise />} />
             <Route path="casewise" element={<AwardPassCasewise />} />
           </Route>
-          <Route path="terminate" element={<Terminate />} />
+          {/* <Route path="terminate" element={<Terminate />} /> */}
+          <Route path="terminate" element={<TerminateCase />} />
         </Route>
 
         <Route path="/lawyerdashboard" element={<LawyerDashboard />}>
@@ -392,11 +394,11 @@ const App = () => {
           <Typography id="modal-description" sx={{ mt: 2 }}>
             <p>
               Before you proceed, we kindly request you to read and understand
-              our{" "}
+              our
               <a href="#" className="text-decoration-none">
                 Terms of Service
               </a>
-              , including our{" "}
+              , including our
               <a href="#" className="text-decoration-none">
                 Site Terms of Use,
               </a>
@@ -405,8 +407,8 @@ const App = () => {
               </a>
               <a href="#" className="text-decoration-none">
                 Cookie Policy,
-              </a>{" "}
-              and{" "}
+              </a>
+              and
               <a href="#" className="text-decoration-none">
                 Mark Use Guidelines.
               </a>
