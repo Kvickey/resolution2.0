@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { API_BASE_URL } from "../utils/constants";
-import ReusableTable from "../components/ReusableTable";
-import LoadingSpinner from "../components/LoadingSpinner";
-import ClearForm from "../components/Clearform";
+import { API_BASE_URL } from "../../utils/constants";
+import ReusableTable from "../../components/ReusableTable";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import ClearForm from "../../components/Clearform";
 import { Button, Form } from "react-bootstrap";
 import { format } from "date-fns";
 import { toast, ToastContainer } from "react-toastify";
-import CustomStepper from "../components/CustomStepper";
-import { useAuth } from "../components/AuthProvider";
+import CustomStepper from "../../components/CustomStepper";
+import { useAuth } from "../../components/AuthProvider";
 
 const SecondHearingNotice = () => {
   const { user, logout } = useAuth();
@@ -284,54 +284,6 @@ const SecondHearingNotice = () => {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
-  const handleZoomMeet = async () => {
-    // console.log(selectedDate);
-    // console.log(startTime);
-    const formattedDateTime = formatDateTime(selectedDate, startTime);
-    // console.log(formattedDateTime);
-    const dataToGenerateZoomMeet = {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      topic: "Zoom Meeting",
-      start_time: formattedDateTime,
-      duration: "720",
-      agenda: "The Resolution Metting for dispute resolving",
-    };
-    console.log(dataToGenerateZoomMeet);
-    handleStepChange(3);
-    try {
-      setLoading(true);
-      const response = await fetch(`${API_BASE_URL}/api/Zoom`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToGenerateZoomMeet),
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-        );
-      }
-      const result = await response.json(); // Process the response
-      // console.log("Upload response:", result);
-      setZoomResponse(result);
-      toast.success("Data Uploaded Successfully", {
-        // position: toast.POSITION.BOTTOM_RIGHT,
-        theme: "colored",
-        autoClose: 1000,
-      });
-      setZoomMeet(true);
-      // console.log(save);
-    } catch (error) {
-      console.error("Error uploading data:", error);
-      // alert(`Error uploading data: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     // console.log("Updated zoomResponse:", zoomResponse);
     let parsedResponse;
@@ -525,12 +477,11 @@ const SecondHearingNotice = () => {
   // for the generation of dearft function ends
 
   //   function to upload the reference Drafts Starts Here
-  const handleUploadAcceptance = async () => {
+  const handleUploadSecondHearingNotice = async () => {
     setLoading(true);
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/SaveSHLetterCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${arbId}&Meeting_no=1&SH_date=${secondHearingDate}`
-        // `${API_BASE_URL}/api/SaveAccCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${arbId}`
       );
 
       if (!response.ok) {
@@ -642,7 +593,7 @@ const SecondHearingNotice = () => {
            
           )} */}
           {showPDF && !clearForm && (
-            <button className="custBtn" onClick={handleUploadAcceptance}>
+            <button className="custBtn" onClick={handleUploadSecondHearingNotice}>
               Upload
             </button>
           )}

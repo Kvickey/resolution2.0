@@ -15,7 +15,8 @@ import LoadingSpinner from "../../components/LoadingSpinner";
 import ThirdHearingModal from "../ThirdHearingModal";
 import { formatDate } from "../../utils/FormatDate";
 import VirtualMeetingModalForTH from "../VirtualMeetingModalForTH";
-import { generateTimeOptions } from '../../utils/timeUtils';
+import { generateTimeOptions } from "../../utils/timeUtils";
+import VirtualMeetModalForTH from "./VirtualMeetModalForTH";
 
 const SecondHearing = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -359,8 +360,6 @@ const SecondHearing = () => {
     return `${year}-${month}-${day}T${hours}:${minutes}:${minutes}Z`;
   };
 
-
-
   const handleUpload = async () => {
     // console.log(caseId);
     setLoading(true); // Set loading to true at the start
@@ -504,7 +503,7 @@ const SecondHearing = () => {
     setCustPassword(null);
     setCustStartTime(null);
     setJoinUrl(null);
-  }; 
+  };
 
   const handleSelectZoomMeet = () => {
     setShowSelectModal(true);
@@ -528,10 +527,8 @@ const SecondHearing = () => {
   };
 
   console.log(custStartTime);
-  // const 
+  // const
 
-  
-  
   // Pagination For the Main Table Starts Here
   const headers1 = meeting.length > 0 ? Object.keys(meeting[0]) : [];
 
@@ -539,15 +536,21 @@ const SecondHearing = () => {
 
   const indexOfLastItem1 = currentPage * itemsPerPage;
   const indexOfFirstItem1 = indexOfLastItem1 - itemsPerPage;
+
+  const today = new Date();
+  const upcomingMeetings = meeting.filter(
+    (item) => new Date(item.Date) > today
+  );
+  
   //   const currentItems = 1;
-  const currentItems3 = meeting.slice(
+  const currentItems3 = upcomingMeetings.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
   // console.log(currentItems3);
 
-  const totalPages3 = Math.ceil(meeting.length / itemsPerPage);
+  const totalPages3 = Math.ceil(upcomingMeetings.length / itemsPerPage);
 
   const totalPagesToShow1 = 5; // Maximum number of page buttons to show
 
@@ -557,8 +560,8 @@ const SecondHearing = () => {
     let startPage = Math.max(currentPage1 - Math.floor(pageWindow / 2), 1);
     let endPage = startPage + pageWindow - 1;
 
-    if (endPage > totalPages) {
-      endPage = totalPages;
+    if (endPage > totalPages3) {
+      endPage = totalPages3;
       startPage = Math.max(endPage - pageWindow + 1, 1);
     }
 
@@ -943,7 +946,7 @@ const SecondHearing = () => {
           </Button>
         </Modal.Header>
         <Modal.Body>
-          <VirtualMeetingModalForTH
+          <VirtualMeetModalForTH
             appointments={data}
             accessToken={accessToken}
             refreshToken={refreshToken}
@@ -1019,6 +1022,23 @@ const SecondHearing = () => {
               </table>
             )}
           </div>
+          {totalPages3 > 1 && (
+            <Pagination className="justify-content-center">
+              <Pagination.Prev
+                onClick={() =>
+                  setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
+                }
+              />
+              {generatePaginationItems1()}
+              <Pagination.Next
+                onClick={() =>
+                  setCurrentPage((prev) =>
+                    prev < totalPages3 ? prev + 1 : prev
+                  )
+                }
+              />
+            </Pagination>
+          )}
         </Modal.Body>
       </Modal>
       {/*Modal ends here */}
@@ -1027,4 +1047,3 @@ const SecondHearing = () => {
 };
 
 export default SecondHearing;
-

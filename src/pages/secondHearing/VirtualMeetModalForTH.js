@@ -8,7 +8,7 @@ import ReusableTable from "../../components/ReusableTable";
 import ClearForm from "../../components/Clearform";
 import LoadingSpinner from "../../components/LoadingSpinner";
 
-const VirtualMeetingModalForTH = ({
+const VirtualMeetModalForTH = ({
   appointments,
   accessToken,
   refreshToken,
@@ -443,15 +443,20 @@ const VirtualMeetingModalForTH = ({
 
   const indexOfLastItem1 = currentPage * itemsPerPage;
   const indexOfFirstItem1 = indexOfLastItem1 - itemsPerPage;
+
+  const today = new Date();
+  const upcomingMeetings = meeting.filter(
+    (item) => new Date(item.Date) > today
+  );
   //   const currentItems = 1;
-  const currentItems3 = meeting.slice(
+  const currentItems3 = upcomingMeetings.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  console.log(currentItems3);
+  // console.log(currentItems3);
 
-  const totalPages3 = Math.ceil(meeting.length / itemsPerPage);
+  const totalPages3 = Math.ceil(upcomingMeetings.length / itemsPerPage);
 
   const totalPagesToShow1 = 5; // Maximum number of page buttons to show
 
@@ -461,8 +466,8 @@ const VirtualMeetingModalForTH = ({
     let startPage = Math.max(currentPage1 - Math.floor(pageWindow / 2), 1);
     let endPage = startPage + pageWindow - 1;
 
-    if (endPage > totalPages) {
-      endPage = totalPages;
+    if (endPage > totalPages3) {
+      endPage = totalPages3;
       startPage = Math.max(endPage - pageWindow + 1, 1);
     }
 
@@ -620,7 +625,7 @@ const VirtualMeetingModalForTH = ({
             )}
           </div>
 
-          {/* {totalPages > 1 && (
+          {totalPages3 > 1 && (
             <Pagination className="justify-content-center">
               <Pagination.Prev
                 onClick={() =>
@@ -636,7 +641,7 @@ const VirtualMeetingModalForTH = ({
                 }
               />
             </Pagination>
-          )} */}
+          )}
         </Modal.Body>
       </Modal>
       {/*Modal ends here */}
@@ -745,4 +750,4 @@ const VirtualMeetingModalForTH = ({
   );
 };
 
-export default VirtualMeetingModalForTH;
+export default VirtualMeetModalForTH;

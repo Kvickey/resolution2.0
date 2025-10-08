@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { API_BASE_URL } from "../utils/constants";
+import { API_BASE_URL } from "../../utils/constants";
 import { Form } from "react-bootstrap";
-import "./ReferenceDraftReports.css";
+import "../ReferenceDraftReports.css";
 
-const SecondHearingReport = () => {
+const SecondHearingReports = () => {
   const [data, setData] = useState([]);
   const [selectedClient, setSelectedClient] = useState([]); //the clients Data to populate dropdown
   const [selectedProduct, setSelectedProduct] = useState([]); //to add the product from the dropdown
@@ -93,7 +93,7 @@ const SecondHearingReport = () => {
     setLoading(true); // Start loading before fetching data
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=2`
+        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=6`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -349,4 +349,4 @@ const SecondHearingReport = () => {
   );
 };
 
-export default SecondHearingReport;
+export default SecondHearingReports;

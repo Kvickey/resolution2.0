@@ -44,14 +44,15 @@ import AssignSecondHearingDate from "./pages/AssignSecondHearingDate";
 import AssignThirdHearingDate from "./pages/AssignThirdHearingDate";
 import AssignForthHearingDate from "./pages/AssignForthHearingDate";
 import Terminate from "./pages/Terminate";
-import SecondHearingNotice from "./pages/SecondHearingNotice";
+// import SecondHearingNotice from "./pages/SecondHearingNotice";
+import SecondHearingNotice from "./pages/firstHearing/SecondHearingNotice";
 import AwardPass from "./pages/AwardPass";
 import VirtualMeetingForSecondHearing from "./pages/VirtualMeetingForSecondHearing";
 import VirtualMeetingForThirdHearing from "./pages/VirtualMeetingForThirdHearing";
 import VirtualMeetingForForthHearing from "./pages/VirtualMeetingForForthHearing";
 import VirtualMeetingForFifthHearing from "./pages/VirtualMeetingForFifthHearing";
 import ThirdHearingNotice from "./pages/ThirdHearingNotice";
-import SecondHearingServices from "./pages/SecondHearingServices";
+// import SecondHearingServices from "./pages/SecondHearingServices";
 import SecondHearingReport from "./pages/SecondHearingReport";
 import ThirdHearingServices from "./pages/ThirdHearingServices";
 import ThirdHearingReport from "./pages/ThirdHearingReport";
@@ -90,7 +91,15 @@ import UploadLot from "./pages/lots/UploadLot";
 import ArbitratorDashboard from "./pages/dashboards/ArbitratorDashboard/ArbitratorDashboard";
 import FirstHearing from "./pages/firstHearing/FirstHearing";
 import SecondHearing from "./pages/secondHearing/SecondHearing";
+import SecondHearingServices from "./pages/firstHearing/SecondHearingServices";
 import TerminateCase from "./pages/terminate/TerminateCase";
+import UploadSOC from "./pages/soc/UploadSOC";
+import AccLtrReports from "./pages/acceptanceLetter/AccLtrReports";
+import GenerateAccLtr from "./pages/acceptanceLetter/GenerateAccLtr";
+import SecondHearingReports from "./pages/firstHearing/SecondHearingReports";
+import ThirdHearingNoticee from "./pages/secondHearing/ThirdHearingNotice";
+import ThirdHearingService from "./pages/secondHearing/ThirdHearingService";
+import ThirdHearingReports from "./pages/secondHearing/ThirdHearingReports";
 // import AddArbitrator from "./components/AddArbitrator";
 // import Arbitrator from "./components/Arbitrator";
 // import ArbitratorList from "./components/ArbitratorList";
@@ -189,10 +198,12 @@ const App = () => {
           <Route path="zoommeetings" element={<ZoomMeetings />} />
           <Route path="acceptletter" element={<AcceptanceLetter />} />
           <Route path="acceptletter">
-            <Route path="generate_al" element={<AcceptanceLetter />} />
+            <Route path="generate_al" element={<GenerateAccLtr />} />
+            {/* <Route path="generate_al" element={<AcceptanceLetter />} /> */}
             <Route path="signedaccupload" element={<SignedAccUpload />} />
             <Route path="services" element={<AcceptanceLetterService />} />
-            <Route path="reports" element={<AcceptanceLetterReports />} />
+            <Route path="reports" element={<AccLtrReports />} />
+            {/* <Route path="reports" element={<AcceptanceLetterReports />} /> */}
             <Route path="list" element={<AccScheduledMeets />} />
           </Route>
           {/* <Route path="section17order" element={<Section17Order />} /> */}
@@ -213,11 +224,16 @@ const App = () => {
             <Route
               path="secondHearingNoticeServices"
               element={<SecondHearingServices />}
+              // element={<SecondHearingServices />}
             />
             <Route
               path="secondHearingNoticeReports"
-              element={<SecondHearingReport />}
+              element={<SecondHearingReports />}
             />
+            {/* <Route
+              path="secondHearingNoticeReports"
+              element={<SecondHearingReport />}
+            /> */}
           </Route>
           <Route path="secondHearing">
             <Route
@@ -227,15 +243,18 @@ const App = () => {
             />
             <Route
               path="createThirdHearingNotice"
-              element={<ThirdHearingNotice />}
+              element={<ThirdHearingNoticee />}
+              // element={<ThirdHearingNotice />}
             />
             <Route
               path="thirdHearingNoticeServices"
-              element={<ThirdHearingServices />}
+              element={<ThirdHearingService />}
+              // element={<ThirdHearingServices />}
             />
             <Route
               path="thirdHearingNoticeReports"
-              element={<ThirdHearingReport />}
+              element={<ThirdHearingReports />}
+              // element={<ThirdHearingReport />}
             />
           </Route>
           <Route path="thirdHearing">
@@ -293,7 +312,8 @@ const App = () => {
           <Route path="dashboard" element={<LawyerDashboardMain />} />
           {/* <Route path="soc" element={<SOC />} /> */}
           <Route path="soc">
-            <Route path="generatesoc" element={<SOC />} />
+            <Route path="generatesoc" element={<UploadSOC />} />
+            {/* <Route path="generatesoc" element={<SOC />} /> */}
             <Route path="services" element={<SOCService />} />
             <Route path="reports" element={<SOCReports />} />
             <Route path="list" element={<SOCData />} />

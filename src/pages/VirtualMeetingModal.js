@@ -240,59 +240,7 @@ const VirtualMeetingModal = ({
   };
   // Pagination For the Main Table Ends Here
 
-  // const handleZoomMeet = async () => {
-  //   // console.log(selectedDate);
-  //   // console.log(startTime);
-  //   const formattedDateTime = formatDateTime(selectedDate3, startTimeBulk);
-  //   // console.log(formattedDateTime);
-  //   const dataToGenerateZoomMeet = {
-  //     accessToken: accessToken,
-  //     refreshToken: refreshToken,
-  //     topic: "Zoom Meeting",
-  //     start_time: formattedDateTime,
-  //     duration: "720",
-  //     timezone: "Asia/Kolkata",
-  //     agenda: "The Resolution Metting for dispute resolving",
-  //     Arb_id: arbId,
-  //   };
-  //   console.log(dataToGenerateZoomMeet);
-  //   try {
-  //     setLoading(true);
-  //     const response = await fetch(`${API_BASE_URL}/api/Zoom`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(dataToGenerateZoomMeet),
-  //     });
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(
-  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-  //       );
-  //     }
-  //     const result = await response.json(); // Process the response
-  //     // console.log("Upload response:", result);
-  //     const parsedZoomMeet = Array.isArray(result)
-  //       ? result
-  //       : JSON.parse(result);
-  //     console.log(parsedZoomMeet);
-  //     setJoinUrl(parsedZoomMeet.join_url);
-  //     setCustZoomId(parsedZoomMeet.id);
-  //     setCustPassword(parsedZoomMeet.password);
-  //     setCustStartTime(parsedZoomMeet.start_time);
-  //     toast.success("Data Uploaded Successfully", {
-  //       theme: "colored",
-  //       autoClose: 1000,
-  //     });
-  //     setZoomMeet(true);
-  //     // console.log(save);
-  //   } catch (error) {
-  //     console.error("Error uploading data:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  
 
   // To distribute records starts here
   const distributeRecords = () => {
@@ -455,15 +403,6 @@ const VirtualMeetingModal = ({
       }
       const result = await response.json();
       console.log("Upload response:", result);
-      // setMailDone(true);
-      //   setShowSecondModal(false);
-      //   setTimeout(() => {
-      //     toast.success("Second Hearing Date Assigned Successfully", {
-      //       // position: toast.POSITION.BOTTOM_RIGHT,
-      //       theme: "colored",
-      //     });
-      //     // window.location.reload();
-      //   }, 5);
       setClearForm(true);
     } catch (error) {
       console.error("Error uploading data:", error);
@@ -506,15 +445,20 @@ const VirtualMeetingModal = ({
 
   const indexOfLastItem1 = currentPage * itemsPerPage;
   const indexOfFirstItem1 = indexOfLastItem1 - itemsPerPage;
+
+  const today = new Date();
+  const upcomingMeetings = meeting.filter(
+    (item) => new Date(item.Date) > today
+  );
   //   const currentItems = 1;
-  const currentItems3 = meeting.slice(
+  const currentItems3 = upcomingMeetings.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
   console.log(currentItems3);
 
-  const totalPages3 = Math.ceil(meeting.length / itemsPerPage);
+  const totalPages3 = Math.ceil(upcomingMeetings.length / itemsPerPage);
 
   const totalPagesToShow1 = 5; // Maximum number of page buttons to show
 
@@ -683,7 +627,7 @@ const VirtualMeetingModal = ({
             )}
           </div>
 
-          {/* {totalPages > 1 && (
+          {totalPages3 > 1 && (
             <Pagination className="justify-content-center">
               <Pagination.Prev
                 onClick={() =>
@@ -694,12 +638,12 @@ const VirtualMeetingModal = ({
               <Pagination.Next
                 onClick={() =>
                   setCurrentPage((prev) =>
-                    prev < totalPages ? prev + 1 : prev
+                    prev < totalPages3 ? prev + 1 : prev
                   )
                 }
               />
             </Pagination>
-          )} */}
+          )}
         </Modal.Body>
       </Modal>
       {/*Modal ends here */}

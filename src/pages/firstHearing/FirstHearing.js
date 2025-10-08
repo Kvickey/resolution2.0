@@ -321,33 +321,7 @@ const FirstHearing = () => {
     };
     console.log(endTime);
     // to handle End Time Ends here
-  
-    // Function to format date and time together
-    // const formatDateTime = (date, time) => {
-    //   const [hour, minute] = time.match(/\d+/g).map(Number);
-  
-    //   let formattedHour = hour;
-    //   if (time.includes("PM") && formattedHour !== 12) formattedHour += 12;
-    //   if (time.includes("AM") && formattedHour === 12) formattedHour = 0;
-  
-    //   // Create a new Date object to prevent modifying the original date
-    //   const newDate = new Date(date);
-  
-    //   // Set hours and minutes in local time
-    //   newDate.setHours(formattedHour, minute, 0, 0);
-  
-    //   // Format the date and time manually in YYYY-MM-DDTHH:MM (local time)
-    //   const year = newDate.getFullYear();
-    //   const month = String(newDate.getMonth() + 1).padStart(2, "0");
-    //   const day = String(newDate.getDate()).padStart(2, "0");
-    //   const hours = String(newDate.getHours()).padStart(2, "0");
-    //   const minutes = String(newDate.getMinutes()).padStart(2, "0");
-  
-    //   return `${year}-${month}-${day}T${hours}:${minutes}:${minutes}Z`;
-    // };
-  
-    // console.log(zoomResponse);
-    // console.log(joinUrl);
+
   
     const handleUpload = async () => {
       console.log(caseId);
@@ -481,18 +455,26 @@ const FirstHearing = () => {
     const headers1 = updatedMeetings.length > 0 ? Object.keys(updatedMeetings[0]) : [];
   
     console.log(headers1);
-  
+
     const indexOfLastItem1 = currentPage * itemsPerPage;
     const indexOfFirstItem1 = indexOfLastItem1 - itemsPerPage;
+
+    const today = new Date();
+    const upcomingMeetings = meeting.filter(
+      (item) => new Date(item.Date) > today
+    );
+  
+  
+
     //   const currentItems = 1;
-    const currentItems3 = meeting.slice(
+    const currentItems3 = upcomingMeetings.slice(
       (currentPage - 1) * itemsPerPage,
       currentPage * itemsPerPage
     );
   
     console.log(currentItems3);
   
-    const totalPages3 = Math.ceil(meeting.length / itemsPerPage);
+    const totalPages3 = Math.ceil(upcomingMeetings.length / itemsPerPage);
   
     const totalPagesToShow1 = 5; // Maximum number of page buttons to show
   
@@ -912,74 +894,6 @@ const FirstHearing = () => {
           </Modal.Body>
         </Modal>
         {/* Second Modal ends here */}
-  
-        {/*Modal starts here */}
-        {/* <Modal
-          show={showSelectModal}
-          onHide={handleCloseSelectModal}
-          className="modal-xl"
-        >
-          <Modal.Header className="customModal" style={{ position: "relative" }}>
-            <Modal.Title className="">Select The Zoom Meeting</Modal.Title>
-            <Button
-              style={{
-                position: "absolute",
-                right: "15px",
-                color: "orange",
-                backgroundColor: "transparent",
-                border: "none",
-                fontSize: "40px",
-              }}
-              aria-label="Close"
-              onClick={handleCloseSelectModal}
-            >
-              &times;
-            </Button>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="table-responsive">
-              {currentItems3.length > 0 && (
-                <table className="table table-striped table-bordered table-hover mt-3 text-center">
-                  <thead>
-                    <tr>
-                      <th>Select</th>
-                      {headers1.map((header) => (
-                        <th key={header}>{header}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {currentItems3.map((item, index) => (
-                      <tr
-                        key={index}
-                        style={{
-                          maxHeight: "50px",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                        }}
-                        className="text-center custom_fz"
-                      >
-                        <td>
-                          <button
-                            className="btn btn-primary btn-sm"
-                            onClick={() => handleSelect(item)}
-                          >
-                            Select
-                          </button>
-                        </td>
-  
-                        {headers1.map((header) => (
-                          <td key={header}>{item[header]}</td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          </Modal.Body>
-        </Modal> */}
         <SelectZoomModal
           show={showSelectModal}
           onHide={() => setShowSelectModal(false)}

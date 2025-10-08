@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { API_BASE_URL } from "../utils/constants";
-import ReusableTableFixed from "../components/ReusableTableFixed";
-import useFetch from "../hooks/useFetch";
-import ReusableTable from "../components/ReusableTable";
-import LoadingSpinner from "../components/LoadingSpinner";
-import ClearForm from "../components/Clearform";
+import { API_BASE_URL } from "../../utils/constants";
+import ReusableTable from "../../components/ReusableTable";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import ClearForm from "../../components/Clearform";
 import DatePicker from "react-datepicker";
 import { Button, Form, Modal, Pagination } from "react-bootstrap";
 import { format } from "date-fns";
 import { toast, ToastContainer } from "react-toastify";
-import CustomStepper from "../components/CustomStepper";
-import { useAuth } from "../components/AuthProvider";
-import { generateTimeOptions } from '../utils/timeUtils';
+import CustomStepper from "../../components/CustomStepper";
+import { useAuth } from "../../components/AuthProvider";
+import { generateTimeOptions } from "../../utils/timeUtils";
+import { formatDate } from "../../utils/FormatDate";
 
 const GenerateAccLtr = () => {
   const { user, logout } = useAuth();
@@ -286,7 +285,6 @@ const GenerateAccLtr = () => {
 
   // the logic of assigning time slot start here
 
-
   const timeOptions = generateTimeOptions();
 
   const handleStartTimeChange = (e) => {
@@ -413,7 +411,7 @@ const GenerateAccLtr = () => {
           Password: password,
           No_of_cases: noOfCases,
           Rate: rate,
-          Award_pass_cases:noOfAwardPassCases,
+          Award_pass_cases: noOfAwardPassCases,
         });
         recordIndex++;
       }
@@ -440,7 +438,7 @@ const GenerateAccLtr = () => {
       Password: item.Password,
       No_of_cases: noOfCases,
       Rate: rate,
-      Award_pass_cases:noOfAwardPassCases,
+      Award_pass_cases: noOfAwardPassCases,
     }));
     console.log(dataToGenerateAL);
     handleStepChange(3);
@@ -602,13 +600,21 @@ const GenerateAccLtr = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+  const today = new Date();
+  const upcomingMeetings = meeting.filter(
+    (item) => new Date(item.Date) > today
+  );
+
   //   const currentItems = 1;
-  const currentItems = meeting.slice(
+  const currentItems = upcomingMeetings.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const totalPages3 = Math.ceil(meeting.length / itemsPerPage);
+  console.log(currentItems);
+
+  const totalPages3 = Math.ceil(upcomingMeetings.length / itemsPerPage);
 
   const totalPagesToShow = 5; // Maximum number of page buttons to show
 
@@ -618,8 +624,8 @@ const GenerateAccLtr = () => {
     let startPage = Math.max(currentPage - Math.floor(pageWindow / 2), 1);
     let endPage = startPage + pageWindow - 1;
 
-    if (endPage > totalPages) {
-      endPage = totalPages;
+    if (endPage > totalPages3) {
+      endPage = totalPages3;
       startPage = Math.max(endPage - pageWindow + 1, 1);
     }
 
@@ -716,7 +722,7 @@ const GenerateAccLtr = () => {
                       setCurrentPage(1); // reset to first page on search
                     }}
                     className="form-control mb-2"
-                    style={{ maxWidth: "300px", fontSize: '0.85rem' }}
+                    style={{ maxWidth: "300px", fontSize: "0.85rem" }}
                   />
                 </div>
 
@@ -904,15 +910,9 @@ const GenerateAccLtr = () => {
                   {currentItems.map((item, index) => (
                     <tr
                       key={index}
-                      style={{
-                        maxHeight: "50px",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
                       className="text-center custom_fz"
+                      style={{ whiteSpace: "nowrap" }}
                     >
-                      {/* Select Button */}
                       <td>
                         <button
                           className="btn btn-primary btn-sm"
@@ -921,10 +921,12 @@ const GenerateAccLtr = () => {
                           Select
                         </button>
                       </td>
-
-                      {/* Table Data */}
                       {headers.map((header) => (
-                        <td key={header}>{item[header]}</td>
+                        <td key={header}>
+                          {header === "Date"
+                            ? formatDate(item[header])
+                            : item[header]}
+                        </td>
                       ))}
                     </tr>
                   ))}
@@ -933,7 +935,7 @@ const GenerateAccLtr = () => {
             )}
           </div>
 
-          {totalPages > 1 && (
+          {totalPages3 > 1 && (
             <Pagination className="justify-content-center">
               <Pagination.Prev
                 onClick={() =>
@@ -944,7 +946,7 @@ const GenerateAccLtr = () => {
               <Pagination.Next
                 onClick={() =>
                   setCurrentPage((prev) =>
-                    prev < totalPages ? prev + 1 : prev
+                    prev < totalPages3 ? prev + 1 : prev
                   )
                 }
               />
@@ -965,7 +967,7 @@ const GenerateAccLtr = () => {
                   placeholder="Enter Rate"
                   onChange={handleRateChange}
                   value={rate}
-                  style={{fontSize:"12px"}}
+                  style={{ fontSize: "12px" }}
                 />
               </div>
             </div>
@@ -976,7 +978,7 @@ const GenerateAccLtr = () => {
                 placeholder="Ongoing Cases"
                 onChange={handleNoOfCasesChange}
                 value={noOfCases}
-                style={{fontSize:"12px"}}
+                style={{ fontSize: "12px" }}
               />
             </div>
             <div className="col-md-3">
@@ -986,7 +988,7 @@ const GenerateAccLtr = () => {
                 placeholder="Award Pass Cases"
                 onChange={handleAwardPassCasesChange}
                 value={noOfAwardPassCases}
-                style={{fontSize:"12px"}}
+                style={{ fontSize: "12px" }}
               />
             </div>
             <div className="col-md-3">
@@ -1087,4 +1089,3 @@ const GenerateAccLtr = () => {
 };
 
 export default GenerateAccLtr;
-

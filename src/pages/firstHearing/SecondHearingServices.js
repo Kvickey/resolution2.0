@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Pagination } from "react-bootstrap";
-import LoadingSpinner from "../components/LoadingSpinner";
-import { API_BASE_URL } from "../utils/constants";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import { API_BASE_URL } from "../../utils/constants";
 import { toast, ToastContainer } from "react-toastify";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 import { FaMessage } from "react-icons/fa6";
+import { useAuth } from "../../components/AuthProvider";
 
 const SecondHearingServices = () => {
   const [notServedLots, setNotServedLots] = useState([]);
@@ -16,28 +17,44 @@ const SecondHearingServices = () => {
   const [mailDone, setMailDone] = useState(false);
   const [smsDone, setSMSDone] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { user, logout } = useAuth();
+  const [arb_id, setArb_id] = useState("");
 
-  useEffect(() => {
-    const fetchNotServedLots = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=5`);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+    useEffect(() => {
+      console.log(user);
+      setArb_id(user[0].Ref_id);
+    }, [user]);
+  
+    console.log(arb_id);
+
+    useEffect(() => {
+      if (!arb_id) return;
+    
+      const fetchNotServedLots = async () => {
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/api/notServed?s_id=6&arb_id=${arb_id}`
+          );
+    
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+    
+          const result = await response.json();
+          const parsedNotServedLots = Array.isArray(result)
+            ? result
+            : JSON.parse(result);
+    
+          console.log(parsedNotServedLots);
+          setNotServedLots(parsedNotServedLots);
+        } catch (error) {
+          console.error("Error fetching not served lots:", error);
         }
-        const result = await response.json();
-        const parsedNotServedLots = Array.isArray(result)
-          ? result
-          : JSON.parse(result);
-        console.log(parsedNotServedLots);
-        setNotServedLots(parsedNotServedLots);
-      } catch (error) {
-        console.error("Error fetching not served lots:", error);
-      }
-    };
-
-    fetchNotServedLots();
-  }, []);
-
+      };
+    
+      fetchNotServedLots();
+    }, [arb_id]);
+    
   console.log(notServedLots);
 
   if (loading) return <LoadingSpinner />;
@@ -47,7 +64,7 @@ const SecondHearingServices = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/notServed?s_id=2&Lot_no=${lot}&arb_id=${arb_id}`
+        `${API_BASE_URL}/api/notServed?s_id=6&Lot_no=${lot}&arb_id=${arb_id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");

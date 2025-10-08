@@ -361,9 +361,9 @@ const VirtualMeetingModalForTH = ({
 
   // console.log(distributedRecords);
 
-    console.log(distRecords);
-    console.log(showDistributed);
-    
+  console.log(distRecords);
+  console.log(showDistributed);
+
   // To distribute records starts here
 
   if (loading) return <LoadingSpinner />;
@@ -376,8 +376,8 @@ const VirtualMeetingModalForTH = ({
       Reference_No: item.Reference_No,
       Cust_name: item.Cust_name,
       Second_Hearing_date: item.Hearing_date,
-      Second_Hearing_time_From: item.Hearing_time_From,
-      Second_Hearing_time_To: item.Hearing_time_To,
+      Hearing_time_From: item.Hearing_time_From,
+      Hearing_time_To: item.Hearing_time_To,
       Video_link: item.Video_link,
       Link_ID: item.Link_ID,
       Password: item.Password,
@@ -434,20 +434,20 @@ const VirtualMeetingModalForTH = ({
   };
 
   // console.log(custStartTime);
-  
 
   // Pagination For the Main Table Starts Here
   const headers1 = meeting.length > 0 ? Object.keys(meeting[0]) : [];
 
   console.log(headers1);
 
-  const indexOfLastItem1 = currentPage * itemsPerPage;
+  const indexOfLastItem1 = currentPage1 * itemsPerPage;
   const indexOfFirstItem1 = indexOfLastItem1 - itemsPerPage;
   //   const currentItems = 1;
-  const currentItems3 = meeting.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  // const currentItems3 = meeting.slice(
+  //   (currentPage - 1) * itemsPerPage,
+  //   currentPage * itemsPerPage
+  // );
+  const currentItems3 = meeting.slice(indexOfFirstItem1, indexOfLastItem1);
 
   console.log(currentItems3);
 
@@ -459,18 +459,13 @@ const VirtualMeetingModalForTH = ({
     const items = [];
     const pageWindow = 5;
     let startPage = Math.max(currentPage1 - Math.floor(pageWindow / 2), 1);
-    let endPage = startPage + pageWindow - 1;
-
-    if (endPage > totalPages) {
-      endPage = totalPages;
-      startPage = Math.max(endPage - pageWindow + 1, 1);
-    }
+    let endPage = Math.min(startPage + pageWindow - 1, totalPages3);
 
     for (let number = startPage; number <= endPage; number++) {
       items.push(
         <Pagination.Item
           key={number}
-          active={number === currentPage}
+          active={number === currentPage1}
           onClick={() => setCurrentPage1(number)}
         >
           {number}
@@ -484,30 +479,9 @@ const VirtualMeetingModalForTH = ({
 
   return (
     <div className="container">
-      {!zoomMeet && !clearForm && (
+      {!zoomMeet && !clearForm && !showSelectModal && (
         <div className="row mt-3">
-          {/* the date picker */}
-          {/* <div className="col-md-3">
-            <DatePicker
-              selected={selectedDate3}
-              onChange={handleDateChange3}
-              placeholderText="Select a date"
-              dateFormat="MM/dd/yyyy"
-              className="form-control custom_input" // Smaller size
-              id="datePicker"
-              style={{
-                width: "100%",
-                height: "calc(1.5em + .75rem + 2px)",
-                padding: ".375rem .75rem",
-                fontSize: "1rem",
-                borderRadius: ".25rem",
-                border: "1px solid #ced4da",
-                boxSizing: "border-box",
-              }}
-            />
-          </div> */}
-
-          {/* The Start time Picker */}
+{/* The Start time Picker */}
           <div className="col-md-3">
             <Form.Control
               as="select"
@@ -583,7 +557,7 @@ const VirtualMeetingModalForTH = ({
               <table className="table table-striped table-bordered table-hover mt-3 text-center">
                 <thead>
                   <tr>
-                    <th>Select</th> 
+                    <th>Select</th>
                     {headers1.map((header) => (
                       <th key={header}>{header}</th>
                     ))}
@@ -620,23 +594,23 @@ const VirtualMeetingModalForTH = ({
             )}
           </div>
 
-          {/* {totalPages > 1 && (
+          {totalPages3 > 1 && (
             <Pagination className="justify-content-center">
               <Pagination.Prev
                 onClick={() =>
-                  setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
+                  setCurrentPage1((prev) => (prev > 1 ? prev - 1 : prev))
                 }
               />
               {generatePaginationItems1()}
               <Pagination.Next
                 onClick={() =>
-                  setCurrentPage((prev) =>
-                    prev < totalPages ? prev + 1 : prev
+                  setCurrentPage1((prev) =>
+                    prev < totalPages3 ? prev + 1 : prev
                   )
                 }
               />
             </Pagination>
-          )} */}
+          )}
         </Modal.Body>
       </Modal>
       {/*Modal ends here */}
