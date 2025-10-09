@@ -37,6 +37,8 @@ const UploadLot = () => {
   const [verified, setVerified] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
 
+  const [validationErrors, setValidationErrors] = useState([]);
+
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
@@ -194,6 +196,8 @@ const UploadLot = () => {
                 bankId={bankId}
                 selectedProductID={selectedProductID}
                 setIsDataPresent={setIsDataPresent}
+                validationErrors={validationErrors}
+                setValidationErrors={setValidationErrors}
               />
             ) : (
               <p style={{ color: "red" }}>Please select a valid product</p>

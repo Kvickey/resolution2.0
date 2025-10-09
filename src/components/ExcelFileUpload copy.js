@@ -1,14 +1,56 @@
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import * as XLSX from "xlsx";
-import { headers } from "../utils/headers"; // Assuming headers.js exports an array of header objects
+import { headers } from "../utils/headers";
+import { kotakheaders } from "../utils/kotakheaders";
+import { kotakccheaders } from "../utils/kotakccheaders";
 
-const ExcelFileUpload = ({ onFileChange }) => {
+const ExcelFileUpload = ({
+  onFileChange,
+  onErrorFileGenerated,
+  onErrorCount,
+  bankId,
+  selectedProductID,
+  setIsDataPresent,
+}) => {
   const [validationErrors, setValidationErrors] = useState([]);
 
+  // console.log(bankId);
+  console.log(selectedProductID);
+
+  // Function to generate an Excel file from errors
+  const generateErrorExcel = (errors) => {
+    // Prepare the data for the Excel file
+    const errorData = [["Row", "Column", "Message"]]; // Headers for the Excel file
+    errors.forEach((error) => {
+      errorData.push([
+        error.row || "Header",
+        error.column || "-",
+        error.message,
+      ]);
+    });
+
+    // Create a new workbook and worksheet
+    const worksheet = XLSX.utils.aoa_to_sheet(errorData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Errors");
+
+    // Create a Blob from the workbook and convert it to an Excel file
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+
+    console.log("Generated error file with errors:", errors);
+    return blob;
+  };
+
   // Function to validate data based on header rules
-  const validateData = (headers, data) => {
+  const validateData = (data) => {
     const errors = [];
+
+    console.log(data);
 
     if (!data || data.length === 0) {
       console.error("No data available for validation.");
@@ -16,8 +58,25 @@ const ExcelFileUpload = ({ onFileChange }) => {
     }
 
     // Validate headers first
-    const excelHeaders = data[0]; // First row contains headers from Excel
-    const savedHeaders = headers.map((header) => header.name); // Extract header names from headers.js
+    const excelHeaders = Object.keys(data[0]); // First row contains headers from Excel
+    // const savedHeaders = headers.map((header) => header.name); // Extract header names from headers.js
+    let savedHeaders;
+
+    // console.log(bankId);
+    // console.log(excelHeaders);
+
+    if (bankId == "1" && selectedProductID == "1") {
+      console.log("Axis CV");
+      savedHeaders = headers.map((header) => header.name); // Extract header names from headers.js when bankid is 1
+    } else if (bankId == "2" && selectedProductID == "2") {
+      console.log("Kotak CDR");
+      savedHeaders = kotakheaders.map((header) => header.name); // Extract header names from kotakheaders.js when bankid is 2
+    } else if (bankId == "2" && selectedProductID == "3") {
+      console.log("Kotak CC");
+      savedHeaders = kotakccheaders.map((header) => header.name);
+    }
+
+    console.log(savedHeaders);
 
     // Strict header match check (checks both content and order)
     if (excelHeaders.length !== savedHeaders.length) {
@@ -25,6 +84,9 @@ const ExcelFileUpload = ({ onFileChange }) => {
         row: 0,
         message: `Header length mismatch! Expected ${savedHeaders.length} columns but got ${excelHeaders.length}.`,
       });
+      console.log(
+        `Header length mismatch! Expected ${savedHeaders.length} columns but got ${excelHeaders.length}.`
+      );
       return errors;
     }
 
@@ -36,6 +98,11 @@ const ExcelFileUpload = ({ onFileChange }) => {
             savedHeaders[i]
           }" at column ${i + 1}, but got "${excelHeaders[i]}"`,
         });
+        console.log(
+          `Headers do not match! Expected "${savedHeaders[i]}" at column ${
+            i + 1
+          }, but got "${excelHeaders[i]}"`
+        );
         return errors;
       }
     }
@@ -45,57 +112,108 @@ const ExcelFileUpload = ({ onFileChange }) => {
       const row = data[i];
       if (!row) continue;
 
-      headers.forEach((header, index) => {
+      savedHeaders.forEach((header) => {
         let cellValue =
-          row[index] !== undefined && row[index] !== null ? row[index] : "";
-
-        if (cellValue === undefined || cellValue === null || cellValue === "") {
-          cellValue = "-"; // or use "-" based on your preference
-        }
+          row[header.name] !== undefined && row[header.name] !== null
+            ? row[header.name]
+            : "";
 
         if (!header || !header.validations) {
           return;
         }
 
+        let validationFailed = false; // Flag to stop further validation if one fails
+
         header.validations.forEach((validation) => {
+          if (validationFailed) {
+            return; // Skip further validation if one validation has already failed
+          }
+
           switch (validation.type) {
             case "notEmpty":
+              // console.log(`Validating notEmpty for Row ${i + 1}, Column ${header.name}:`, cellValue);
               if (
-                !cellValue ||
-                (typeof cellValue === "string" && cellValue.trim() === "")
+                cellValue === undefined ||
+                cellValue === null ||
+                (typeof cellValue === "string" && cellValue.trim() === "") ||
+                cellValue === ""
               ) {
                 errors.push({
                   row: i + 1,
-                  column: index + 1,
+                  column: header.name,
                   message: `${header.name} cannot be empty`,
                 });
+                console.log(
+                  `Row ${i + 1}, Column ${header.name}: ${
+                    header.name
+                  } cannot be empty`
+                );
+                validationFailed = true; // Set flag to true
+                return; // Break out of this validation
               }
               break;
             case "integer":
               if (cellValue && !Number.isInteger(Number(cellValue))) {
                 errors.push({
                   row: i + 1,
-                  column: index + 1,
+                  column: header.name,
                   message: `${header.name} must be an integer`,
                 });
+                console.log(
+                  `Row ${i + 1}, Column ${header.name}: ${
+                    header.name
+                  } must be an integer`
+                );
+                validationFailed = true; // Set flag to true
+                return; // Break out of this validation
               }
               break;
             case "number":
               if (!cellValue || isNaN(Number(cellValue))) {
                 errors.push({
                   row: i + 1,
-                  column: index + 1,
+                  column: header.name,
                   message: `${header.name} must be a number`,
                 });
+                console.log(
+                  `Row ${i + 1}, Column ${header.name}: ${
+                    header.name
+                  } must be a number`
+                );
+                validationFailed = true; // Set flag to true
+                return; // Break out of this validation
               }
               break;
             case "textOnly":
               if (cellValue && !/^[A-Za-z\s&.]*$/.test(cellValue)) {
                 errors.push({
                   row: i + 1,
-                  column: index + 1,
+                  column: header.name,
                   message: `${header.name} must contain only text, spaces, and ampersands`,
                 });
+                console.log(
+                  `Row ${i + 1}, Column ${header.name}: ${
+                    header.name
+                  } must contain only text, spaces, and ampersands`
+                );
+                validationFailed = true; // Set flag to true
+                return; // Break out of this validation
+              }
+              break;
+            case "combOnly":
+              if (cellValue && !/^[A-Za-z0-9-]*$/.test(cellValue)) {
+                errors.push({
+                  row: i + 1,
+                  column: header.name,
+                  message: `${header.name} must contain only text, number, and hyphen`,
+                });
+                console.log(
+                  `Row ${i + 1}, Column ${header.name}: ${
+                    header.name
+                  } must contain only text, number, and hyphen`
+                );
+                validationFailed = true; // Set flag to true
+                return; // Break out of this validation
               }
               break;
             case "dateOnly":
@@ -104,10 +222,16 @@ const ExcelFileUpload = ({ onFileChange }) => {
                 if (parts.length !== 3) {
                   errors.push({
                     row: i + 1,
-                    column: index + 1,
+                    column: header.name,
                     message: `${header.name} must be a valid date (dd-mm-yyyy)`,
                   });
-                  break;
+                  console.log(
+                    `Row ${i + 1}, Column ${header.name}: ${
+                      header.name
+                    } must be a valid date (dd-mm-yyyy)`
+                  );
+                  validationFailed = true; // Set flag to true
+                  return; // Break out of this validation
                 }
 
                 const day = parseInt(parts[0], 10);
@@ -122,16 +246,30 @@ const ExcelFileUpload = ({ onFileChange }) => {
                 ) {
                   errors.push({
                     row: i + 1,
-                    column: index + 1,
+                    column: header.name,
                     message: `${header.name} must be a valid date (dd-mm-yyyy)`,
                   });
+                  console.log(
+                    `Row ${i + 1}, Column ${header.name}: ${
+                      header.name
+                    } must be a valid date (dd-mm-yyyy)`
+                  );
+                  validationFailed = true; // Set flag to true
+                  return; // Break out of this validation
                 }
               } else {
                 errors.push({
                   row: i + 1,
-                  column: index + 1,
+                  column: header.name,
                   message: `${header.name} must be a valid date (dd-mm-yyyy)`,
                 });
+                console.log(
+                  `Row ${i + 1}, Column ${header.name}: ${
+                    header.name
+                  } must be a valid date (dd-mm-yyyy)`
+                );
+                validationFailed = true; // Set flag to true
+                return; // Break out of this validation
               }
               break;
             default:
@@ -141,6 +279,7 @@ const ExcelFileUpload = ({ onFileChange }) => {
       });
     }
 
+    console.log("All errors:", errors);
     return errors;
   };
 
@@ -149,28 +288,68 @@ const ExcelFileUpload = ({ onFileChange }) => {
     const file = e.target.files[0];
     const reader = new FileReader();
 
+    // Helper to convert 'dd-mm-yyyy' ➜ 'mm-dd-yyyy'
+    const convertToMMDDYYYY = (dateStr) => {
+      const parts = dateStr.split("-");
+      if (parts.length === 3) {
+        const [dd, mm, yyyy] = parts;
+        return `${mm}-${dd}-${yyyy}`;
+      }
+      return dateStr;
+    };
+
     reader.onload = (event) => {
       const data = new Uint8Array(event.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
+
+      // Read workbook
+      const workbook = XLSX.read(data, {
+        type: "array",
+        cellDates: true,
+        dateNF: "dd-mm-yyyy", // Ensures dates are read in DD-MM-YYYY
+      });
 
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
-      const jsonData = XLSX.utils.sheet_to_json(sheet, {
-        header: 1,
-        defval: "",
-      });
 
-      // Validate the data and collect all errors
-      const allErrors = validateData(headers, jsonData);
+      // Convert to JSON with stringified dates
+      const jsonData = XLSX.utils.sheet_to_json(sheet, {
+        defval: "",
+        raw: false,
+      });
+      
+      console.log(jsonData);
+      
+
+      // Reformat date fields
+      const reformattedData = jsonData.map((row) => ({
+        ...row,
+        LRN_date: convertToMMDDYYYY(row.LRN_date),
+        Ref_date: convertToMMDDYYYY(row.Ref_date),
+        // Add more date fields here if needed
+      }));
+
+      if (reformattedData.length > 0) {
+        setIsDataPresent(true);
+      }
+
+      // Run validation
+      const allErrors = validateData(reformattedData);
       setValidationErrors(allErrors);
 
-      if (allErrors.length === 0) {
-        onFileChange(jsonData); // Pass data to parent if no errors
+      if (allErrors.length > 0) {
+        const errorFile = generateErrorExcel(allErrors);
+        onErrorFileGenerated(errorFile);
+        onErrorCount(allErrors.length);
+      } else {
+        onFileChange(reformattedData);
+        onErrorCount(0);
       }
     };
 
-    reader.readAsArrayBuffer(file); // Read the file as a buffer
+    reader.readAsArrayBuffer(file);
   };
+
+
 
   return (
     <div>
@@ -180,24 +359,9 @@ const ExcelFileUpload = ({ onFileChange }) => {
           accept=".xlsx, .xls"
           onChange={handleFileUpload}
           className="custom_input"
+          style={{ fontSize: "12px" }}
         />
       </Form.Group>
-
-      {validationErrors.length > 0 && (
-        <div className="validation-errors">
-          <h5>Validation Errors:</h5>
-          {validationErrors.map((error, index) => (
-            <div key={index}>
-              {error.row !== 0 && (
-                <h6>
-                  Row {error.row} Column {error.column}:
-                </h6>
-              )}
-              <p>{error.message}</p>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };

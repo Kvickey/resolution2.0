@@ -366,13 +366,23 @@ const SecondHearing = () => {
 
     const formData = new FormData();
 
-    videos.forEach((video, index) => {
-      formData.append(`videos[${index}]`, video);
-    });
+  // Append videos (if none selected, append null)
+if (videos && videos.length > 0) {
+  videos.forEach((video, index) => {
+    formData.append(`videos[${index}]`, video);
+  });
+} else {
+  formData.append("videos", null);
+}
 
-    files.forEach((file, index) => {
-      formData.append(`files[${index}]`, file);
-    });
+// Append files (if none selected, append null)
+if (files && files.length > 0) {
+  files.forEach((file, index) => {
+    formData.append(`files[${index}]`, file);
+  });
+} else {
+  formData.append("files", null);
+}
 
     try {
       if (startTime && endTime) {

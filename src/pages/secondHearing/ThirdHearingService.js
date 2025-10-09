@@ -99,7 +99,7 @@ const ThirdHearingService = () => {
       Service_type_id: 3,
       Service_id: item.Service_id,
       File_path: item.File_path,
-      Process_id: 1,
+      Process_id: 7,
     }));
     console.log(dataForMail);
     setLoading(true);
@@ -144,7 +144,7 @@ const ThirdHearingService = () => {
       Service_type_id: 2,
       Service_id: item.Service_id,
       File_path: item.File_path,
-      Process_id: 1,
+      Process_id: 7,
     }));
     console.log(dataForWhatsapp);
     setLoading(true);
