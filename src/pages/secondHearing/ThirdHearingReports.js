@@ -5,8 +5,8 @@ import "../ReferenceDraftReports.css";
 
 const ThirdHearingReports = () => {
   const [data, setData] = useState([]);
-  const [selectedClient, setSelectedClient] = useState([]); //the clients Data to populate dropdown
-  const [selectedProduct, setSelectedProduct] = useState([]); //to add the product from the dropdown
+  const [selectedClient, setSelectedClient] = useState([]); 
+  const [selectedProduct, setSelectedProduct] = useState([]); 
   const [selectedProductID, setSelectedProductID] = useState(null);
   const [selectedClientID, setSelectedClientID] = useState(null);
   const [selectedLotNo, setSelectedLotNo] = useState(null);
@@ -100,18 +100,7 @@ const ThirdHearingReports = () => {
       }
       const result = await response.json();
       const parsedData = Array.isArray(result) ? result : JSON.parse(result);
-      // const updatedData = parsedData.map((item) => {
-      //   const { assign_id, Arbitrator_id, Case_id, UPLODED_DATE, ...rest } =
-      //     item;
-      //   return {
-      //     ...rest,
-      //   };
-      // });
-      // console.log(updatedData);
-      // setAllData(parsedData);
-      // setData(updatedData);
       setData(parsedData);
-      // setTotalPages(Math.ceil(updatedData.length / itemsPerPage));
       setShowTable(true);
       // handleStepChange(1)
     } catch (error) {
@@ -121,7 +110,7 @@ const ThirdHearingReports = () => {
     }
   };
 
-  console.log(data);
+  // console.log(data);
 
   return (
     <div className="container">
@@ -315,34 +304,6 @@ const ThirdHearingReports = () => {
               </table>
             </div>
           </div>
-          {/* )} */}
-
-          {/* <div className="col-md-10">
-          {responses.length > 0 && (
-            <div>
-              <h3>Response Summary</h3>
-              <table className="table table-striped table-bordered table-hover mt-3 text-center">
-                <thead>
-                  <tr>
-                    <th>MOBILE_NO_1</th>
-                    <th>REFERENCE_NO</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {responses.map((response, index) => (
-                    <tr key={index}>
-                      <td>{response.MOBILE_NO_1}</td>
-                      <td>{response.REFERENCE_NO}</td>
-                      <td>{response.Status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button onClick={downloadExcel}>Download Excel</button>
-            </div>
-          )}
-        </div> */}
         </div>
       )}
     </div>

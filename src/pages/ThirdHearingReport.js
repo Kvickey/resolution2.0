@@ -100,16 +100,6 @@ const ThirdHearingReport = () => {
       }
       const result = await response.json();
       const parsedData = Array.isArray(result) ? result : JSON.parse(result);
-      // const updatedData = parsedData.map((item) => {
-      //   const { assign_id, Arbitrator_id, Case_id, UPLODED_DATE, ...rest } =
-      //     item;
-      //   return {
-      //     ...rest,
-      //   };
-      // });
-      // console.log(updatedData);
-      // setAllData(parsedData);
-      // setData(updatedData);
       setData(parsedData);
       // setTotalPages(Math.ceil(updatedData.length / itemsPerPage));
       setShowTable(true);

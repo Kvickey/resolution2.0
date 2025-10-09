@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { Pagination } from "react-bootstrap";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { API_BASE_URL } from "../../utils/constants";
 import { toast, ToastContainer } from "react-toastify";
@@ -31,7 +30,9 @@ const ThirdHearingService = () => {
     if (!arb_id) return;
     const fetchNotServedLots = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=7&arb_id=${arb_id}`);
+        const response = await fetch(
+          `${API_BASE_URL}/api/notServed?s_id=7&arb_id=${arb_id}`
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -86,12 +87,10 @@ const ThirdHearingService = () => {
     }
   };
 
-  console.log(data);
-
-  const handleTransfer = () => {};
+  // console.log(data);
 
   const headers = data.length > 0 ? Object.keys(data[0]) : [];
-  console.log(headers);
+  // console.log(headers);
 
   const handleMail = async () => {
     const dataForMail = data.map((item) => ({
@@ -276,35 +275,7 @@ const ThirdHearingService = () => {
 
       {showData && (
         <div className="mt-3">
-          {/* <button
-          className={`${
-            waDone ? "disabledBtn" : "custBtn"
-          }`}
-          onClick={handleWhatsapp}
-          disabled={waDone}
-        >
-          WhatsApp
-        </button>
-
-        <button
-          className={`ms-3 ${
-            mailDone ? "disabledBtn" : "custBtn"
-          }`}
-          onClick={handleMail}
-          disabled={mailDone}
-        >
-          Mail
-        </button>
-
-        <button
-          className={`ms-3 ${
-            smsDone ? "disabledBtn" : "custBtn"
-          }`}
-          onClick={handleSMS}
-          disabled={smsDone}
-        >
-          Message
-        </button> */}
+          {/* For Whatsapp Service */}
           <button
             className={`${
               // data[0].Wa_send_date !== 0
@@ -322,6 +293,7 @@ const ThirdHearingService = () => {
             WhatsApp
           </button>
 
+          {/* For Mail Service */}
           <button
             className={`ms-3 ${
               // mailDone ? "disabledBtn" : "custBtn"
@@ -336,6 +308,7 @@ const ThirdHearingService = () => {
             Mail
           </button>
 
+          {/* For SMS Service */}
           <button
             className={`ms-3 ${smsDone ? "disabledBtn" : "custBtn"}`}
             onClick={handleSMS}
@@ -345,6 +318,7 @@ const ThirdHearingService = () => {
             Message
           </button>
 
+          {/* For Showing the Data for service */}
           <div className="table-container mt-3">
             <div className="table-wrapper">
               <table className="responsive-table">
@@ -369,8 +343,6 @@ const ThirdHearingService = () => {
           </div>
         </div>
       )}
-
-      {/* <button onClick={showToast}>Show Toast</button> */}
 
       <ToastContainer />
     </div>
