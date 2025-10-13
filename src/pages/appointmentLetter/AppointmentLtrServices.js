@@ -194,7 +194,7 @@ const AppointmentLtrServices = () => {
 
   const handleSMS = async () => {
     // console.log(data);
-    alert("Cliced");
+    // alert("Cliced");
     const dataForSMS = data.map((item) => ({
       Ref_no: item.Reference_no,
       Service_add: item.Mobile_no,
