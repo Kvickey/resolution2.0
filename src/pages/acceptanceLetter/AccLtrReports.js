@@ -48,7 +48,7 @@ const AccLtrReports = () => {
     fetchClients();
   }, []);
 
-  console.log(selectedClient);
+  // console.log(selectedClient);
 
   // API Call for Product data
   useEffect(() => {
@@ -94,9 +94,9 @@ const AccLtrReports = () => {
     setSelectedLotNo(selectedID);
   };
 
-  console.log(selectedClientID);
-  console.log(selectedProductID);
-  console.log(selectedLotNo);
+  // console.log(selectedClientID);
+  // console.log(selectedProductID);
+  // console.log(selectedLotNo);
 
   const handleData = async () => {
     setLoading(true); // Start loading before fetching data
@@ -245,6 +245,7 @@ const AccLtrReports = () => {
                     <tr key={index}>
                       <td className="border">{index + 1}</td>
                       <td>{response.Cust_name}</td>
+                      {/* Whatsapp Services */}
                       <td
                         className={
                           response.wa_status === null
@@ -270,6 +271,8 @@ const AccLtrReports = () => {
                           ? "Pending"
                           : "Read"}
                       </td>
+
+                      {/* Mail Services Report */}
                       <td
                         className={
                           response.mail_status === null
@@ -293,17 +296,38 @@ const AccLtrReports = () => {
                             : response.mail_send_date === "Not Read"
                         }
                       >
-                        {response.Mail_read_datetime === null ? "Pending" : "Read"}
+                        {response.Mail_read_datetime === null
+                          ? "Pending"
+                          : "Read"}
                       </td>
+
+                      {/* sms services report */}
                       <td
                         className={
-                          response.sms_status === "Delivered"
+                          response.DeliveryStatus === "Delivered"
+                            ? "statusDelivered border"
+                            : response.DeliveryStatus === "Rejected"
+                            ? "statusRejected border"
+                            : "statusPending border"
+                        }
+                      >
+                        {response.DeliveryStatus === null
+                          ? "Not Sent"
+                          : response.DeliveryStatus === "Rejected"
+                          ? "Rejected"
+                          : response.DeliveryStatus === "Delivered"
+                          ? "Delivered"
+                          : response.DeliveryStatus}
+                      </td>
+                      {/* <td
+                        className={
+                          response.DeliveryStatus === "Delivered"
                             ? "statusDelivered border"
                             : "statusPending border"
                         }
                       >
                         {response.sms_status === null ? "Pending" : "send"}
-                      </td>
+                      </td> */}
                       <td
                         className={
                           response.sms_send_date === "Read "
@@ -359,4 +383,3 @@ const AccLtrReports = () => {
 };
 
 export default AccLtrReports;
-
