@@ -100,6 +100,9 @@ import SecondHearingReports from "./pages/firstHearing/SecondHearingReports";
 import ThirdHearingNoticee from "./pages/secondHearing/ThirdHearingNotice";
 import ThirdHearingService from "./pages/secondHearing/ThirdHearingService";
 import ThirdHearingReports from "./pages/secondHearing/ThirdHearingReports";
+import AppointmentLtrServices from "./pages/appointmentLetter/AppointmentLtrServices";
+import AppointmentLtrReports from "./pages/appointmentLetter/AppointmentLtrReports";
+import GenerateAppointmentLtr from "./pages/appointmentLetter/GenerateAppointmentLtr";
 // import AddArbitrator from "./components/AddArbitrator";
 // import Arbitrator from "./components/Arbitrator";
 // import ArbitratorList from "./components/ArbitratorList";
@@ -176,9 +179,12 @@ const App = () => {
             <Route path="bysystem" element={<AssignArbitrator />} />
           </Route>
           <Route path="referencedraft">
-            <Route path="generate-rd" element={<ReferenceDraftGenerate />} />
-            <Route path="services" element={<ReferenceDraftServices />} />
-            <Route path="reports" element={<ReferenceDraftReports />} />
+            <Route path="generate-rd" element={<GenerateAppointmentLtr />} />
+            {/* <Route path="generate-rd" element={<ReferenceDraftGenerate />} /> */}
+            <Route path="services" element={<AppointmentLtrServices />} />
+            {/* <Route path="services" element={<ReferenceDraftServices />} /> */}
+            <Route path="reports" element={<AppointmentLtrReports />} />
+            {/* <Route path="reports" element={<ReferenceDraftReports />} /> */}
           </Route>
         </Route>
 

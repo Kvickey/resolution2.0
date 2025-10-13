@@ -323,34 +323,7 @@ const ReferenceDraftReports = () => {
               </table>
             </div>
           </div>
-          {/* )} */}
 
-          {/* <div className="col-md-10">
-          {responses.length > 0 && (
-            <div>
-              <h3>Response Summary</h3>
-              <table className="table table-striped table-bordered table-hover mt-3 text-center">
-                <thead>
-                  <tr>
-                    <th>MOBILE_NO_1</th>
-                    <th>REFERENCE_NO</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {responses.map((response, index) => (
-                    <tr key={index}>
-                      <td>{response.MOBILE_NO_1}</td>
-                      <td>{response.REFERENCE_NO}</td>
-                      <td>{response.Status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button onClick={downloadExcel}>Download Excel</button>
-            </div>
-          )}
-        </div> */}
         </div>
       )}
     </div>

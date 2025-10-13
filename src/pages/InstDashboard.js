@@ -151,20 +151,7 @@ const InstDashboard = () => {
         <Outlet user={user.User_name} />
       </div>
     </div>
-    // <div className="main-div">
-    //   <Topbar isOpen={isOpen} />
-    //   <Sidebar
-    //     menuItems={menuItems}
-    //     user={user.User_name}
-    //     onMenuItemClick={handleMenuItemClick}
-    //     isOpen={isOpen}
-    //     setIsOpen={setIsOpen}
-    //     toggleSidebar={toggleSidebar}
-    //   />
-    //   <div className={`${isOpen ? "" : "sideCollapse"} mainn-content p-3`}>
-    //     <Outlet user={user.User_name}/>
-    //   </div>
-    // </div>
+
   );
 };
 

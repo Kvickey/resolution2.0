@@ -184,7 +184,50 @@ const AcceptanceLetterServices = () => {
     }
   };
 
-  const handleSMS = () => {};
+  const handleSMS = async () => {
+    // console.log(data);
+    const dataForSMS = data.map((item) => ({
+      Ref_no: item.Reference_no,
+      Service_add: item.Mobile_no,
+      Service_type_id: 1,
+      Service_id: item.Service_id,
+      File_path: item.File_path,
+      Process_id: 1,
+    }));
+    // console.log(dataForSMS);
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/Services`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataForSMS),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+        );
+      }
+      const result = await response.json();
+      // console.log("Upload response:", result);
+      setSMSDone(true);
+      setTimeout(() => {
+        toast.success("SMS Sent Successfully", {
+          // position: toast.POSITION.BOTTOM_RIGHT,
+          theme: "colored",
+        });
+      }, 50);
+    } catch (error) {
+      console.error("Error uploading data:", error);
+      setTimeout(() => {
+        toast.error(`Error: ${error.message}`, { theme: "colored" });
+      }, 50);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -278,44 +321,11 @@ const AcceptanceLetterServices = () => {
 
       {showData && (
         <div className="mt-3">
-          {/* <button
-          className={`${
-            waDone ? "disabledBtn" : "custBtn"
-          }`}
-          onClick={handleWhatsapp}
-          disabled={waDone}
-        >
-          WhatsApp
-        </button>
-
-        <button
-          className={`ms-3 ${
-            mailDone ? "disabledBtn" : "custBtn"
-          }`}
-          onClick={handleMail}
-          disabled={mailDone}
-        >
-          Mail
-        </button>
-
-        <button
-          className={`ms-3 ${
-            smsDone ? "disabledBtn" : "custBtn"
-          }`}
-          onClick={handleSMS}
-          disabled={smsDone}
-        >
-          Message
-        </button> */}
           <button
             className={`${
-              // data[0].Wa_send_date !== 0
-              // waDone
               waDone || data[0].Wa_send_date !== null
                 ? "disabledBtn"
                 : "custBtn"
-              //  ( waDone || data[0].Wa_send_date !== 0) ? "disabledBtn" : "custBtn"
-              //  ( waDone && data[0].Wa_send_date!==null) ? "disabledBtn" : "custBtn"
             } ms-3`}
             onClick={handleWhatsapp}
             disabled={waDone || data[0].Wa_send_date !== null}
@@ -326,7 +336,6 @@ const AcceptanceLetterServices = () => {
 
           <button
             className={`ms-3 ${
-              // mailDone ? "disabledBtn" : "custBtn"
               mailDone || data[0].Mail_send_date !== null
                 ? "disabledBtn"
                 : "custBtn"
