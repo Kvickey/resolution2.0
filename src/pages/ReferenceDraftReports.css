@@ -12,6 +12,11 @@
     /* font-weight: bold; */
 }
 
+.statusRejected{
+    color:red;
+    /* font-weight: bold; */
+}
+
 .statusNotRead{
     color:red;
     /* font-weight: bold; */

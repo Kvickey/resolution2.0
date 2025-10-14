@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { API_BASE_URL } from "../../utils/constants";
 import { Form } from "react-bootstrap";
 import "../ReferenceDraftReports.css";
+import { useAuth } from "../../components/AuthProvider";
 
 const SecondHearingReports = () => {
   const [data, setData] = useState([]);
@@ -14,6 +15,14 @@ const SecondHearingReports = () => {
   const [error, setError] = useState(null);
   const [showTable, setShowTable] = useState(false);
   const [clearForm, setClearForm] = useState(false);
+  const { user } = useAuth();
+  const [arbId, setArbId] = useState("");
+
+  useEffect(() => {
+    if (user && user.length > 0) {
+      setArbId(user[0].Ref_id);
+    }
+  }, [user]);
 
   // To fetch Clients(Bank) DaTA
   useEffect(() => {
@@ -85,15 +94,15 @@ const SecondHearingReports = () => {
     setSelectedLotNo(selectedID);
   };
 
-  console.log(selectedClientID);
-  console.log(selectedProductID);
-  console.log(selectedLotNo);
+  // console.log(selectedClientID);
+  // console.log(selectedProductID);
+  // console.log(selectedLotNo);
 
   const handleData = async () => {
     setLoading(true); // Start loading before fetching data
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=6`
+        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=6&Arb_id=${arbId}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -261,6 +270,8 @@ const SecondHearingReports = () => {
                           ? "Pending"
                           : "Read"}
                       </td>
+
+                      {/* Mail Services Reports */}
                       <td
                         className={
                           response.mail_status === null
@@ -284,9 +295,30 @@ const SecondHearingReports = () => {
                             : response.mail_send_date === "Not Read"
                         }
                       >
-                        {response.Mail_read_datetime === null ? "Pending" : "Read"}
+                        {response.Mail_read_datetime === null
+                          ? "Pending"
+                          : "Read"}
                       </td>
+
+                      {/* sms service Reports */}
                       <td
+                        className={
+                          response.DeliveryStatus === "Delivered"
+                            ? "statusDelivered border"
+                            : response.DeliveryStatus === "Rejected"
+                            ? "statusRejected border"
+                            : "statusPending border"
+                        }
+                      >
+                        {response.DeliveryStatus === null
+                          ? "Not Sent"
+                          : response.DeliveryStatus === "Rejected"
+                          ? "Rejected"
+                          : response.DeliveryStatus === "Delivered"
+                          ? "Delivered"
+                          : response.DeliveryStatus}
+                      </td>
+                      {/* <td
                         className={
                           response.sms_status === "Delivered"
                             ? "statusDelivered border"
@@ -294,7 +326,7 @@ const SecondHearingReports = () => {
                         }
                       >
                         {response.sms_status === null ? "Pending" : "send"}
-                      </td>
+                      </td> */}
                       <td
                         className={
                           response.sms_send_date === "Read "

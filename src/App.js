@@ -103,6 +103,8 @@ import ThirdHearingReports from "./pages/secondHearing/ThirdHearingReports";
 import AppointmentLtrServices from "./pages/appointmentLetter/AppointmentLtrServices";
 import AppointmentLtrReports from "./pages/appointmentLetter/AppointmentLtrReports";
 import GenerateAppointmentLtr from "./pages/appointmentLetter/GenerateAppointmentLtr";
+import AccLtrServices from "./pages/acceptanceLetter/AccLtrServices";
+import Sec17Order from "./pages/section17Order/Sec17Order";
 // import AddArbitrator from "./components/AddArbitrator";
 // import Arbitrator from "./components/Arbitrator";
 // import ArbitratorList from "./components/ArbitratorList";
@@ -207,14 +209,16 @@ const App = () => {
             <Route path="generate_al" element={<GenerateAccLtr />} />
             {/* <Route path="generate_al" element={<AcceptanceLetter />} /> */}
             <Route path="signedaccupload" element={<SignedAccUpload />} />
-            <Route path="services" element={<AcceptanceLetterService />} />
+            <Route path="services" element={<AccLtrServices />} />
+            {/* <Route path="services" element={<AcceptanceLetterService />} /> */}
             <Route path="reports" element={<AccLtrReports />} />
             {/* <Route path="reports" element={<AcceptanceLetterReports />} /> */}
             <Route path="list" element={<AccScheduledMeets />} />
           </Route>
           {/* <Route path="section17order" element={<Section17Order />} /> */}
           <Route path="section17order">
-            <Route path="generatesection17order" element={<Section17Order />} />
+            {/* <Route path="generatesection17order" element={<Section17Order />} /> */}
+            <Route path="generatesection17order" element={<Sec17Order />} />
             <Route path="signedsec17order" element={<SignedSec17Order />} />
             <Route path="services" element={<Section17OrderService />} />
             <Route path="reports" element={<Section17OrderReports />} />

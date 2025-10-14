@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { API_BASE_URL } from "../utils/constants";
-
-import CustomStepper from "../components/CustomStepper";
-import ReusableTable from "../components/ReusableTable";
-import LoadingSpinner from "../components/LoadingSpinner";
+import { API_BASE_URL } from "../../utils/constants";
+import CustomStepper from "../../components/CustomStepper";
+import ReusableTable from "../../components/ReusableTable";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import DatePicker from "react-datepicker";
-import { useAuth } from "../components/AuthProvider";
-import ClearForm from "../components/Clearform";
+import { useAuth } from "../../components/AuthProvider";
+import ClearForm from "../../components/Clearform";
 import { Form } from "react-bootstrap";
 
-const Section17Order = () => {
+const Sec17Order = () => {
   const [sec17OrderNotCreatedLots, setSec17OrderNotCreatedLots] = useState([]);
   const [sec17OrderNotCreatedData, setSec17OrderNotCreatedData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -545,4 +544,5 @@ const Section17Order = () => {
   );
 };
 
-export default Section17Order;
+export default Sec17Order;
+

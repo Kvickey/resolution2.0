@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 import { API_BASE_URL } from "../utils/constants";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ClearForm from "../components/Clearform";
+import { formatDate } from "../utils/FormatDate";
 
 const Section17Application = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -152,12 +153,20 @@ const Section17Application = () => {
 
   // console.log(pageInterval);
 
+  function convertExcelDate(serial) {
+    const utc_days = Math.floor(serial - 25569);
+    const utc_value = utc_days * 86400; 
+    const date_info = new Date(utc_value * 1000);
+    return new Date(date_info.getFullYear(), date_info.getMonth(), date_info.getDate());
+  }
+
   const handleUpload = async () => {
     const data = excelData.map((item) => ({
       Reference_no: item.REFERENCE_NO,
-      Sec_17_app_date: item.Sec_17_app_date,
+      Sec_17_app_date: item.Sec_17_app_date
+        ? formatDate(convertExcelDate(item.Sec_17_app_date))
+        : "",
     }));
-
     const formData = new FormData();
     handleStepChange(2);
     // ✅ Make sure file exists
