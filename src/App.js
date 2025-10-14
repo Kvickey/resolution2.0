@@ -105,6 +105,11 @@ import AppointmentLtrServices from "./pages/appointmentLetter/AppointmentLtrServ
 import AppointmentLtrReports from "./pages/appointmentLetter/AppointmentLtrReports";
 import GenerateAppointmentLtr from "./pages/appointmentLetter/GenerateAppointmentLtr";
 import AccLtrServices from "./pages/acceptanceLetter/AccLtrServices";
+import Sect17OrderServices from "./pages/section17Order/Sect17OrderServices";
+import Sect17OrderReports from "./pages/section17Order/Sect17OrderReports";
+import Sect17Application from "./pages/sec17Application/Sect17Application";
+import Sect17ApplicationServices from "./pages/sec17Application/Sect17ApplicationServices";
+import Sect17ApplicationReports from "./pages/sec17Application/Sect17ApplicationReports";
 // import AddArbitrator from "./components/AddArbitrator";
 // import Arbitrator from "./components/Arbitrator";
 // import ArbitratorList from "./components/ArbitratorList";
@@ -220,8 +225,10 @@ const App = () => {
             {/* <Route path="generatesection17order" element={<Section17Order />} /> */}
             <Route path="generatesection17order" element={<Sec17Order />} />
             <Route path="signedsec17order" element={<SignedSec17Order />} />
-            <Route path="services" element={<Section17OrderService />} />
-            <Route path="reports" element={<Section17OrderReports />} />
+            <Route path="services" element={<Sect17OrderServices />} />
+            {/* <Route path="services" element={<Section17OrderService />} /> */}
+            <Route path="reports" element={<Sect17OrderReports />} />
+            {/* <Route path="reports" element={<Section17OrderReports />} /> */}
             {/* <Route path="list" element={<Section17OrderData />} /> */}
           </Route>
           <Route path="firstHearing">
@@ -329,12 +336,18 @@ const App = () => {
             <Route path="list" element={<SOCData />} />
           </Route>
           <Route path="section17application">
-            <Route
+            {/* <Route
               path="generatesection17application"
               element={<Section17Application />}
+            /> */}
+            <Route
+              path="generatesection17application"
+              element={<Sect17Application />}
             />
-            <Route path="services" element={<Section17ApplicationService />} />
-            <Route path="reports" element={<Section17ApplicationReports />} />
+            <Route path="services" element={<Sect17ApplicationServices />} />
+            {/* <Route path="services" element={<Section17ApplicationService />} /> */}
+            <Route path="reports" element={<Sect17ApplicationReports />} />
+            {/* <Route path="reports" element={<Section17ApplicationReports />} /> */}
             <Route path="list" element={<Section17ApplicationData />} />
           </Route>
         </Route>
