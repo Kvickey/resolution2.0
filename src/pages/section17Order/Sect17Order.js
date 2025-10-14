@@ -8,7 +8,7 @@ import { useAuth } from "../../components/AuthProvider";
 import ClearForm from "../../components/Clearform";
 import { Form } from "react-bootstrap";
 
-const Sec17Order = () => {
+const Sect17Order = () => {
   const [sec17OrderNotCreatedLots, setSec17OrderNotCreatedLots] = useState([]);
   const [sec17OrderNotCreatedData, setSec17OrderNotCreatedData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,12 +20,6 @@ const Sec17Order = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [theDate, setTheDate] = useState([]);
   const [nameOfAdvocate, setNameOfAdvocate] = useState(null);
-  // const {
-  //   data: Sec17OrderNotCreatedData,
-  //   loading: loading1,
-  //   error: error1,
-  //   fetchData,
-  // } = useFetch();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [showData, setShowData] = useState(false);
@@ -544,5 +538,4 @@ const Sec17Order = () => {
   );
 };
 
-export default Sec17Order;
-
+export default Sect17Order;

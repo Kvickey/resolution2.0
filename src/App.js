@@ -27,6 +27,7 @@ import AcceptanceLetterReports from "./pages/AcceptanceLetterReports";
 import VirtualMeeting from "./pages/VirtualMeeting";
 import FinalHearingNotice from "./pages/FifthHearingNotice";
 import Section17Order from "./pages/Section17Order";
+import Sec17Order from "./pages/section17Order/Sect17Order";
 import BankDashboard from "./pages/BankDashboard";
 import BankDashboardMain from "./pages/BankDashboardMain";
 import CaseTrackingLotwise from "./pages/CaseTrackingLotwise";
@@ -70,7 +71,7 @@ import UploadedLotList from "./pages/UploadedLotList";
 import IntentLetterList from "./pages/IntentLetterList";
 import AccScheduledMeets from "./pages/AccScheduledMeets";
 import ZoomMeetings from "./pages/ZoomMeetings";
-import Section17OrderData from "./pages/Section17OrderData";
+import Sec17OrderData from "./pages/Section17OrderData";
 import Section17OrderService from "./pages/Section17OrderService";
 import Section17OrderReports from "./pages/Section17OrderReports";
 import Section17ApplicationService from "./pages/Section17ApplicationService";
@@ -104,7 +105,6 @@ import AppointmentLtrServices from "./pages/appointmentLetter/AppointmentLtrServ
 import AppointmentLtrReports from "./pages/appointmentLetter/AppointmentLtrReports";
 import GenerateAppointmentLtr from "./pages/appointmentLetter/GenerateAppointmentLtr";
 import AccLtrServices from "./pages/acceptanceLetter/AccLtrServices";
-import Sec17Order from "./pages/section17Order/Sec17Order";
 // import AddArbitrator from "./components/AddArbitrator";
 // import Arbitrator from "./components/Arbitrator";
 // import ArbitratorList from "./components/ArbitratorList";
@@ -215,14 +215,14 @@ const App = () => {
             {/* <Route path="reports" element={<AcceptanceLetterReports />} /> */}
             <Route path="list" element={<AccScheduledMeets />} />
           </Route>
-          {/* <Route path="section17order" element={<Section17Order />} /> */}
+          {/* <Route path="Sec17Order" element={<Section17Order />} /> */}
           <Route path="section17order">
             {/* <Route path="generatesection17order" element={<Section17Order />} /> */}
             <Route path="generatesection17order" element={<Sec17Order />} />
             <Route path="signedsec17order" element={<SignedSec17Order />} />
             <Route path="services" element={<Section17OrderService />} />
             <Route path="reports" element={<Section17OrderReports />} />
-            <Route path="list" element={<Section17OrderData />} />
+            {/* <Route path="list" element={<Section17OrderData />} /> */}
           </Route>
           <Route path="firstHearing">
             <Route path="first_Hearing" element={<FirstHearing />} />
