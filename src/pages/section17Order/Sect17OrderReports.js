@@ -45,7 +45,7 @@ const Sect17OrderReports = () => {
   // API Call for Product data
   useEffect(() => {
     const fetchProduct = async () => {
-      setError(null); // Reset error state
+      setError(null); 
       try {
         const response = await fetch(
           `${API_BASE_URL}/api/products?client_id=${selectedClientID}`
@@ -86,16 +86,16 @@ const Sect17OrderReports = () => {
     setSelectedLotNo(selectedID);
   };
 
-  console.log(selectedClientID);
-  console.log(selectedProductID);
-  console.log(selectedLotNo);
+  // console.log(selectedClientID);
+  // console.log(selectedProductID);
+  // console.log(selectedLotNo);
 
   const handleData = async () => {
     setLoading(true); // Start loading before fetching data
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=1`
+        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=5`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -124,7 +124,7 @@ const Sect17OrderReports = () => {
     }
   };
 
-  console.log(data);
+  // console.log(data);
   if (loading) return <LoadingSpinner />;
 
   return (

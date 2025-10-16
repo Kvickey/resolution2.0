@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import "./Pages.css";
-import Sidebar from "../components/Sidebar";
-import Topbar from "../components/Topbar";
+import "../../Pages.css";
+import Sidebar from "../../../components/Sidebar";
+import Topbar from "../../../components/Topbar";
 import { Button, Form } from "react-bootstrap";
 import { Outlet } from "react-router-dom";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../components/AuthProvider";
+import { useAuth } from "../../../components/AuthProvider";
 import { FaHome } from "react-icons/fa";
 import { LuGanttChartSquare } from "react-icons/lu";
 import { BsPersonCheck } from "react-icons/bs";

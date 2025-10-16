@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import Topbar from "../components/Topbar";
-import Sidebar from "../components/Sidebar";
-import "./Pages.css";
+import Topbar from "../../../components/Topbar";
+import Sidebar from "../../../components/Sidebar";
+import "../../Pages.css";
 import { Form } from "react-bootstrap";
 // import AssignArbitrator from "../Componants/AssignArbitrator";
 import { Outlet } from "react-router-dom";
-import { useAuth } from "../components/AuthProvider";
+import { useAuth } from "../../../components/AuthProvider";
 import { Navigate } from "react-router-dom";
 import { FaHome } from "react-icons/fa";
 import { MdUploadFile, MdAssignmentTurnedIn } from "react-icons/md";

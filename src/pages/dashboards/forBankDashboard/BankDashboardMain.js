@@ -1,6 +1,5 @@
 import React from 'react'
-import "./ArbDashboardMain.css"
-import LineChar from "../components/Linechar";
+import "../ArbitratorDashboard/ArbDashboardMain.css"
 
 const BankDashboardMain = () => {
   return (
@@ -49,12 +48,12 @@ const BankDashboardMain = () => {
             </div>
           </div>
 
-          <div className='chart-area1'>
+          {/* <div className='chart-area1'>
             <div className='chart-header1'>
               <h2>Case Tracker</h2>
               <LineChar/>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

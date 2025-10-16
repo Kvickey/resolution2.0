@@ -12,10 +12,12 @@ import { useAuth } from "../../components/AuthProvider";
 import { generateTimeOptions } from "../../utils/timeUtils";
 import { formatDate } from "../../utils/FormatDate";
 
-const GenerateAccLtr = () => {
+const GenerateAward = () => {
   const { user, logout } = useAuth();
   const [acceptanceNotCreatedLots, setAcceptanceNotCreatedLots] = useState([]);
+  const [awardNotPassLots, setAwardNotPassLots] = useState([]);
   const [acceptanceNotCreatedData, setAcceptanceNotCreatedData] = useState([]);
+  const [awardNotPassData, setAwardNotPassData] = useState([]);
   const [receivedData, setReceivedData] = useState([]);
   const [selectedLotNo, setSelectedLotNo] = useState([]);
   const [selectedClientID, setSelectedClientID] = useState([]);
@@ -108,73 +110,15 @@ const GenerateAccLtr = () => {
     setArbId(user[0].Ref_id);
   }, [user]);
 
-  console.log(arbId);
+  // console.log(arbId);
 
-  // To get the access Meeting start here
+  // To get the Lot for whose award is not passed
   useEffect(() => {
-    const fetchAccessToken = async () => {
-      if (!arbId) return;
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/Meetings?Arb_id=${arbId}`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        const parsedAccessTokenArray = Array.isArray(result)
-          ? result
-          : JSON.parse(result); // Ensure parsedArbitrators is an array
-        setMeeting(parsedAccessTokenArray);
-        // console.log(parsedAccessTokenArray);
-      } catch (error) {
-        // setError1(error.message);
-      }
-    };
-
-    fetchAccessToken();
-  }, [arbId]);
-
-  console.log(meeting);
-
-  // To get the access token start here
-  useEffect(() => {
-    const fetchAccessToken = async () => {
-      if (!arbId) return;
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/ZoomAccess?Arb_id=${arbId}`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        const parsedAccessTokenArray = Array.isArray(result)
-          ? result
-          : JSON.parse(result); // Ensure parsedArbitrators is an array
-        setAccessTokenArray(parsedAccessTokenArray);
-        setAccessToken(parsedAccessTokenArray.access_token);
-        setRefreshToken(parsedAccessTokenArray.refresh_token);
-      } catch (error) {
-        // setError1(error.message);
-      }
-    };
-
-    fetchAccessToken();
-  }, [arbId]);
-
-  // console.log(accessTokenArray);
-  console.log(accessToken);
-  console.log(refreshToken);
-  // To get the access token start here
-
-  useEffect(() => {
-    const fetchAcceptanceNotCreatedLots = async () => {
+    const fetchAwardNotPassLots = async () => {
       try {
         const response = await fetch(
           `${API_BASE_URL}/api/pendingAcc?Arb_id=${arbId}`
         );
-        // const response = await fetch(`${API_BASE_URL}/api/pendingAcc?Arb_id=${item.Arb_id}`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -182,20 +126,20 @@ const GenerateAccLtr = () => {
         const parsedNotServedLots = Array.isArray(result)
           ? result
           : JSON.parse(result); // Ensure parsedArbitrators is an array
-        setAcceptanceNotCreatedLots(parsedNotServedLots);
+          setAwardNotPassLots(parsedNotServedLots);
       } catch (error) {
         // setError1(error.message);
       }
     };
 
-    fetchAcceptanceNotCreatedLots();
+    fetchAwardNotPassLots();
   }, [arbId]);
 
-  console.log(acceptanceNotCreatedLots);
+  console.log(awardNotPassLots);
 
   const searchFields = ["Arb_name", "Lots"];
 
-  const filteredLots = acceptanceNotCreatedLots.filter((item) =>
+  const filteredLots = awardNotPassLots.filter((item) =>
     searchFields.some((key) =>
       item[key]?.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -206,8 +150,8 @@ const GenerateAccLtr = () => {
   const currentRows = filteredLots.slice(indexOfFirstRow, indexOfLastRow);
 
   useEffect(() => {
-    if (acceptanceNotCreatedData.length > 0) {
-      const updatedData = acceptanceNotCreatedData.map((item, index) => {
+    if (awardNotPassData.length > 0) {
+      const updatedData = awardNotPassData.map((item, index) => {
         const {
           SR_No,
           assign_id,
@@ -223,12 +167,12 @@ const GenerateAccLtr = () => {
       });
 
       // console.log(updatedData);
-      setReceivedData(acceptanceNotCreatedData);
+      setReceivedData(awardNotPassData);
       setGetData(updatedData);
       setShowTable(true);
       //   handleStepChange(1);
     }
-  }, [acceptanceNotCreatedData]);
+  }, [awardNotPassData]);
   // Watch for changes in draftNotCreatedData
 
   // console.log(getData);
@@ -268,7 +212,7 @@ const GenerateAccLtr = () => {
         ? result
         : JSON.parse(result); // Ensure parsedArbitrators is an array
       console.log(parsedNotServedLots);
-      setAcceptanceNotCreatedData(parsedNotServedLots);
+      setAwardNotPassData(parsedNotServedLots);
       setShowData(true);
     } catch (error) {
       setError(error);
@@ -277,7 +221,7 @@ const GenerateAccLtr = () => {
     }
   };
 
-  console.log(acceptanceNotCreatedData);
+  console.log(awardNotPassData);
   //   for the getting data of selected lot to create refernce Draft ends
 
   // console.log(rate);
@@ -332,32 +276,6 @@ const GenerateAccLtr = () => {
     }
   };
 
-  // Function to format date and time together
-  // const formatDateTime = (date, time) => {
-  //   console.log(time);
-
-  //   const [hour, minute] = time.match(/\d+/g).map(Number);
-
-  //   let formattedHour = hour;
-  //   if (time.includes("PM") && formattedHour !== 12) formattedHour += 12;
-  //   if (time.includes("AM") && formattedHour === 12) formattedHour = 0;
-
-  //   // Create a new Date object to prevent modifying the original date
-  //   const newDate = new Date(date);
-
-  //   // Set hours and minutes in local time
-  //   newDate.setHours(formattedHour, minute, 0, 0);
-
-  //   // Format the date and time manually in YYYY-MM-DDTHH:MM (local time)
-  //   const year = newDate.getFullYear();
-  //   const month = String(newDate.getMonth() + 1).padStart(2, "0");
-  //   const day = String(newDate.getDate()).padStart(2, "0");
-  //   const hours = String(newDate.getHours()).padStart(2, "0");
-  //   const minutes = String(newDate.getMinutes()).padStart(2, "0");
-
-  //   return `${year}-${month}-${day}T${hours}:${minutes}:${minutes}Z`;
-  // };
-
   const distributeRecords = () => {
     handleStepChange(2);
 
@@ -365,14 +283,14 @@ const GenerateAccLtr = () => {
       !startTime ||
       !endTime ||
       timeDifference <= 0 ||
-      acceptanceNotCreatedData.length === 0
+      awardNotPassData.length === 0
     ) {
       setErrorMessage("All fields are required and must be valid.");
       setDistRecords([]);
       return;
     }
 
-    const totalRecords = acceptanceNotCreatedData.length;
+    const totalRecords = awardNotPassData.length;
     const totalSlots = Math.ceil((timeDifference * 60) / 60); // Total 1-hour or partial-hour slots
 
     const baseRecordsPerSlot = Math.floor(totalRecords / totalSlots);
@@ -402,7 +320,7 @@ const GenerateAccLtr = () => {
 
       for (let i = 0; i < numRecords && recordIndex < totalRecords; i++) {
         distributed.push({
-          ...acceptanceNotCreatedData[recordIndex],
+          ...awardNotPassData[recordIndex],
           Hearing_date: formattedDate,
           Hearing_time_From: format(slotStartTime, "hh:mm a"),
           Hearing_time_To: format(slotEndTime, "hh:mm a"),
@@ -578,10 +496,9 @@ const GenerateAccLtr = () => {
   // For the customStepper starts Here
   const steps = [
     "Select Lot",
-    "Select Zoom Meeting",
-    "Save Acceptance",
-    "Generate Acceptance",
-    "Upload Acceptance",
+    "Save Award",
+    "Generate Award",
+    "Upload Award",
   ];
 
   // Function to move to a specific step in Stepper Component
@@ -1087,4 +1004,6 @@ const GenerateAccLtr = () => {
   );
 };
 
-export default GenerateAccLtr;
+export default GenerateAward;
+
+

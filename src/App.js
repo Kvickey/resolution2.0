@@ -9,12 +9,12 @@ import ContactUs from "./pages/ContactUs";
 import LoginForm from "./components/LoginForm";
 import Display from "./pages/Display";
 import UploadExcel from "./pages/UploadExcel";
-import InstDashboardMain from "./pages/InstDashboardMain";
+import InstDashboardMain from "./pages/dashboards/ResolutionDashboard/InstDashboardMain";
 import { Modal, Box, Typography, Button, Zoom } from "@mui/material";
 import "./App.css";
 import { RxCookie } from "react-icons/rx";
 import Cookie from "./assets/images/cookie.png";
-import InstDashboard from "./pages/InstDashboard";
+import InstDashboard from "./pages/dashboards/ResolutionDashboard/InstDashboard";
 import AssignArbitrator from "./pages/AssignArbitrator";
 import ReferenceDraftServices from "./pages/ReferenceDraftServices";
 import ReferenceDraftReports from "./pages/ReferenceDraftReports";
@@ -28,11 +28,9 @@ import VirtualMeeting from "./pages/VirtualMeeting";
 import FinalHearingNotice from "./pages/FifthHearingNotice";
 import Section17Order from "./pages/Section17Order";
 import Sec17Order from "./pages/section17Order/Sect17Order";
-import BankDashboard from "./pages/BankDashboard";
-import BankDashboardMain from "./pages/BankDashboardMain";
-import CaseTrackingLotwise from "./pages/CaseTrackingLotwise";
-import CaseTrackingCasewise from "./pages/CaseTrackingCasewise";
-import LawyerDashboard from "./pages/LawyerDashboard";
+import CaseTrackingLotwise from "./pages/caseTracking/CaseTrackLotwise";
+import CaseTrackingCasewise from "./pages/caseTracking/CaseTrackCasewise";
+import LawyerDashboard from "./pages/dashboards/AcumenDashboard/LawyerDashboard";
 import LawyerDashboardMain from "./pages/LawyerDashboardMain";
 import SOC from "./pages/SOC";
 import Section17Application from "./pages/Section17Application";
@@ -80,7 +78,7 @@ import Section17ApplicationData from "./pages/Section17ApplicationData";
 import SOCService from "./pages/SOCService";
 import SOCReports from "./pages/SOCReports";
 import SOCData from "./pages/SOCData";
-import AwardPassLotwise from "./pages/AwardPassLotwise";
+import AwardPassLotwise from "./pages/awardPass/GenerateAward";
 import AwardPassCasewise from "./pages/AwardPassCasewise";
 import "react-datepicker/dist/react-datepicker.css";
 import SignedAccUpload from "./pages/SignedAccUpload";
@@ -110,9 +108,9 @@ import Sect17OrderReports from "./pages/section17Order/Sect17OrderReports";
 import Sect17Application from "./pages/sec17Application/Sect17Application";
 import Sect17ApplicationServices from "./pages/sec17Application/Sect17ApplicationServices";
 import Sect17ApplicationReports from "./pages/sec17Application/Sect17ApplicationReports";
-// import AddArbitrator from "./components/AddArbitrator";
-// import Arbitrator from "./components/Arbitrator";
-// import ArbitratorList from "./components/ArbitratorList";
+import GenerateAward from "./pages/awardPass/GenerateAward";
+import BankDashboard from "./pages/dashboards/forBankDashboard/BankDashboard";
+import BankDashboardMain from "./pages/dashboards/forBankDashboard/BankDashboardMain";
 
 
 const App = () => {
@@ -317,7 +315,7 @@ const App = () => {
             />
           </Route> */}
           <Route path="awardPass">
-            <Route path="lotwise" element={<AwardPassLotwise />} />
+            <Route path="lotwise" element={<GenerateAward />} />
             <Route path="casewise" element={<AwardPassCasewise />} />
           </Route>
           {/* <Route path="terminate" element={<Terminate />} /> */}

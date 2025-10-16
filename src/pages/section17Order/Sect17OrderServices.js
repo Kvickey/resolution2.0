@@ -20,17 +20,19 @@ const Sect17OrderServices = () => {
   const { user } = useAuth();
   const [arbId, setArbId] = useState("");
 
-    useEffect(() => {
-      if (user && user.length > 0) {
-        setArbId(user[0].Ref_id);
-      }
-    }, [user]);
+  useEffect(() => {
+    if (user && user.length > 0) {
+      setArbId(user[0].Ref_id);
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchNotServedLots = async () => {
       if (!arbId) return;
       try {
-        const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=5&Arb_id=${arbId}`);
+        const response = await fetch(
+          `${API_BASE_URL}/api/notServed?s_id=5&Arb_id=${arbId}`
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -56,7 +58,7 @@ const Sect17OrderServices = () => {
     console.log(lot);
     console.log(arb_id);
     setLoading(true);
-    const url = `${API_BASE_URL}/api/notServed?s_id=1&Lot_no=${lot}&arb_id=${arb_id}`;
+    const url = `${API_BASE_URL}/api/notServed?s_id=5&Lot_no=${lot}&arb_id=${arb_id}`;
     console.log(url);
     try {
       const response = await fetch(
@@ -95,8 +97,6 @@ const Sect17OrderServices = () => {
 
   console.log(data);
 
-  const handleTransfer = () => {};
-
   const headers = data.length > 0 ? Object.keys(data[0]) : [];
   console.log(headers);
 
@@ -107,7 +107,7 @@ const Sect17OrderServices = () => {
       Service_type_id: 3,
       Service_id: item.Service_id,
       File_path: item.File_path,
-      Process_id: 1,
+      Process_id: 5,
     }));
     console.log(dataForMail);
     setLoading(true);
@@ -152,7 +152,7 @@ const Sect17OrderServices = () => {
       Service_type_id: 2,
       Service_id: item.Service_id,
       File_path: item.File_path,
-      Process_id: 1,
+      Process_id: 5,
     }));
     console.log(dataForWhatsapp);
     setLoading(true);
@@ -189,13 +189,50 @@ const Sect17OrderServices = () => {
     }
   };
 
-  const handleSMS = () => {};
-
-  // const showToast = () => {
-  //   toast.success("Toast is working!", {
-  //     theme: "colored"
-  //   });
-  // };
+  const handleSMS = async () => {
+    // console.log(data);
+    const dataForSMS = data.map((item) => ({
+      Ref_no: item.Reference_no,
+      Service_add: item.Mobile_no,
+      Service_type_id: 1,
+      Service_id: item.Service_id,
+      File_path: item.File_path,
+      Process_id: 5,
+    }));
+    // console.log(dataForSMS);
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/Services`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataForSMS),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+        );
+      }
+      const result = await response.json();
+      // console.log("Upload response:", result);
+      setSMSDone(true);
+      setTimeout(() => {
+        toast.success("SMS Sent Successfully", {
+          // position: toast.POSITION.BOTTOM_RIGHT,
+          theme: "colored",
+        });
+      }, 50);
+    } catch (error) {
+      console.error("Error uploading data:", error);
+      setTimeout(() => {
+        toast.error(`Error: ${error.message}`, { theme: "colored" });
+      }, 50);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -289,44 +326,11 @@ const Sect17OrderServices = () => {
 
       {showData && (
         <div className="mt-3">
-          {/* <button
-            className={`${
-              waDone ? "disabledBtn" : "custBtn"
-            }`}
-            onClick={handleWhatsapp}
-            disabled={waDone}
-          >
-            WhatsApp
-          </button>
-
-          <button
-            className={`ms-3 ${
-              mailDone ? "disabledBtn" : "custBtn"
-            }`}
-            onClick={handleMail}
-            disabled={mailDone}
-          >
-            Mail
-          </button>
-
-          <button
-            className={`ms-3 ${
-              smsDone ? "disabledBtn" : "custBtn"
-            }`}
-            onClick={handleSMS}
-            disabled={smsDone}
-          >
-            Message
-          </button> */}
           <button
             className={`${
-              // data[0].Wa_send_date !== 0
-              // waDone
               waDone || data[0].Wa_send_date !== null
                 ? "disabledBtn"
                 : "custBtn"
-              //  ( waDone || data[0].Wa_send_date !== 0) ? "disabledBtn" : "custBtn"
-              //  ( waDone && data[0].Wa_send_date!==null) ? "disabledBtn" : "custBtn"
             } ms-3`}
             onClick={handleWhatsapp}
             disabled={waDone || data[0].Wa_send_date !== null}
@@ -337,7 +341,6 @@ const Sect17OrderServices = () => {
 
           <button
             className={`ms-3 ${
-              // mailDone ? "disabledBtn" : "custBtn"
               mailDone || data[0].Mail_send_date !== null
                 ? "disabledBtn"
                 : "custBtn"
@@ -350,7 +353,11 @@ const Sect17OrderServices = () => {
           </button>
 
           <button
-            className={`ms-3 ${smsDone ? "disabledBtn" : "custBtn"}`}
+            className={`ms-3 ${
+              smsDone || data[0].Sms_send_date !== null
+                ? "disabledBtn"
+                : "custBtn"
+            }`}
             onClick={handleSMS}
             disabled={smsDone}
           >

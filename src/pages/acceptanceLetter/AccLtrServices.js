@@ -90,7 +90,6 @@ const AccLtrServices = () => {
 
   console.log(data);
 
-  const handleTransfer = () => {};
 
   const headers = data.length > 0 ? Object.keys(data[0]) : [];
   console.log(headers);

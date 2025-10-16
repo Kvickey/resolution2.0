@@ -96,8 +96,8 @@ const ArbitratorDashboard = () => {
             name: 'Award Pass',
             icon: <FaHandshake />,
             submenu: [
-                { name: 'Lotwise', link: '/arbdashboard/awardPass/lotwise', icon: <RiAiGenerate /> },
-                { name: 'Casewise', link: '/arbdashboard/awardPass/casewise', icon: <RiCustomerService2Line /> },
+                { name: 'Generate Award', link: '/arbdashboard/awardPass/lotwise', icon: <RiAiGenerate /> },
+                // { name: 'Casewise', link: '/arbdashboard/awardPass/casewise', icon: <RiCustomerService2Line /> },
             ]
         },
         {

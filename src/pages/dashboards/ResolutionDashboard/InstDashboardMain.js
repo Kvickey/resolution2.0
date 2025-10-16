@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./InstDashboardMain.css";
-import LineChar from "../components/Linechar";
-import { API_BASE_URL } from "../utils/constants";
+import LineChar from "../../../components/Linechar";
+import { API_BASE_URL } from "../../../utils/constants";
 
 const InstDashboardMain = () => {
   const [dashboardCount, setDashboardCount] = useState([]);

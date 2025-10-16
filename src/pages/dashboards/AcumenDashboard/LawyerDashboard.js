@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Topbar from "../components/Topbar";
+import Topbar from "../../../components/Topbar";
 import { Outlet } from "react-router-dom";
 import { Navigate } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
-import { useAuth } from "../components/AuthProvider";
+import Sidebar from "../../../components/Sidebar";
+import { useAuth } from "../../../components/AuthProvider";
 import { FaUpload } from "react-icons/fa";
 import { IoDocumentText } from "react-icons/io5";
 import { RiAiGenerate } from "react-icons/ri";
