@@ -50,7 +50,12 @@ const Sect17Application = () => {
     },
     {
       name: "Sec_17_app_date",
-      validations: [{ type: "notEmpty", message: "Section 17 Application Date cannot be empty" }],
+      validations: [
+        {
+          type: "notEmpty",
+          message: "Section 17 Application Date cannot be empty",
+        },
+      ],
     },
   ];
 
@@ -88,6 +93,7 @@ const Sect17Application = () => {
       setHeaderError("No Excel data available.");
       return;
     }
+
     handleStepChange(1);
 
     // Step 1: Check headers
@@ -107,22 +113,23 @@ const Sect17Application = () => {
       setVerifiedData(false);
       return;
     }
+
     // Step 2: Send each REFERENCE_NO in a POST request
     try {
       setLoading(true);
+      let allSuccessful = true; // ✅ Track overall success
 
       for (const row of excelData) {
         const referenceNo = row.REFERENCE_NO;
 
         const response = await fetch(`${API_BASE_URL}/api/ValidateRef`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ reference_no: referenceNo }),
         });
 
         if (!response.ok) {
+          allSuccessful = false; // mark failure
           const error = await response.json();
           console.error(`Error for REFERENCE_NO ${referenceNo}:`, error);
         } else {
@@ -131,14 +138,19 @@ const Sect17Application = () => {
         }
       }
 
-      setHeaderError("");
-      setVerifiedData(true);
+      if (allSuccessful) {
+        setHeaderError("");
+        setVerifiedData(true); // ✅ Only if all were 200
+      } else {
+        setHeaderError("Some records failed verification. Please check logs.");
+        setVerifiedData(false);
+      }
     } catch (error) {
       console.error("Network or server error:", error);
       setHeaderError("Error sending data to server.");
       setVerifiedData(false);
     } finally {
-      setLoading(false); // ✅ Correct placement
+      setLoading(false);
     }
   };
 
@@ -154,9 +166,13 @@ const Sect17Application = () => {
 
   function convertExcelDate(serial) {
     const utc_days = Math.floor(serial - 25569);
-    const utc_value = utc_days * 86400; 
+    const utc_value = utc_days * 86400;
     const date_info = new Date(utc_value * 1000);
-    return new Date(date_info.getFullYear(), date_info.getMonth(), date_info.getDate());
+    return new Date(
+      date_info.getFullYear(),
+      date_info.getMonth(),
+      date_info.getDate()
+    );
   }
 
   const handleUpload = async () => {
@@ -174,7 +190,6 @@ const Sect17Application = () => {
       return;
     }
 
-    
     console.log(data);
 
     formData.append("file", files); // PDF file
@@ -205,13 +220,13 @@ const Sect17Application = () => {
       }
 
       setHeaderError("");
-      setVerifiedData(true);
+      // setVerifiedData(true);
       handleStepChange(3);
       setClearForm(true);
     } catch (error) {
       console.error("Network or server error:", error);
       setHeaderError("Error sending data to server.");
-      setVerifiedData(false);
+      // setVerifiedData(false);
     } finally {
       setLoading(false); // ✅ Always stop loading
     }
@@ -302,8 +317,3 @@ const Sect17Application = () => {
 };
 
 export default Sect17Application;
-
-
-
-
-

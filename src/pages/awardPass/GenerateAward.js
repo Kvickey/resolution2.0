@@ -126,7 +126,7 @@ const GenerateAward = () => {
         const parsedNotServedLots = Array.isArray(result)
           ? result
           : JSON.parse(result); // Ensure parsedArbitrators is an array
-          setAwardNotPassLots(parsedNotServedLots);
+        setAwardNotPassLots(parsedNotServedLots);
       } catch (error) {
         // setError1(error.message);
       }
@@ -135,7 +135,7 @@ const GenerateAward = () => {
     fetchAwardNotPassLots();
   }, [arbId]);
 
-  console.log(awardNotPassLots);
+  // console.log(awardNotPassLots);
 
   const searchFields = ["Arb_name", "Lots"];
 
@@ -190,44 +190,11 @@ const GenerateAward = () => {
   };
 
   //   for the getting data of selected lot to create refernce Draft starts
-  const handleRowAction = async (item) => {
-    setSelectedLotNo(item.Lot_no);
-    setSelectedClientID(item.Client_id);
-    setSelectedProductID(item.Product_id);
-    setSelectedArbitratorID(item.Arb_id);
-    const url = `${API_BASE_URL}/api/RefLots?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}&Arb_id=${arbId}`;
-    setLoading(true);
-    handleStepChange(1);
-    try {
-      // await fetchData(url);
 
-      const response = await fetch(
-        `${API_BASE_URL}/api/RefLots?Lot_no=${item.Lot_no}&Client_id=${item.Client_id}&Product_id=${item.Product_id}&Arb_id=${arbId}`
-      );
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      const result = await response.json();
-      const parsedNotServedLots = Array.isArray(result)
-        ? result
-        : JSON.parse(result); // Ensure parsedArbitrators is an array
-      console.log(parsedNotServedLots);
-      setAwardNotPassData(parsedNotServedLots);
-      setShowData(true);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // console.log(awardNotPassData);
 
-  console.log(awardNotPassData);
-  //   for the getting data of selected lot to create refernce Draft ends
+  const handleVerify = () => {}
 
-  // console.log(rate);
-  // console.log(noOfCases);
-
-  // the logic of assigning time slot start here
 
   const timeOptions = generateTimeOptions();
 
@@ -494,12 +461,7 @@ const GenerateAward = () => {
   // for pagination of reusabletableFixed ends
 
   // For the customStepper starts Here
-  const steps = [
-    "Select Lot",
-    "Save Award",
-    "Generate Award",
-    "Upload Award",
-  ];
+  const steps = ["Select Lot", "Save Award", "Generate Award", "Upload Award"];
 
   // Function to move to a specific step in Stepper Component
   const handleStepChange = (step) => {
@@ -623,11 +585,13 @@ const GenerateAward = () => {
       </div>
 
       {!showTable && (
-        <div className="row">
-          <div className="col-md-12">
-            <div className="row table-container mt-3">
+        <div className="row mt-3">
+          <div className="col-md-2 ps-5 pt-1">
+            <label>Select Excel</label>
+          </div>
+          <div className="col-md-4">
+            {/* <div className="row table-container mt-3">
               <div className="col-md-12 mx-auto table-wrapper">
-                {/* Search Input */}
                 <div className="d-flex justify-content-start">
                   <input
                     type="text"
@@ -642,7 +606,6 @@ const GenerateAward = () => {
                   />
                 </div>
 
-                {/* Table */}
                 <table className="responsive-table mb-2">
                   <thead className="text-center">
                     <tr className="table-info">
@@ -657,9 +620,7 @@ const GenerateAward = () => {
                       <th scope="col" className="text-center">
                         Lots
                       </th>
-                      {/* <th scope="col" className="text-center">
-                        Arbitrator Name
-                      </th> */}
+
                       <th scope="col" className="text-center">
                         Actions
                       </th>
@@ -685,7 +646,6 @@ const GenerateAward = () => {
                               : ""}
                           </td>
                           <td className="text-center p-0">{item.Lots}</td>
-                          {/* <td className="text-center">{item.Arb_name}</td> */}
                           <td className="text-center py-2">
                             <button
                               onClick={() => handleRowAction(item)}
@@ -706,7 +666,6 @@ const GenerateAward = () => {
                   </tbody>
                 </table>
 
-                {/* Pagination */}
                 <div className="d-flex justify-content-center ">
                   <nav>
                     <ul className="pagination">
@@ -729,7 +688,29 @@ const GenerateAward = () => {
                   </nav>
                 </div>
               </div>
+            </div> */}
+            <div className="row">
+              <Form.Control
+                type="file"
+                accept=".xlsx, .xls"
+                // onChange={handleFileUpload}
+                className="custom-input"
+                style={{ fontSize: "12px" }}
+              />
             </div>
+          </div>
+          <div className="col-md-2">
+            {/* {excelData.length > 0 &&
+              !verified &&
+              errorResponses.length === 0 && ()} */}
+                <button
+                  className="custBtn"
+                  style={{ fontSize: "12px" }}
+                  onClick={handleVerify}
+                >
+                  Verify
+                </button>
+              {/* )} */}
           </div>
         </div>
       )}
@@ -1005,5 +986,3 @@ const GenerateAward = () => {
 };
 
 export default GenerateAward;
-
-
