@@ -152,6 +152,8 @@ const ExcelFileUpload = ({
         ...row,
         LRN_date: convertToMMDDYYYY(row.LRN_date),
         Ref_date: convertToMMDDYYYY(row.Ref_date),
+        FCR_DATE: convertToMMDDYYYY(row.FCR_DATE),
+        LOC_Date: convertToMMDDYYYY(row.LOC_Date),
         // Add more date fields here as required
       }));
 

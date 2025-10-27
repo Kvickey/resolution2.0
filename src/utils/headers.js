@@ -224,6 +224,33 @@ export const headers = [
     ],
   },
   {
+    name: "FCR_DATE",
+    validations: [
+      { type: "notEmpty", message: "FCR_DATE cannot be empty" },
+   
+    ],
+  },
+  {
+    name: "LOC_Date",
+    validations: [
+      { type: "notEmpty", message: "LOC Date cannot be empty" },
+    ],
+  },
+  {
+    name: "TOSBALANCE",
+    validations: [
+      { type: "notEmpty", message: "TOSBALANCE cannot be empty" },
+      { type: "number", message: "TOSBALANCE must be an integer" },
+    ],
+  },
+  {
+    name: "TOSBALANCE_RS",
+    validations: [
+      { type: "notEmpty", message: "TOSBALANCE_RS cannot be empty" },
+      { type: "textOnly", message: "TOSBALANCE_RS must be an text only" },
+    ],
+  },
+  {
     name: "WORK_FINAL_CITY",
   },
   {

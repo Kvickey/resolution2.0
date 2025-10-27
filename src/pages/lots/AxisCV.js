@@ -3,6 +3,7 @@ import * as XLSX from "xlsx";
 import { API_BASE_URL } from "../../utils/constants";
 import ProgressBar from "../../components/ProgressBar";
 
+
 const AxisCV = ({
   excelData,
   bankId,
@@ -34,6 +35,10 @@ const AxisCV = ({
       Ref_date: row.Ref_date,
       LRN_ref_no: row.LRN_REFERENCE_NO,
       Uploaded_by: "Admin",
+      LOC_Date:row.LOC_Date,
+      TOSBALANCE:row.TOSBALANCE,
+      TOSBALANCE_RS:row.TOSBALANCE_RS,
+      FCR_DATE:row.FCR_DATE,
       Borrower: borrowerArray,
       Axis_Cv: {
         Product: row.PRODUCT,

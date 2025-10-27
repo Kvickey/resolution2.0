@@ -245,6 +245,7 @@ const UploadLot = () => {
           setActiveStep={setActiveStep}
         />
       )}
+      
       {/* Table after verification */}
       {!errorResponses.length &&
         verified &&
