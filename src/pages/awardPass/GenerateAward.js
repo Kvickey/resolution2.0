@@ -4,6 +4,8 @@ import * as XLSX from "xlsx";
 import { API_BASE_URL } from "../../utils/constants";
 import { useAuth } from "../../components/AuthProvider";
 import ClearForm from "../../components/Clearform";
+import ReusableTable from "../../components/ReusableTable";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const GenerateAward = () => {
   const [error, setError] = useState("");
@@ -22,6 +24,24 @@ const GenerateAward = () => {
   const { user, logout } = useAuth();
   const [arbId, setArbId] = useState("");
   const [clearForm, setClearForm] = useState(false);
+
+  const itemsPerPage = 10; // change as needed
+
+  // State for pagination
+  const [currentPage1, setCurrentPage1] = useState(1);
+
+  // Calculate indexes
+  const indexOfLastItem = currentPage1 * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+  // ✅ Paginated extracted data from Excel Data
+  const currentItems1 = excelData.slice(indexOfFirstItem, indexOfLastItem);
+
+  // ✅ Page numbers based on total data length
+  const pageNumbers1 = [];
+  for (let i = 1; i <= Math.ceil(excelData.length / itemsPerPage); i++) {
+    pageNumbers1.push(i);
+  }
 
   useEffect(() => {
     // console.log(user);
@@ -128,6 +148,8 @@ const GenerateAward = () => {
 
   // console.log(excelData);
 
+   if (loading) return <LoadingSpinner />;
+
   const handleVerify = async () => {
     try {
       setLoading(true);
@@ -169,9 +191,9 @@ const GenerateAward = () => {
     }
   };
 
-  // console.log(selectedLotNo);
-  // console.log(selectedClientID);
-  // console.log(selectedProductID);
+  console.log(selectedLotNo);
+  console.log(selectedClientID);
+  console.log(selectedProductID);
 
   const handleSave = async () => {
     try {
@@ -283,7 +305,7 @@ const GenerateAward = () => {
             <h5>Generate Acceptance Letter</h5>
           )}
           {showPDF && !clearForm && <h5>Upload Acceptance Letter</h5>} */}
-          {!verifiedData && (
+          {!fileName && !verifiedData && (
             <div className="row">
               <h4>Generate Award</h4>
             </div>
@@ -321,29 +343,10 @@ const GenerateAward = () => {
               Upload
             </button>
           )}
-          {/* {save && !showPDF && (
-            <button className="custBtn" onClick={handleGenerateAcceptance}>
-              Generate
-            </button>
-          )}
-          {showPDF && !clearForm && (
-            <button className="custBtn" onClick={handleUploadAcceptance}>
-              Upload
-            </button>
-          )}
-          {distRecords.length > 0 && !save && (
-            <>
-              <div className="col-md-3">
-                <button className="custBtn" onClick={handleSave}>
-                  Save
-                </button>
-              </div>
-            </>
-          )} */}
         </div>
       </div>
 
-      {!verifiedData && (
+      {!fileName && !verifiedData && (
         <div className="row pt-2">
           <div className="col-md-3">
             <Form.Group>
@@ -382,6 +385,33 @@ const GenerateAward = () => {
             )}
           </div>
         </div>
+      )}
+
+      {fileName && !verifiedData && !save && (
+        <ReusableTable
+          data={currentItems1}
+          currentPage={currentPage1}
+          pageNumbers={pageNumbers1}
+          setCurrentPage={setCurrentPage1}
+        />
+      )}
+
+      {verifiedData && !save && (
+        <ReusableTable
+          data={currentItems1}
+          currentPage={currentPage1}
+          pageNumbers={pageNumbers1}
+          setCurrentPage={setCurrentPage1}
+        />
+      )}
+
+      {verifiedData && save && !showPDF && (
+        <ReusableTable
+          data={currentItems1}
+          currentPage={currentPage1}
+          pageNumbers={pageNumbers1}
+          setCurrentPage={setCurrentPage1}
+        />
       )}
 
       {showPDF && !clearForm && (
