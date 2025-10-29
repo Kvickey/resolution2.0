@@ -3,7 +3,6 @@ import * as XLSX from "xlsx";
 import { API_BASE_URL } from "../../utils/constants";
 import ProgressBar from "../../components/ProgressBar";
 
-
 const AxisCV = ({
   excelData,
   bankId,
