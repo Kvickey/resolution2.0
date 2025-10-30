@@ -13,6 +13,7 @@ const GenerateAward = () => {
   const [excelData, setExcelData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [verifiedData, setVerifiedData] = useState(false);
+  const [errorExcel, setErrorExcel] = useState(false);
   const [pdfUrl, setPdfUrl] = useState("");
   const [save, setSave] = useState(false);
   const [showPDF, setShowPDF] = useState(false);
@@ -148,17 +149,20 @@ const GenerateAward = () => {
 
   // console.log(excelData);
 
-   if (loading) return <LoadingSpinner />;
+  if (loading) return <LoadingSpinner />;
+
+
 
   const handleVerify = async () => {
     try {
       setLoading(true);
-
+  
+      let errorRows = [];
+      let allSuccess = true;
+  
       for (const row of excelData) {
         const referenceNo = row.REFERENCE_NO;
-        // console.log(referenceNo);
-        // console.log(row);
-
+  
         const response = await fetch(`${API_BASE_URL}/api/ValidateExcel`, {
           method: "POST",
           headers: {
@@ -166,34 +170,99 @@ const GenerateAward = () => {
           },
           body: JSON.stringify({ Reference_no: referenceNo }),
         });
-
+  
         if (!response.ok) {
-          const error = await response.json();
-          console.error(`Error for REFERENCE_NO ${referenceNo}:`, error);
+          allSuccess = false;
+  
+          let errorText = "";
+          try {
+            const err = await response.json();
+            errorText = err.message || JSON.stringify(err);
+          } catch {
+            errorText = "Unknown error";
+          }
+  
+          errorRows.push({
+            REFERENCE_NO: referenceNo,
+            ERROR_MESSAGE: errorText,
+          });
+  
         } else {
           const result = await response.json();
-          // console.log(result);
-          setSelectedLotNo(result[0].Lot_no);
-          setSelectedClientID(result[0].Client_id);
-          setSelectedProductID(result[0].Product_id);
-          // console.log(`Success for REFERENCE_NO ${referenceNo}:`, result);
+          row.Lot_no = result[0].Lot_no;
+          row.Client_id = result[0].Client_id;
+          row.Product_id = result[0].Product_id;
         }
       }
-
-      //  setHeaderError("");
-      setVerifiedData(true);
+  
+      if (!allSuccess) {
+        const ws = XLSX.utils.json_to_sheet(errorRows);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Errors");
+  
+        XLSX.writeFile(wb, "ValidationErrors.xlsx");
+  
+        setVerifiedData(false);
+        setErrorExcel(true);
+        alert("Validation completed with errors. Error Excel downloaded ✅");
+      } else {
+        setVerifiedData(true);
+        alert("All Reference Numbers Verified Successfully ✅");
+      }
+  
     } catch (error) {
-      console.error("Network or server error:", error);
-      //  setHeaderError("Error sending data to server.");
-      //  setVerifiedData(false);
+      console.error("Network / Server Issue:", error);
+      setVerifiedData(false);
     } finally {
-      setLoading(false); // ✅ Correct placement
+      setLoading(false);
     }
   };
+  
 
-  console.log(selectedLotNo);
-  console.log(selectedClientID);
-  console.log(selectedProductID);
+  // const handleVerify = async () => {
+  //   try {
+  //     setLoading(true);
+
+  //     for (const row of excelData) {
+  //       const referenceNo = row.REFERENCE_NO;
+  //       // console.log(referenceNo);
+  //       // console.log(row);
+
+  //       const response = await fetch(`${API_BASE_URL}/api/ValidateExcel`, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ Reference_no: referenceNo }),
+  //       });
+
+  //       if (!response.ok) {
+  //         const error = await response.json();
+  //         console.error(`Error for REFERENCE_NO ${referenceNo}:`, error);
+  //       } else {
+  //         const result = await response.json();
+  //         // console.log(result);
+  //         setSelectedLotNo(result[0].Lot_no);
+  //         setSelectedClientID(result[0].Client_id);
+  //         setSelectedProductID(result[0].Product_id);
+  //         // console.log(`Success for REFERENCE_NO ${referenceNo}:`, result);
+  //       }
+  //     }
+
+  //     //  setHeaderError("");
+  //     setVerifiedData(true);
+  //   } catch (error) {
+  //     console.error("Network or server error:", error);
+  //     //  setHeaderError("Error sending data to server.");
+  //     //  setVerifiedData(false);
+  //   } finally {
+  //     setLoading(false); // ✅ Correct placement
+  //   }
+  // };
+
+  // console.log(selectedLotNo);
+  // console.log(selectedClientID);
+  // console.log(selectedProductID);
 
   const handleSave = async () => {
     try {
@@ -387,7 +456,7 @@ const GenerateAward = () => {
         </div>
       )}
 
-      {fileName && !verifiedData && !save && (
+      {fileName && !verifiedData && !save && !errorExcel && (
         <ReusableTable
           data={currentItems1}
           currentPage={currentPage1}
@@ -425,6 +494,19 @@ const GenerateAward = () => {
           </div>
         </div>
       )}
+
+
+      {errorExcel && (
+        <div className="row">
+          <div className="col-md-12 d-flex justify-content-center ">
+            <ClearForm
+              message="Error In the File Uploaded Successfully!"
+              redirectPath="/arbdashboard"
+            />
+          </div>
+        </div>
+      )}
+
 
       {clearForm && (
         <div className="row">

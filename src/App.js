@@ -111,6 +111,8 @@ import Sect17ApplicationReports from "./pages/sec17Application/Sect17Application
 import GenerateAward from "./pages/awardPass/GenerateAward";
 import BankDashboard from "./pages/dashboards/forBankDashboard/BankDashboard";
 import BankDashboardMain from "./pages/dashboards/forBankDashboard/BankDashboardMain";
+import AwardService from "./pages/awardPass/AwardService";
+import AwardReports from "./pages/awardPass/AwardReports";
 
 
 const App = () => {
@@ -229,6 +231,7 @@ const App = () => {
             {/* <Route path="reports" element={<Section17OrderReports />} /> */}
             {/* <Route path="list" element={<Section17OrderData />} /> */}
           </Route>
+
           <Route path="firstHearing">
             <Route path="first_Hearing" element={<FirstHearing />} />
             {/* <Route path="first_Hearing" element={<VirtualMeeting />} /> */}
@@ -250,6 +253,7 @@ const App = () => {
               element={<SecondHearingReport />}
             /> */}
           </Route>
+
           <Route path="secondHearing">
             <Route
               path="second_Hearing"
@@ -272,6 +276,7 @@ const App = () => {
               // element={<ThirdHearingReport />}
             />
           </Route>
+
           <Route path="thirdHearing">
             <Route
               path="third_Hearing"
@@ -290,33 +295,11 @@ const App = () => {
               element={<ForthHearingReports />}
             /> */}
           </Route>
-          {/* <Route path="forthHearing">
-            <Route
-              path="forth_Hearing"
-              element={<VirtualMeetingForForthHearing />}
-            />
-            <Route
-              path="createFifthHearingNotice"
-              element={<FifthHearingNotice />}
-            />
-            <Route
-              path="fifthHearingNoticeServices"
-              element={<FifthHearingServices />}
-            />
-            <Route
-              path="fifthHearingNoticeReports"
-              element={<FifthHearingReports />}
-            />
-          </Route>
-          <Route path="fifthHearing">
-            <Route
-              path="fifth_Hearing"
-              element={<VirtualMeetingForFifthHearing />}
-            />
-          </Route> */}
+          
           <Route path="awardPass">
             <Route path="lotwise" element={<GenerateAward />} />
-            <Route path="casewise" element={<AwardPassCasewise />} />
+            <Route path="awardservice" element={<AwardService />} />
+            <Route path="awardreport" element={<AwardReports />} />
           </Route>
           {/* <Route path="terminate" element={<Terminate />} /> */}
           <Route path="terminate" element={<TerminateCase />} />
