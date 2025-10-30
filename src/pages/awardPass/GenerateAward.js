@@ -75,6 +75,7 @@ const GenerateAward = () => {
     "Argument",
     "Award_Date",
     "Award_full_date",
+   "Clause_No"
   ];
 
   const handleFileUpload = (e) => {
@@ -280,6 +281,7 @@ const GenerateAward = () => {
           Exparty: row.Exparty,
           Evidence: row.Evidence,
           Argument: row.Argument,
+          Clause_No:row.Clause_No,
         };
 
         console.log(DataToSend);
