@@ -151,18 +151,16 @@ const GenerateAward = () => {
 
   if (loading) return <LoadingSpinner />;
 
-
-
   const handleVerify = async () => {
     try {
       setLoading(true);
-  
+
       let errorRows = [];
       let allSuccess = true;
-  
+
       for (const row of excelData) {
         const referenceNo = row.REFERENCE_NO;
-  
+
         const response = await fetch(`${API_BASE_URL}/api/ValidateExcel`, {
           method: "POST",
           headers: {
@@ -170,10 +168,10 @@ const GenerateAward = () => {
           },
           body: JSON.stringify({ Reference_no: referenceNo }),
         });
-  
+
         if (!response.ok) {
           allSuccess = false;
-  
+
           let errorText = "";
           try {
             const err = await response.json();
@@ -181,27 +179,29 @@ const GenerateAward = () => {
           } catch {
             errorText = "Unknown error";
           }
-  
+
           errorRows.push({
             REFERENCE_NO: referenceNo,
             ERROR_MESSAGE: errorText,
           });
-  
         } else {
           const result = await response.json();
           row.Lot_no = result[0].Lot_no;
           row.Client_id = result[0].Client_id;
           row.Product_id = result[0].Product_id;
+          setSelectedLotNo(result[0].Lot_no);
+          setSelectedClientID(result[0].Client_id);
+          setSelectedProductID(result[0].Product_id);
         }
       }
-  
+
       if (!allSuccess) {
         const ws = XLSX.utils.json_to_sheet(errorRows);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Errors");
-  
+
         XLSX.writeFile(wb, "ValidationErrors.xlsx");
-  
+
         setVerifiedData(false);
         setErrorExcel(true);
         alert("Validation completed with errors. Error Excel downloaded ✅");
@@ -209,7 +209,6 @@ const GenerateAward = () => {
         setVerifiedData(true);
         alert("All Reference Numbers Verified Successfully ✅");
       }
-  
     } catch (error) {
       console.error("Network / Server Issue:", error);
       setVerifiedData(false);
@@ -217,7 +216,6 @@ const GenerateAward = () => {
       setLoading(false);
     }
   };
-  
 
   // const handleVerify = async () => {
   //   try {
@@ -242,9 +240,9 @@ const GenerateAward = () => {
   //       } else {
   //         const result = await response.json();
   //         // console.log(result);
-  //         setSelectedLotNo(result[0].Lot_no);
-  //         setSelectedClientID(result[0].Client_id);
-  //         setSelectedProductID(result[0].Product_id);
+  // setSelectedLotNo(result[0].Lot_no);
+  // setSelectedClientID(result[0].Client_id);
+  // setSelectedProductID(result[0].Product_id);
   //         // console.log(`Success for REFERENCE_NO ${referenceNo}:`, result);
   //       }
   //     }
@@ -260,9 +258,9 @@ const GenerateAward = () => {
   //   }
   // };
 
-  // console.log(selectedLotNo);
-  // console.log(selectedClientID);
-  // console.log(selectedProductID);
+  console.log(selectedLotNo);
+  console.log(selectedClientID);
+  console.log(selectedProductID);
 
   const handleSave = async () => {
     try {
@@ -495,7 +493,6 @@ const GenerateAward = () => {
         </div>
       )}
 
-
       {errorExcel && (
         <div className="row">
           <div className="col-md-12 d-flex justify-content-center ">
@@ -506,7 +503,6 @@ const GenerateAward = () => {
           </div>
         </div>
       )}
-
 
       {clearForm && (
         <div className="row">
