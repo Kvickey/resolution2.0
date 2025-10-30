@@ -75,7 +75,7 @@ const GenerateAward = () => {
     "Argument",
     "Award_Date",
     "Award_full_date",
-   "Clause_No"
+    "Clause_No",
   ];
 
   const handleFileUpload = (e) => {
@@ -218,50 +218,9 @@ const GenerateAward = () => {
     }
   };
 
-  // const handleVerify = async () => {
-  //   try {
-  //     setLoading(true);
-
-  //     for (const row of excelData) {
-  //       const referenceNo = row.REFERENCE_NO;
-  //       // console.log(referenceNo);
-  //       // console.log(row);
-
-  //       const response = await fetch(`${API_BASE_URL}/api/ValidateExcel`, {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ Reference_no: referenceNo }),
-  //       });
-
-  //       if (!response.ok) {
-  //         const error = await response.json();
-  //         console.error(`Error for REFERENCE_NO ${referenceNo}:`, error);
-  //       } else {
-  //         const result = await response.json();
-  //         // console.log(result);
-  // setSelectedLotNo(result[0].Lot_no);
-  // setSelectedClientID(result[0].Client_id);
-  // setSelectedProductID(result[0].Product_id);
-  //         // console.log(`Success for REFERENCE_NO ${referenceNo}:`, result);
-  //       }
-  //     }
-
-  //     //  setHeaderError("");
-  //     setVerifiedData(true);
-  //   } catch (error) {
-  //     console.error("Network or server error:", error);
-  //     //  setHeaderError("Error sending data to server.");
-  //     //  setVerifiedData(false);
-  //   } finally {
-  //     setLoading(false); // ✅ Correct placement
-  //   }
-  // };
-
-  console.log(selectedLotNo);
-  console.log(selectedClientID);
-  console.log(selectedProductID);
+  // console.log(selectedLotNo);
+  // console.log(selectedClientID);
+  // console.log(selectedProductID);
 
   const handleSave = async () => {
     try {
@@ -281,7 +240,7 @@ const GenerateAward = () => {
           Exparty: row.Exparty,
           Evidence: row.Evidence,
           Argument: row.Argument,
-          Clause_No:row.Clause_No,
+          Clause_No: row.Clause_No,
         };
 
         console.log(DataToSend);
