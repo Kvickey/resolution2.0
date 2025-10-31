@@ -75,8 +75,6 @@ import Section17OrderReports from "./pages/Section17OrderReports";
 import Section17ApplicationService from "./pages/Section17ApplicationService";
 import Section17ApplicationReports from "./pages/Section17ApplicationReports";
 import Section17ApplicationData from "./pages/Section17ApplicationData";
-import SOCService from "./pages/SOCService";
-import SOCReports from "./pages/SOCReports";
 import SOCData from "./pages/SOCData";
 import AwardPassLotwise from "./pages/awardPass/GenerateAward";
 import AwardPassCasewise from "./pages/AwardPassCasewise";
@@ -113,6 +111,8 @@ import BankDashboard from "./pages/dashboards/forBankDashboard/BankDashboard";
 import BankDashboardMain from "./pages/dashboards/forBankDashboard/BankDashboardMain";
 import AwardService from "./pages/awardPass/AwardService";
 import AwardReports from "./pages/awardPass/AwardReports";
+import SOCService from "./pages/soc/SOCService";
+import SOCReports from "./pages/soc/SOCReports";
 
 
 const App = () => {

@@ -50,11 +50,11 @@ const LawyerDashboard = () => {
           link: "/lawyerdashboard/soc/reports",
           icon: <TbReportAnalytics />,
         },
-        {
-          name: "SOC Data",
-          link: "/lawyerdashboard/soc/list",
-          icon: <TbReportAnalytics />,
-        },
+        // {
+        //   name: "SOC Data",
+        //   link: "/lawyerdashboard/soc/list",
+        //   icon: <TbReportAnalytics />,
+        // },
       ],
     },
     {
@@ -76,11 +76,11 @@ const LawyerDashboard = () => {
           link: "/lawyerdashboard/section17application/reports",
           icon: <TbReportAnalytics />,
         },
-        {
-          name: "Section 17 App Data",
-          link: "/lawyerdashboard/section17application/list",
-          icon: <TbReportAnalytics />,
-        },
+        // {
+        //   name: "Section 17 App Data",
+        //   link: "/lawyerdashboard/section17application/list",
+        //   icon: <TbReportAnalytics />,
+        // },
       ],
     },
   ];

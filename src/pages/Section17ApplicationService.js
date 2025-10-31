@@ -21,7 +21,7 @@ const Section17ApplicationService = () => {
   useEffect(() => {
     const fetchNotServedLots = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=1`);
+        const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=4`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -47,11 +47,11 @@ const Section17ApplicationService = () => {
     console.log(lot);
     console.log(arb_id);
     setLoading(true);
-    const url = `${API_BASE_URL}/api/notServed?s_id=1&Lot_no=${lot}&arb_id=${arb_id}`;
+    const url = `${API_BASE_URL}/api/notServed?s_id=4&Lot_no=${lot}`;
     console.log(url);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/notServed?s_id=1&Lot_no=${lot}&arb_id=${arb_id}`
+        `${API_BASE_URL}/api/notServed?s_id=4&Lot_no=${lot}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -98,7 +98,7 @@ const Section17ApplicationService = () => {
       Service_type_id: 3,
       Service_id: item.Service_id,
       File_path: item.File_path,
-      Process_id: 1,
+      Process_id: 4,
     }));
     console.log(dataForMail);
     setLoading(true);
@@ -143,7 +143,7 @@ const Section17ApplicationService = () => {
       Service_type_id: 2,
       Service_id: item.Service_id,
       File_path: item.File_path,
-      Process_id: 1,
+      Process_id: 4,
     }));
     console.log(dataForWhatsapp);
     setLoading(true);

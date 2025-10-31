@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Pagination } from "react-bootstrap";
-import LoadingSpinner from "../components/LoadingSpinner";
-import { API_BASE_URL } from "../utils/constants";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import { API_BASE_URL } from "../../utils/constants";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 import { FaMessage } from "react-icons/fa6";
+import { useAuth } from "../../components/AuthProvider";
 
 const SOCService = () => {
   const [notServedLots, setNotServedLots] = useState([]);
@@ -18,10 +19,23 @@ const SOCService = () => {
   const [smsDone, setSMSDone] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const { user} = useAuth();
+  const [arbId, setArbId] = useState("");
+
+  useEffect(() => {
+    if (user && user.length > 0) {
+      setArbId(user[0].Ref_id);
+    }
+  }, [user]);
+
   useEffect(() => {
     const fetchNotServedLots = async () => {
+      if (!arbId) return; // Prevent API call if arbId is not set
+
       try {
-        const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=1`);
+        const response = await fetch(
+          `${API_BASE_URL}/api/notServed?s_id=3`
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -37,21 +51,20 @@ const SOCService = () => {
     };
 
     fetchNotServedLots();
-  }, []);
+  }, [arbId]); // API call will trigger once arbId is updated
 
-  console.log(notServedLots);
+  // console.log(notServedLots);
 
   if (loading) return <LoadingSpinner />;
 
-  const handleData = async (lot, arb_id) => {
-    console.log(lot);
-    console.log(arb_id);
+  const handleData = async (lot) => {
+    // console.log(lot);
     setLoading(true);
-    const url = `${API_BASE_URL}/api/notServed?s_id=1&Lot_no=${lot}&arb_id=${arb_id}`;
+    const url = `${API_BASE_URL}/api/notServed?s_id=3&Lot_no=${lot}`;
     console.log(url);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/notServed?s_id=1&Lot_no=${lot}&arb_id=${arb_id}`
+        `${API_BASE_URL}/api/notServed?s_id=3&Lot_no=${lot}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -98,7 +111,7 @@ const SOCService = () => {
       Service_type_id: 3,
       Service_id: item.Service_id,
       File_path: item.File_path,
-      Process_id: 1,
+      Process_id: 3,
     }));
     console.log(dataForMail);
     setLoading(true);
@@ -143,7 +156,7 @@ const SOCService = () => {
       Service_type_id: 2,
       Service_id: item.Service_id,
       File_path: item.File_path,
-      Process_id: 1,
+      Process_id: 3,
     }));
     console.log(dataForWhatsapp);
     setLoading(true);
@@ -180,7 +193,50 @@ const SOCService = () => {
     }
   };
 
-  const handleSMS = () => {};
+  const handleSMS = async () => {
+    console.log(data);
+    const dataForSMS = data.map((item) => ({
+      Ref_no: item.Reference_no,
+      Service_add: item.Mobile_no,
+      Service_type_id: 1,
+      Service_id: item.Service_id,
+      File_path: item.File_path,
+      Process_id: 3,
+    }));
+    // console.log(dataForSMS);
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/Services`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataForSMS),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+        );
+      }
+      const result = await response.json();
+      console.log("Upload response:", result);
+      setWaDone(true);
+      setTimeout(() => {
+        toast.success("SMS Sent Successfully", {
+          // position: toast.POSITION.BOTTOM_RIGHT,
+          theme: "colored",
+        });
+      }, 50);
+    } catch (error) {
+      console.error("Error uploading data:", error);
+      setTimeout(() => {
+        toast.error(`Error: ${error.message}`, { theme: "colored" });
+      }, 50);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // const showToast = () => {
   //   toast.success("Toast is working!", {
@@ -192,89 +248,89 @@ const SOCService = () => {
     <div>
       {!showData && (
         <>
-        <div>
-        <h3>SOC Services</h3>
-        </div>
-        <div className="row table-container mt-3">
-          <div className="col-md-12 mx-auto table-wrapper">
-            <table className="responsive-table">
-              <thead className="text-center">
-                <tr className="table-info">
-                  <th scope="col" className="text-center">
-                    Sr No
-                  </th>
-                  <th scope="col" className="text-center">
-                    Lots
-                  </th>
-                  <th scope="col" className="text-center">
-                    Arbitrator
-                  </th>
-                  <th scope="col" className="text-center">
-                    Services
-                  </th>
-                  <th scope="col" className="text-center">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {notServedLots.map((item, index) => (
-                  <tr key={item.id}>
-                    <td className="text-center">{index + 1}</td>
-                    <td className="text-center">{item.Lots}</td>
-                    <td className="text-center">{item.Arb_name}</td>
-                    <td className="text-center">
-                      <span>
-                        <span className="p-3 border rounded-start-4">
-                          {item.Wa_send_date === 0 ? (
-                            <FaWhatsapp
-                              style={{ color: "Red", fontSize: "25px" }}
-                            />
-                          ) : (
-                            <FaWhatsapp
-                              style={{ color: "Green", fontSize: "25px" }}
-                            />
-                          )}
-                        </span>
-                        <span className="p-3 border">
-                          {item.Mail_send_date === 0 ? (
-                            <IoMdMail
-                              style={{ color: "Red", fontSize: "25px" }}
-                            />
-                          ) : (
-                            <IoMdMail
-                              style={{ color: "green", fontSize: "25px" }}
-                            />
-                          )}
-                        </span>
-                        <span className="p-3 border rounded-end-4">
-                          {item.Sms_send_date === 0 ? (
-                            <FaMessage
-                              style={{ color: "Red", fontSize: "25px" }}
-                            />
-                          ) : (
-                            <FaMessage
-                              style={{ color: "Green", fontSize: "25px" }}
-                            />
-                          )}
-                        </span>
-                      </span>
-                    </td>
-                    <td className="text-center">
-                      <button
-                        onClick={() => handleData(item.Lots, item.Arb_id)}
-                        variant="success"
-                        className="custBtn"
-                      >
-                        Show Data
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div>
+            <h3>SOC Services</h3>
           </div>
-        </div>
+          <div className="row table-container mt-3">
+            <div className="col-md-12 mx-auto table-wrapper">
+              <table className="responsive-table">
+                <thead className="text-center">
+                  <tr className="table-info">
+                    <th scope="col" className="text-center">
+                      Sr No
+                    </th>
+                    <th scope="col" className="text-center">
+                      Lots
+                    </th>
+                    <th scope="col" className="text-center">
+                      Arbitrator
+                    </th>
+                    <th scope="col" className="text-center">
+                      Services
+                    </th>
+                    <th scope="col" className="text-center">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {notServedLots.map((item, index) => (
+                    <tr key={item.id}>
+                      <td className="text-center">{index + 1}</td>
+                      <td className="text-center">{item.Lots}</td>
+                      <td className="text-center">{item.Arb_name}</td>
+                      <td className="text-center">
+                        <span>
+                          <span className="p-3 border rounded-start-4">
+                            {item.Wa_send_date === 0 ? (
+                              <FaWhatsapp
+                                style={{ color: "Red", fontSize: "25px" }}
+                              />
+                            ) : (
+                              <FaWhatsapp
+                                style={{ color: "Green", fontSize: "25px" }}
+                              />
+                            )}
+                          </span>
+                          <span className="p-3 border">
+                            {item.Mail_send_date === 0 ? (
+                              <IoMdMail
+                                style={{ color: "Red", fontSize: "25px" }}
+                              />
+                            ) : (
+                              <IoMdMail
+                                style={{ color: "green", fontSize: "25px" }}
+                              />
+                            )}
+                          </span>
+                          <span className="p-3 border rounded-end-4">
+                            {item.Sms_send_date === 0 ? (
+                              <FaMessage
+                                style={{ color: "Red", fontSize: "25px" }}
+                              />
+                            ) : (
+                              <FaMessage
+                                style={{ color: "Green", fontSize: "25px" }}
+                              />
+                            )}
+                          </span>
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <button
+                          onClick={() => handleData(item.Lots, item.Arb_id)}
+                          variant="success"
+                          className="custBtn"
+                        >
+                          Show Data
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </>
       )}
 

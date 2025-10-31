@@ -21,7 +21,7 @@ const Sect17ApplicationServices = () => {
   useEffect(() => {
     const fetchNotServedLots = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=1`);
+        const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=4`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
@@ -47,11 +47,11 @@ const Sect17ApplicationServices = () => {
     console.log(lot);
     console.log(arb_id);
     setLoading(true);
-    const url = `${API_BASE_URL}/api/notServed?s_id=1&Lot_no=${lot}&arb_id=${arb_id}`;
+    const url = `${API_BASE_URL}/api/notServed?s_id=4&Lot_no=${lot}`;
     console.log(url);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/notServed?s_id=1&Lot_no=${lot}&arb_id=${arb_id}`
+        `${API_BASE_URL}/api/notServed?s_id=4&Lot_no=${lot}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -98,7 +98,7 @@ const Sect17ApplicationServices = () => {
       Service_type_id: 3,
       Service_id: item.Service_id,
       File_path: item.File_path,
-      Process_id: 1,
+      Process_id: 4,
     }));
     console.log(dataForMail);
     setLoading(true);
@@ -143,7 +143,7 @@ const Sect17ApplicationServices = () => {
       Service_type_id: 2,
       Service_id: item.Service_id,
       File_path: item.File_path,
-      Process_id: 1,
+      Process_id: 4,
     }));
     console.log(dataForWhatsapp);
     setLoading(true);
@@ -180,101 +180,138 @@ const Sect17ApplicationServices = () => {
     }
   };
 
-  const handleSMS = () => {};
-
-  // const showToast = () => {
-  //   toast.success("Toast is working!", {
-  //     theme: "colored"
-  //   });
-  // };
+  const handleSMS = async () => {
+    console.log(data);
+    const dataForSMS = data.map((item) => ({
+      Ref_no: item.Reference_no,
+      Service_add: item.Mobile_no,
+      Service_type_id: 1,
+      Service_id: item.Service_id,
+      File_path: item.File_path,
+      Process_id: 4,
+    }));
+    // console.log(dataForSMS);
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/Services`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataForSMS),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+        );
+      }
+      const result = await response.json();
+      console.log("Upload response:", result);
+      setWaDone(true);
+      setTimeout(() => {
+        toast.success("SMS Sent Successfully", {
+          // position: toast.POSITION.BOTTOM_RIGHT,
+          theme: "colored",
+        });
+      }, 50);
+    } catch (error) {
+      console.error("Error uploading data:", error);
+      setTimeout(() => {
+        toast.error(`Error: ${error.message}`, { theme: "colored" });
+      }, 50);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
       {!showData && (
         <>
-        <div>
-        <h3>Appointment Letter Services</h3>
-        </div>
-        <div className="row table-container mt-3">
-          <div className="col-md-12 mx-auto table-wrapper">
-            <table className="responsive-table">
-              <thead className="text-center">
-                <tr className="table-info">
-                  <th scope="col" className="text-center">
-                    Sr No
-                  </th>
-                  <th scope="col" className="text-center">
-                    Lots
-                  </th>
-                  <th scope="col" className="text-center">
-                    Arbitrator
-                  </th>
-                  <th scope="col" className="text-center">
-                    Services
-                  </th>
-                  <th scope="col" className="text-center">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {notServedLots.map((item, index) => (
-                  <tr key={item.id}>
-                    <td className="text-center">{index + 1}</td>
-                    <td className="text-center">{item.Lots}</td>
-                    <td className="text-center">{item.Arb_name}</td>
-                    <td className="text-center">
-                      <span>
-                        <span className="p-3 border rounded-start-4">
-                          {item.Wa_send_date === 0 ? (
-                            <FaWhatsapp
-                              style={{ color: "Red", fontSize: "25px" }}
-                            />
-                          ) : (
-                            <FaWhatsapp
-                              style={{ color: "Green", fontSize: "25px" }}
-                            />
-                          )}
-                        </span>
-                        <span className="p-3 border">
-                          {item.Mail_send_date === 0 ? (
-                            <IoMdMail
-                              style={{ color: "Red", fontSize: "25px" }}
-                            />
-                          ) : (
-                            <IoMdMail
-                              style={{ color: "green", fontSize: "25px" }}
-                            />
-                          )}
-                        </span>
-                        <span className="p-3 border rounded-end-4">
-                          {item.Sms_send_date === 0 ? (
-                            <FaMessage
-                              style={{ color: "Red", fontSize: "25px" }}
-                            />
-                          ) : (
-                            <FaMessage
-                              style={{ color: "Green", fontSize: "25px" }}
-                            />
-                          )}
-                        </span>
-                      </span>
-                    </td>
-                    <td className="text-center">
-                      <button
-                        onClick={() => handleData(item.Lots, item.Arb_id)}
-                        variant="success"
-                        className="custBtn"
-                      >
-                        Show Data
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div>
+            <h3>Appointment Letter Services</h3>
           </div>
-        </div>
+          <div className="row table-container mt-3">
+            <div className="col-md-12 mx-auto table-wrapper">
+              <table className="responsive-table">
+                <thead className="text-center">
+                  <tr className="table-info">
+                    <th scope="col" className="text-center">
+                      Sr No
+                    </th>
+                    <th scope="col" className="text-center">
+                      Lots
+                    </th>
+                    <th scope="col" className="text-center">
+                      Arbitrator
+                    </th>
+                    <th scope="col" className="text-center">
+                      Services
+                    </th>
+                    <th scope="col" className="text-center">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {notServedLots.map((item, index) => (
+                    <tr key={item.id}>
+                      <td className="text-center">{index + 1}</td>
+                      <td className="text-center">{item.Lots}</td>
+                      <td className="text-center">{item.Arb_name}</td>
+                      <td className="text-center">
+                        <span>
+                          <span className="p-3 border rounded-start-4">
+                            {item.Wa_send_date === 0 ? (
+                              <FaWhatsapp
+                                style={{ color: "Red", fontSize: "25px" }}
+                              />
+                            ) : (
+                              <FaWhatsapp
+                                style={{ color: "Green", fontSize: "25px" }}
+                              />
+                            )}
+                          </span>
+                          <span className="p-3 border">
+                            {item.Mail_send_date === 0 ? (
+                              <IoMdMail
+                                style={{ color: "Red", fontSize: "25px" }}
+                              />
+                            ) : (
+                              <IoMdMail
+                                style={{ color: "green", fontSize: "25px" }}
+                              />
+                            )}
+                          </span>
+                          <span className="p-3 border rounded-end-4">
+                            {item.Sms_send_date === 0 ? (
+                              <FaMessage
+                                style={{ color: "Red", fontSize: "25px" }}
+                              />
+                            ) : (
+                              <FaMessage
+                                style={{ color: "Green", fontSize: "25px" }}
+                              />
+                            )}
+                          </span>
+                        </span>
+                      </td>
+                      <td className="text-center">
+                        <button
+                          onClick={() => handleData(item.Lots, item.Arb_id)}
+                          variant="success"
+                          className="custBtn"
+                        >
+                          Show Data
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </>
       )}
 

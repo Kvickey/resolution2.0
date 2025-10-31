@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { API_BASE_URL } from "../utils/constants";
+import { API_BASE_URL } from "../../utils/constants";
 import { Form } from "react-bootstrap";
-import "./ReferenceDraftReports.css";
-import LoadingSpinner from "../components/LoadingSpinner";
+import "../ReferenceDraftReports.css";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const SOCReports = () => {
   const [data, setData] = useState([]);
@@ -16,7 +16,7 @@ const SOCReports = () => {
   const [showTable, setShowTable] = useState(false);
   const [clearForm, setClearForm] = useState(false);
 
-  // To fetch Clients(Bank) DaTA
+  // To fetch Clients(Bank) Data
   useEffect(() => {
     const fetchClients = async () => {
       try {
@@ -95,7 +95,7 @@ const SOCReports = () => {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=1`
+        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=3`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

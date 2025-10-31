@@ -95,7 +95,7 @@ const Sect17ApplicationReports = () => {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=1`
+        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=4`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
