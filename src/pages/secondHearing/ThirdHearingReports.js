@@ -5,8 +5,8 @@ import "../ReferenceDraftReports.css";
 
 const ThirdHearingReports = () => {
   const [data, setData] = useState([]);
-  const [selectedClient, setSelectedClient] = useState([]); 
-  const [selectedProduct, setSelectedProduct] = useState([]); 
+  const [selectedClient, setSelectedClient] = useState([]);
+  const [selectedProduct, setSelectedProduct] = useState([]);
   const [selectedProductID, setSelectedProductID] = useState(null);
   const [selectedClientID, setSelectedClientID] = useState(null);
   const [selectedLotNo, setSelectedLotNo] = useState(null);
@@ -273,17 +273,30 @@ const ThirdHearingReports = () => {
                             : response.mail_send_date === "Not Read"
                         }
                       >
-                        {response.Mail_read_datetime === null ? "Pending" : "Read"}
+                        {response.Mail_read_datetime === null
+                          ? "Pending"
+                          : "Read"}
                       </td>
+
+                      {/* sms reports */}
                       <td
                         className={
-                          response.sms_status === "Delivered"
+                          response.DeliveryStatus === "Delivered"
                             ? "statusDelivered border"
+                            : response.DeliveryStatus === "Rejected"
+                            ? "statusRejected border"
                             : "statusPending border"
                         }
                       >
-                        {response.sms_status === null ? "Pending" : "send"}
+                        {response.DeliveryStatus === null
+                          ? "Not Sent"
+                          : response.DeliveryStatus === "Rejected"
+                          ? "Rejected"
+                          : response.DeliveryStatus === "Delivered"
+                          ? "Delivered"
+                          : response.DeliveryStatus}
                       </td>
+             
                       <td
                         className={
                           response.sms_send_date === "Read "
@@ -295,6 +308,7 @@ const ThirdHearingReports = () => {
                       >
                         {response.sms_send_date === null ? "Pending" : "Read"}
                       </td>
+
                       <td className="border">{response.Mobile_no}</td>
                       <td className="border">{response.Email_id}</td>
                       <td className="border">{response.Reference_no}</td>
@@ -311,4 +325,3 @@ const ThirdHearingReports = () => {
 };
 
 export default ThirdHearingReports;
-

@@ -292,14 +292,24 @@ const Sect17OrderReports = () => {
                       >
                         {response.Mail_read_datetime === null ? "Pending" : "Read"}
                       </td>
-                      <td
+
+                          {/* sms Reports */}
+                          <td
                         className={
-                          response.sms_status === "Delivered"
+                          response.DeliveryStatus === "Delivered"
                             ? "statusDelivered border"
+                            : response.DeliveryStatus === "Rejected"
+                            ? "statusRejected border"
                             : "statusPending border"
                         }
                       >
-                        {response.sms_status === null ? "Pending" : "send"}
+                        {response.DeliveryStatus === null
+                          ? "Not Sent"
+                          : response.DeliveryStatus === "Rejected"
+                          ? "Rejected"
+                          : response.DeliveryStatus === "Delivered"
+                          ? "Delivered"
+                          : response.DeliveryStatus}
                       </td>
                       <td
                         className={
@@ -310,10 +320,9 @@ const Sect17OrderReports = () => {
                             : "statusPending border"
                         }
                       >
-                        {response.sms_send_date === null
-                          ? "Pending"
-                          :"Read"}
+                        {response.sms_send_date === null ? "Pending" : "Read"}
                       </td>
+
                       <td className="border">{response.Mobile_no}</td>
                       <td className="border">{response.Email_id}</td>
                       <td className="border">{response.Reference_no}</td>
@@ -323,34 +332,7 @@ const Sect17OrderReports = () => {
               </table>
             </div>
           </div>
-          {/* )} */}
-
-          {/* <div className="col-md-10">
-          {responses.length > 0 && (
-            <div>
-              <h3>Response Summary</h3>
-              <table className="table table-striped table-bordered table-hover mt-3 text-center">
-                <thead>
-                  <tr>
-                    <th>MOBILE_NO_1</th>
-                    <th>REFERENCE_NO</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {responses.map((response, index) => (
-                    <tr key={index}>
-                      <td>{response.MOBILE_NO_1}</td>
-                      <td>{response.REFERENCE_NO}</td>
-                      <td>{response.Status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button onClick={downloadExcel}>Download Excel</button>
-            </div>
-          )}
-        </div> */}
+         
         </div>
       )}
     </div>

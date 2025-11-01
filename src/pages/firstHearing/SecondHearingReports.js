@@ -338,6 +338,8 @@ const SecondHearingReports = () => {
                       >
                         {response.sms_send_date === null ? "Pending" : "Read"}
                       </td>
+
+                      
                       <td className="border">{response.Mobile_no}</td>
                       <td className="border">{response.Email_id}</td>
                       <td className="border">{response.Reference_no}</td>

@@ -321,15 +321,7 @@ const AwardReports = () => {
                           ? "Delivered"
                           : response.DeliveryStatus}
                       </td>
-                      {/* <td
-                        className={
-                          response.sms_status === "Delivered"
-                            ? "statusDelivered border"
-                            : "statusPending border"
-                        }
-                      >
-                        {response.sms_status === null ? "Pending" : "send"}
-                      </td> */}
+                
                       <td
                         className={
                           response.sms_send_date === "Read "
@@ -341,6 +333,7 @@ const AwardReports = () => {
                       >
                         {response.sms_send_date === null ? "Pending" : "Read"}
                       </td>
+
                       <td className="border">{response.Mobile_no}</td>
                       <td className="border">{response.Email_id}</td>
                       <td className="border">{response.Reference_no}</td>
