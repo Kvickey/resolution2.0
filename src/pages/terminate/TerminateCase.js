@@ -359,7 +359,6 @@ const TerminateCase = () => {
                   </div>
                   <div className="col-md-5 ps-4">
                     {customer[0].Acc_date ? (
-                      // <OverlayTrigger placement="top" overlay={renderTooltip}>
                       <>
                         {formatDate(customer[0].Acc_date)}
                         <a
