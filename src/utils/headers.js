@@ -18,14 +18,14 @@ export const headers = [
     name: "REFERENCE_NO",
     validations: [
       { type: "notEmpty", message: "REFERENCE_NO cannot be empty" },
-      { type: "combOnly", message: "REFERENCE_NO cannot be empty" },
+      // { type: "combOnly", message: "REFERENCE_NO cannot be empty" },
     ],
   },
   {
     name: "CUST_ID",
     validations: [
       { type: "notEmpty", message: "CUST_ID cannot be empty" },
-      { type: "number", message: "CUST_ID must be an integer" },
+      // { type: "number", message: "CUST_ID must be an integer" },
     ],
   },
   {
@@ -38,14 +38,14 @@ export const headers = [
     name: "CUST_NAME",
     validations: [
       { type: "notEmpty", message: "CUST_NAME cannot be empty" },
-      { type: "textOnly", message: "CUST_NAME must be an text only" },
+      // { type: "textOnly", message: "CUST_NAME must be an text only" },
     ],
   },
   {
     name: "Mobile_no",
     validations: [
-      { type: "notEmpty", message: "Mobile_no1 cannot be empty" },
-      { type: "number", message: "Mobile_no1 must be an integer" },
+      // { type: "notEmpty", message: "Mobile_no1 cannot be empty" },
+      // { type: "number", message: "Mobile_no1 must be an integer" },
     ],
   },
   {
@@ -119,24 +119,24 @@ export const headers = [
     name: "INTEREST_RATE",
     validations: [
       { type: "notEmpty", message: "INTEREST_RATE cannot be empty" },
-      { type: "number", message: "INTEREST_RATE must be an integer" },
+      // { type: "number", message: "INTEREST_RATE must be an integer" },
     ],
   },
   {
     name: "DISBURSEMENT_AMOUNT",
     validations: [
       { type: "notEmpty", message: "DISBURSEMENT_AMOUNT cannot be empty" },
-      { type: "number", message: "DISBURSEMENT_AMOUNT must be an integer" },
+      // { type: "number", message: "DISBURSEMENT_AMOUNT must be an integer" },
     ],
   },
   {
     name: "DISB_AMOUNT_IN_WORDS",
     validations: [
       { type: "notEmpty", message: "DISB_AMOUNT_IN_WORDS cannot be empty" },
-      {
-        type: "textOnly",
-        message: "DISB_AMOUNT_IN_WORDS must be an text only",
-      },
+      // {
+      //   type: "textOnly",
+      //   message: "DISB_AMOUNT_IN_WORDS must be an text only",
+      // },
     ],
   },
   {
@@ -153,14 +153,14 @@ export const headers = [
     name: "TENURE",
     validations: [
       { type: "notEmpty", message: "TENURE cannot be empty" },
-      { type: "number", message: "TENURE must be an integer" },
+      // { type: "number", message: "TENURE must be an integer" },
     ],
   },
   {
     name: "EMI_AMT",
     validations: [
       { type: "notEmpty", message: "EMI_AMT cannot be empty" },
-      { type: "number", message: "EMI_AMT must be an integer" },
+      // { type: "number", message: "EMI_AMT must be an integer" },
     ],
   },
   {
@@ -177,17 +177,17 @@ export const headers = [
     name: "FORCLOSER_AMT_ROUNDUP",
     validations: [
       { type: "notEmpty", message: "FORCLOSER_AMT_ROUNDUP cannot be empty" },
-      { type: "number", message: "FORCLOSER_AMT_ROUNDUP must be an integer" },
+      // { type: "number", message: "FORCLOSER_AMT_ROUNDUP must be an integer" },
     ],
   },
   {
     name: "FORCLOSER_AMT_IN_WORDS",
     validations: [
       { type: "notEmpty", message: "FORCLOSER_AMT_IN_WORDS cannot be empty" },
-      {
-        type: "textOnly",
-        message: "FORCLOSER_AMT_IN_WORDS must be an text only",
-      },
+      // {
+      //   type: "textOnly",
+      //   message: "FORCLOSER_AMT_IN_WORDS must be an text only",
+      // },
     ],
   },
   {
@@ -240,14 +240,14 @@ export const headers = [
     name: "TOSBALANCE",
     validations: [
       { type: "notEmpty", message: "TOSBALANCE cannot be empty" },
-      { type: "number", message: "TOSBALANCE must be an integer" },
+      // { type: "number", message: "TOSBALANCE must be an integer" },
     ],
   },
   {
     name: "TOSBALANCE_RS",
     validations: [
       { type: "notEmpty", message: "TOSBALANCE_RS cannot be empty" },
-      { type: "textOnly", message: "TOSBALANCE_RS must be an text only" },
+      // { type: "textOnly", message: "TOSBALANCE_RS must be an text only" },
     ],
   },
   {
@@ -257,7 +257,7 @@ export const headers = [
     name: "BRANCH_RAC_NAME",
     validations: [
       { type: "notEmpty", message: "BRANCH_RAC_NAME cannot be empty" },
-      { type: "textOnly", message: "BRANCH_RAC_NAME must be an text only" },
+      // { type: "textOnly", message: "BRANCH_RAC_NAME must be an text only" },
     ],
   },
   {
@@ -267,7 +267,7 @@ export const headers = [
     name: "STATE",
     validations: [
       { type: "notEmpty", message: "STATE cannot be empty" },
-      { type: "textOnly", message: "STATE must be an text only" },
+      // { type: "textOnly", message: "STATE must be an text only" },
     ],
   },
 ]

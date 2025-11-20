@@ -113,7 +113,7 @@ const GenerateAppointmentLtr = () => {
     }
   }, [draftNotCreatedData]); // Watch for changes in draftNotCreatedData
 
-  //   console.log(getData);
+    // console.log(getData);
 
   //   for the getting data of selected lot to create refernce Draft starts
 
@@ -289,22 +289,6 @@ const GenerateAppointmentLtr = () => {
       </div>
 
       {!showTable && (
-        // <div className="row">
-        //   <div className="col-md-12 mt-4">
-        //     <ReusableTableFixed
-        //       columns={columnsWithArbName}
-        //       data={refNotCreatedLots.slice(startIndex, startIndex + 10)}
-        //       currentPage={currentPage}
-        //       totalPages={totalPages}
-        //       displayedPages={displayedPages}
-        //       handlePrevious={handlePrevious}
-        //       handleNext={handleNext}
-        //       setCurrentPage={setCurrentPage}
-        //       handleRowAction={handleRowAction}
-        //       startIndex={startIndex}
-        //     />
-        //   </div>
-        // </div>
         <div className="row table-container mt-1">
           <div className="col-md-12 mx-auto table-wrapper">
             {/* Search Input */}

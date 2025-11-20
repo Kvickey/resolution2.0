@@ -277,7 +277,7 @@ const AppointmentLtrReports = () => {
                         //     : "statusPending border"
                         // }
                       >
-                        {response.mail_status === null ? "Pending" : "Send"}
+                        {response.mail_status === null ? "Pending" : "Sent"}
                       </td>
                       <td
                         className={

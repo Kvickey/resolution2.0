@@ -331,7 +331,7 @@ const AssignArbitrator = () => {
           })()
         : null;
       return {
-        SrNo: index + 1,
+        // SrNo: index + 1,
         assignedArbitrator,
         Reference_no,
         Cust_name,
