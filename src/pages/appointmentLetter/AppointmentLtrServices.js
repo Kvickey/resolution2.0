@@ -17,29 +17,57 @@ const AppointmentLtrServices = () => {
   const [mailDone, setMailDone] = useState(false);
   const [smsDone, setSMSDone] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; 
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const fetchNotServedLots = async () => {
       try {
+        setLoading1(true); // 🟡 Start loading
+
         const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=1`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+
         const result = await response.json();
         const parsedNotServedLots = Array.isArray(result)
           ? result
           : JSON.parse(result);
+
         console.log(parsedNotServedLots);
         setNotServedLots(parsedNotServedLots);
       } catch (error) {
         console.error("Error fetching not served lots:", error);
+      } finally {
+        setLoading1(false); // 🟢 Stop loading
       }
     };
 
     fetchNotServedLots();
   }, []);
+
+  // useEffect(() => {
+  //   const fetchNotServedLots = async () => {
+  //     try {
+  //       const response = await fetch(`${API_BASE_URL}/api/notServed?s_id=1`);
+  //       if (!response.ok) {
+  //         throw new Error("Network response was not ok");
+  //       }
+  //       const result = await response.json();
+  //       const parsedNotServedLots = Array.isArray(result)
+  //         ? result
+  //         : JSON.parse(result);
+  //       console.log(parsedNotServedLots);
+  //       setNotServedLots(parsedNotServedLots);
+  //     } catch (error) {
+  //       console.error("Error fetching not served lots:", error);
+  //     }
+  //   };
+
+  //   fetchNotServedLots();
+  // }, []);
 
   console.log(notServedLots);
 
@@ -97,7 +125,6 @@ const AppointmentLtrServices = () => {
   // console.log(data[0].Wa_send_date);
 
   console.log(data);
-
 
   const headers = data.length > 0 ? Object.keys(data[0]) : [];
   console.log(headers);
@@ -244,6 +271,7 @@ const AppointmentLtrServices = () => {
           <div>
             <h3>Appointment Letter Services</h3>
           </div>
+
           <div className="row table-container mt-3">
             <div className="col-md-12 mx-auto table-wrapper">
               <table className="responsive-table">
@@ -267,60 +295,127 @@ const AppointmentLtrServices = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((item, index) => (
-                    <tr key={item.id}>
-                      <td className="text-center">{indexOfFirstItem + index + 1}</td>
-                      <td className="text-center">{item.Lots}</td>
-                      <td className="text-center">{item.Arb_name}</td>
-                      <td className="text-center">
-                        <span>
-                          <span className="p-3 border rounded-start-4">
-                            {item.Wa_send_date === 0 ? (
-                              <FaWhatsapp
-                                style={{ color: "Red", fontSize: "25px" }}
-                              />
-                            ) : (
-                              <FaWhatsapp
-                                style={{ color: "Green", fontSize: "25px" }}
-                              />
-                            )}
-                          </span>
-                          <span className="p-3 border">
-                            {item.Mail_send_date === 0 ? (
-                              <IoMdMail
-                                style={{ color: "Red", fontSize: "25px" }}
-                              />
-                            ) : (
-                              <IoMdMail
-                                style={{ color: "green", fontSize: "25px" }}
-                              />
-                            )}
-                          </span>
-                          <span className="p-3 border rounded-end-4">
-                            {item.Sms_send_date === 0 ? (
-                              <FaMessage
-                                style={{ color: "Red", fontSize: "25px" }}
-                              />
-                            ) : (
-                              <FaMessage
-                                style={{ color: "Green", fontSize: "25px" }}
-                              />
-                            )}
-                          </span>
-                        </span>
-                      </td>
-                      <td className="text-center">
-                        <button
-                          onClick={() => handleData(item.Lots, item.Arb_id)}
-                          variant="success"
-                          className="custBtn"
-                        >
-                          Show Data
-                        </button>
+                  {loading1 ? (
+                    <tr>
+                      <td colSpan="5" className="text-center py-4">
+                        <p>Loading...</p>
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    currentItems.map((item, index) => (
+                      <tr key={item.id}>
+                        <td className="text-center">
+                          {indexOfFirstItem + index + 1}
+                        </td>
+                        <td className="text-center">{item.Lots}</td>
+                        <td className="text-center">{item.Arb_name}</td>
+                        <td className="text-center">
+                          <span>
+                            <span className="p-3 border rounded-start-4">
+                              {item.Wa_send_date === 0 ? (
+                                <FaWhatsapp
+                                  style={{ color: "Red", fontSize: "25px" }}
+                                />
+                              ) : (
+                                <FaWhatsapp
+                                  style={{ color: "Green", fontSize: "25px" }}
+                                />
+                              )}
+                            </span>
+                            <span className="p-3 border">
+                              {item.Mail_send_date === 0 ? (
+                                <IoMdMail
+                                  style={{ color: "Red", fontSize: "25px" }}
+                                />
+                              ) : (
+                                <IoMdMail
+                                  style={{ color: "green", fontSize: "25px" }}
+                                />
+                              )}
+                            </span>
+                            <span className="p-3 border rounded-end-4">
+                              {item.Sms_send_date === 0 ? (
+                                <FaMessage
+                                  style={{ color: "Red", fontSize: "25px" }}
+                                />
+                              ) : (
+                                <FaMessage
+                                  style={{ color: "Green", fontSize: "25px" }}
+                                />
+                              )}
+                            </span>
+                          </span>
+                        </td>
+                        <td className="text-center">
+                          <button
+                            onClick={() => handleData(item.Lots, item.Arb_id)}
+                            variant="success"
+                            className="custBtn"
+                          >
+                            Show Data
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
+                {/* <tbody>
+                    {currentItems.map((item, index) => (
+                      <tr key={item.id}>
+                        <td className="text-center">
+                          {indexOfFirstItem + index + 1}
+                        </td>
+                        <td className="text-center">{item.Lots}</td>
+                        <td className="text-center">{item.Arb_name}</td>
+                        <td className="text-center">
+                          <span>
+                            <span className="p-3 border rounded-start-4">
+                              {item.Wa_send_date === 0 ? (
+                                <FaWhatsapp
+                                  style={{ color: "Red", fontSize: "25px" }}
+                                />
+                              ) : (
+                                <FaWhatsapp
+                                  style={{ color: "Green", fontSize: "25px" }}
+                                />
+                              )}
+                            </span>
+                            <span className="p-3 border">
+                              {item.Mail_send_date === 0 ? (
+                                <IoMdMail
+                                  style={{ color: "Red", fontSize: "25px" }}
+                                />
+                              ) : (
+                                <IoMdMail
+                                  style={{ color: "green", fontSize: "25px" }}
+                                />
+                              )}
+                            </span>
+                            <span className="p-3 border rounded-end-4">
+                              {item.Sms_send_date === 0 ? (
+                                <FaMessage
+                                  style={{ color: "Red", fontSize: "25px" }}
+                                />
+                              ) : (
+                                <FaMessage
+                                  style={{ color: "Green", fontSize: "25px" }}
+                                />
+                              )}
+                            </span>
+                          </span>
+                        </td>
+                        <td className="text-center">
+                          <button
+                            onClick={() => handleData(item.Lots, item.Arb_id)}
+                            variant="success"
+                            className="custBtn"
+                          >
+                            Show Data
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody> */}
               </table>
             </div>
           </div>
@@ -417,7 +512,7 @@ const AppointmentLtrServices = () => {
           />
         </Pagination>
       </div>
-  {/* Pagination Controls Ends Here */}
+      {/* Pagination Controls Ends Here */}
 
       <ToastContainer />
     </div>
