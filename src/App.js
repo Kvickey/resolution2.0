@@ -113,6 +113,8 @@ import AwardService from "./pages/awardPass/AwardService";
 import AwardReports from "./pages/awardPass/AwardReports";
 import SOCService from "./pages/soc/SOCService";
 import SOCReports from "./pages/soc/SOCReports";
+import CreateZoomMeets from "./pages/zoomMeets/CreateZoomMeets";
+import ZoomMeetList from "./pages/zoomMeets/ZoomMeetList";
 
 
 const App = () => {
@@ -208,7 +210,9 @@ const App = () => {
         {/* <Route path="/arbdashboard" element={<ArbDashboard />}> */}
           <Route index element={<ArbDashboardMain />} />
           <Route path="dashboard" element={<ArbDashboardMain />} />
-          <Route path="zoommeetings" element={<ZoomMeetings />} />
+          <Route path="zoommeetings" element={<CreateZoomMeets />} />
+          <Route path="zoommeetlist" element={<ZoomMeetList />} />
+          {/* <Route path="zoommeetings" element={<ZoomMeetings />} /> */}
           <Route path="acceptletter" element={<AcceptanceLetter />} />
           <Route path="acceptletter">
             <Route path="generate_al" element={<GenerateAccLtr />} />

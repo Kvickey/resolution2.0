@@ -31,10 +31,26 @@ const ArbitratorDashboard = () => {
       icon: <FaHome />,
       link: "/arbdashboard",
     },
+    // {
+    //   name: "Zoom Meetings",
+    //   icon: <FaHome />,
+    //   link: "/arbdashboard/zoommeetings",
+    // },
     {
       name: "Zoom Meetings",
-      icon: <FaHome />,
-      link: "/arbdashboard/zoommeetings",
+      icon: <FaHandshake />,
+      submenu: [
+        {
+          name: "Schedule Meet",
+          link: "/arbdashboard/zoommeetings",
+          icon: <RiAiGenerate />,
+        },
+        {
+          name: "Meeting List",
+          link: "/arbdashboard/zoommeetlist",
+          icon: <RiCustomerService2Line />,
+        },
+      ],
     },
     {
       name: "Acceptance Letter",
