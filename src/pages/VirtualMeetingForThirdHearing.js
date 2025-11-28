@@ -700,7 +700,7 @@ const VirtualMeetingForThirdHearing = () => {
         <div className="row">
           <div className="col-md-12 d-flex justify-content-center ">
             <ClearForm
-              message="Third Hearing Date In Bulk Assigned Successfully!"
+              message="Third Hearing Data In Bulk Saved Successfully!"
               redirectPath="/arbdashboard"
             />
           </div>
