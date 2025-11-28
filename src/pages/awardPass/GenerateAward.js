@@ -148,7 +148,7 @@ const GenerateAward = () => {
     reader.readAsArrayBuffer(file);
   };
 
-  // console.log(excelData);
+  // console.log(excelData[0].REFERENCE_NO);
 
   if (loading) return <LoadingSpinner />;
 

@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { format } from "date-fns";
 import { generateTimeOptions } from "../utils/timeUtils";
 import { useAuth } from "../components/AuthProvider";
+import ClearForm from "../components/Clearform";
 
 const VirtualMeetingForThirdHearing = () => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -42,7 +43,7 @@ const VirtualMeetingForThirdHearing = () => {
   const [filteredData, setFilteredData] = useState([]); // For holding filtered data
   const [searchQuery, setSearchQuery] = useState(""); // Search query state
   const [showSecondModal, setShowSecondModal] = useState(false);
-    const [arbId, setArbId] = useState(null);
+  const [arbId, setArbId] = useState(null);
 
   const videoInputRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -56,11 +57,11 @@ const VirtualMeetingForThirdHearing = () => {
   const [records, setRecords] = useState([]);
   const [distRecords, setDistRecords] = useState([]);
   // for time setting ends
+  const [clearForm, setClearForm] = useState(false);
 
   const { user, logout } = useAuth();
 
-  const defaultDummyLink =
-    "";
+  const defaultDummyLink = "";
   const [zoomMeetingLink, setZoomMeetingLink] = useState(defaultDummyLink);
   const defaultZoomID = ""; // Define your default Zoom meeting ID
   const [zoomMeetingId, setZoomMeetingId] = useState(defaultZoomID); // Initialize state with the default value
@@ -199,7 +200,7 @@ const VirtualMeetingForThirdHearing = () => {
           Meeting_No,
           Upload_date,
           Comment,
-          File_path,	
+          File_path,
           Second_Hearing_Time_from,
           Reference_No,
           Case_id,
@@ -391,86 +392,60 @@ const VirtualMeetingForThirdHearing = () => {
     }
   };
 
-  // the logic of assigning time slot start here
-  const timeOptions = generateTimeOptions();
-  // the logic of assigning time slot ends here
+  const handleSave = async () => {
+    const dataForAssign = data.map((item) => ({
+      Case_id:  item.Case_id,
+      Comment: null,
+      Second_Hearing_date: null,
+      Hearing_time_From: null,
+      Hearing_time_To: null,
+      Video_link: null,
+      Link_id: null,
+      Password: null,
+      Meeting_No: 3,
+    }));
 
-  // to handle Start Time starts here
-  const handleStartTimeChange = (e) => {
-    setStartTime(e.target.value);
-    setErrorMessage("");
-    setTimeDifference(null);
-    setDistRecords([]);
-  };
-  // to handle Start Time Ends here
+    console.log(dataForAssign);
 
-  console.log(startTime);
+    try {
+      setLoading(true);
 
-  // to handle End Time Starts here
-  const handleEndTimeChange = (e) => {
-    const selectedEndTime = e.target.value;
-    setEndTime(selectedEndTime);
-    setErrorMessage("");
-
-    if (startTime) {
-      calculateTimeDifference(startTime, selectedEndTime);
+      const response = await fetch(`${API_BASE_URL}/api/AssignThird_date`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataForAssign),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+        );
+      }
+      const result = await response.json();
+      console.log("Upload response:", result);
+      setClearForm(true);
+    } catch (error) {
+      console.error("Error uploading data:", error);
+      setTimeout(() => {
+        toast.error(`Error: ${error.message}`, { theme: "colored" });
+      }, 50);
+    } finally {
+      setLoading(false);
     }
   };
-  // to handle End Time Ends here
-
-  console.log(endTime);
-
-  // to handle ParsedTimestring Time Starts here
-  const parseTimeStringToDate = (timeString) => {
-    const [time, modifier] = timeString.split(" ");
-    let [hours, minutes] = time.split(":").map(Number);
-    if (modifier === "PM" && hours !== 12) {
-      hours += 12;
-    } else if (modifier === "AM" && hours === 12) {
-      hours = 0;
-    }
-    return new Date(1970, 0, 1, hours, minutes);
-  };
-  // to handle ParsedTimestring Time Starts here
-
-  //  Calcualte the time difference between the start time & end time starts here
-  const calculateTimeDifference = (start, end) => {
-    const startDate = parseTimeStringToDate(start);
-    const endDate = parseTimeStringToDate(end);
-
-    if (endDate <= startDate) {
-      setErrorMessage("The end time must be greater than the start time.");
-      setTimeDifference(null);
-      setDistRecords([]);
-    } else {
-      const differenceInMilliseconds = endDate - startDate;
-      const differenceInMinutes = differenceInMilliseconds / (1000 * 60);
-      const differenceInHours = differenceInMinutes / 60;
-      console.log(differenceInHours);
-      setTimeDifference(differenceInHours);
-    }
-  };
-  //  Calcualte the time difference between the start time & end  time starts here
-
-
-
-
-
 
   // console.log(zoomMeetingPassword);
 
   // for Pagination for second table
   const headers1 = distRecords.length > 0 ? Object.keys(distRecords[0]) : [];
-// for Pagination for second table
-
-
+  // for Pagination for second table
 
   return (
     <div className="container mt-4">
-      {!addDetails && <h2>Virtual Meeting For Third Hearing</h2>}
+      {!addDetails && !clearForm && <h2>Virtual Meeting For Third Hearing</h2>}
 
       <div className="form-group">
-        {!addDetails && (
+        {!addDetails && !clearForm && (
           <div className="row align-items-center my-5">
             <div className="col-md-2">
               <label htmlFor="datePicker" className="form-label">
@@ -495,13 +470,17 @@ const VirtualMeetingForThirdHearing = () => {
               </button>
             </div>
             <div className="col-md-3">
-
+              {filteredData.length > 0 && (
+                <button className="custBtn" onClick={handleSave}>
+                  Save Third Hearing
+                </button>
+              )}
             </div>
           </div>
         )}
 
         {/* {filteredData.length > 0 && ( */}
-        <div className="row">
+        {/* <div className="row">
           <div className="col-md-2">Search By Name</div>
           <div className="col-md-3">
             <input
@@ -510,10 +489,10 @@ const VirtualMeetingForThirdHearing = () => {
               onChange={handleOnChange}
             />
           </div>
-        </div>
+        </div> */}
         {/* )} */}
 
-        {!addDetails && (
+        {!addDetails && !clearForm && (
           <div className="row">
             <div className="col-md-12">
               <div className="table-responsive">
@@ -715,9 +694,18 @@ const VirtualMeetingForThirdHearing = () => {
           </Modal.Footer>
         </Modal>
         {/* First Modal Ends Here  */}
-
-
       </div>
+
+      {clearForm && (
+        <div className="row">
+          <div className="col-md-12 d-flex justify-content-center ">
+            <ClearForm
+              message="Third Hearing Date In Bulk Assigned Successfully!"
+              redirectPath="/arbdashboard"
+            />
+          </div>
+        </div>
+      )}
       <ToastContainer />
     </div>
   );
