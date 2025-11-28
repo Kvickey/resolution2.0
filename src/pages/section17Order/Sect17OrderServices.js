@@ -62,7 +62,7 @@ const Sect17OrderServices = () => {
     console.log(url);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/notServed?s_id=1&Lot_no=${lot}&arb_id=${arb_id}`
+        `${API_BASE_URL}/api/notServed?s_id=5&Lot_no=${lot}&arb_id=${arb_id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
