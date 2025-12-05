@@ -366,17 +366,7 @@ const CaseTrackingLotWise = () => {
     };
   });
 
-  // const dataToBeDisplayed = {
-  //   CUST_NAME: CUST_NAME,
-  //   REFERENCE_NO: REFERENCE_NO,
-  //   Reference_Letter: "",
-  //   Acceptance_Letter: "",
-  //   SOC: "",
-  //   Section17_Application: "",
-  //   Section17_Order: "",
-  //   Second_Hearing: "",
-  //   Second_Hearing: "",
-  // };
+  
 
   console.log(updatedData);
   const headers = updatedData.length > 0 ? Object.keys(updatedData[0]) : [];

@@ -311,16 +311,19 @@ const AppointmentLtrReports = () => {
                           ? "Delivered"
                           : response.DeliveryStatus}
                       </td>
-                      {/* <td
+               
+                      <td
                         className={
-                          response.sms_status === "Delivered"
+                          response.Sms_read_datetime === "Read "
                             ? "statusDelivered border"
+                            : response.Sms_read_datetime === "Not Read"
+                            ? "statusNotRead border"
                             : "statusPending border"
                         }
                       >
-                        {response.sms_status === null ? "Pending" : "send"}
-                      </td> */}
-                      <td
+                        {response.Sms_read_datetime === null ? "Pending" : "Read"}
+                      </td>
+                      {/* <td
                         className={
                           response.sms_send_date === "Read "
                             ? "statusDelivered border"
@@ -330,7 +333,7 @@ const AppointmentLtrReports = () => {
                         }
                       >
                         {response.sms_send_date === null ? "Pending" : "Read"}
-                      </td>
+                      </td> */}
                       <td className="border">{response.Mobile_no}</td>
                       <td className="border">{response.Email_id}</td>
                       <td className="border">{response.Reference_no}</td>

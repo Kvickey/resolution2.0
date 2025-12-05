@@ -260,11 +260,7 @@ const AccLtrReports = () => {
                           response.Wa_read_datetime === null
                             ? "statusNotRead border"
                             : "statusDelivered border"
-                          // response.Wa_read_datetime === "Read "
-                          //   ? "statusDelivered border"
-                          //   : response.Wa_read_datetime === "Not Read"
-                          //   ? "statusNotRead border"
-                          //   : "statusPending border"
+                         
                         }
                       >
                         {response.Wa_read_datetime === null
@@ -279,11 +275,6 @@ const AccLtrReports = () => {
                             ? "statusPending border"
                             : "statusDelivered border"
                         }
-                        // className={
-                        //   response.mail_status === "Read"
-                        //     ? "statusDelivered border"
-                        //     : "statusPending border"
-                        // }
                       >
                         {response.mail_status === null ? "Pending" : "Send"}
                       </td>
@@ -321,14 +312,14 @@ const AccLtrReports = () => {
                       </td>
                       <td
                         className={
-                          response.sms_send_date === "Read "
+                          response.Sms_read_datetime === "Read "
                             ? "statusDelivered border"
-                            : response.sms_send_date === "Not Read"
+                            : response.Sms_read_datetime === "Not Read"
                             ? "statusNotRead border"
                             : "statusPending border"
                         }
                       >
-                        {response.sms_send_date === null ? "Pending" : "Read"}
+                        {response.Sms_read_datetime === null ? "Pending" : "Read"}
                       </td>
 
                       

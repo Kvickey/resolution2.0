@@ -324,14 +324,14 @@ const AwardReports = () => {
                 
                       <td
                         className={
-                          response.sms_send_date === "Read "
+                          response.Sms_read_datetime === "Read "
                             ? "statusDelivered border"
-                            : response.sms_send_date === "Not Read"
+                            : response.Sms_read_datetime === "Not Read"
                             ? "statusNotRead border"
                             : "statusPending border"
                         }
                       >
-                        {response.sms_send_date === null ? "Pending" : "Read"}
+                        {response.Sms_read_datetime === null ? "Pending" : "Read"}
                       </td>
 
                       <td className="border">{response.Mobile_no}</td>
