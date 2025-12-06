@@ -26,7 +26,7 @@ const CaseTrackingLotWise = () => {
   const [showPDF, setShowPDF] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
-  const [totalPages, setTotalPages] = useState(0);
+  // const [totalPages, setTotalPages] = useState(0);
 
   // To fetch Clients DaTA
   useEffect(() => {
@@ -396,6 +396,7 @@ const CaseTrackingLotWise = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = updatedData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(data.length / itemsPerPage);
   // const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPagesToShow = 5; // Maximum number of page buttons to show
