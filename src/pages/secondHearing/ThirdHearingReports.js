@@ -299,14 +299,14 @@ const ThirdHearingReports = () => {
              
                       <td
                         className={
-                          response.Sms_read_datetime === "Read "
+                          response.Sms_read_datetime !== null
                             ? "statusDelivered border"
-                            : response.Sms_read_datetime === "Not Read"
-                            ? "statusNotRead border"
                             : "statusPending border"
                         }
                       >
-                        {response.Sms_read_datetime === null ? "Pending" : "Read"}
+                        {response.Sms_read_datetime !== null
+                          ? "Read"
+                          : "Pending"}
                       </td>
 
                       <td className="border">{response.Mobile_no}</td>

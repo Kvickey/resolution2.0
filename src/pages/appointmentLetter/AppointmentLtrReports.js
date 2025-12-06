@@ -265,17 +265,13 @@ const AppointmentLtrReports = () => {
                           ? "Pending"
                           : "Read"}
                       </td>
+
                       <td
                         className={
                           response.mail_status === null
                             ? "statusPending border"
                             : "statusDelivered border"
                         }
-                        // className={
-                        //   response.mail_status === "Read"
-                        //     ? "statusDelivered border"
-                        //     : "statusPending border"
-                        // }
                       >
                         {response.mail_status === null ? "Pending" : "Sent"}
                       </td>
@@ -311,29 +307,19 @@ const AppointmentLtrReports = () => {
                           ? "Delivered"
                           : response.DeliveryStatus}
                       </td>
-               
+
                       <td
                         className={
-                          response.Sms_read_datetime === "Read "
+                          response.Sms_read_datetime !== null
                             ? "statusDelivered border"
-                            : response.Sms_read_datetime === "Not Read"
-                            ? "statusNotRead border"
                             : "statusPending border"
                         }
                       >
-                        {response.Sms_read_datetime === null ? "Pending" : "Read"}
+                        {response.Sms_read_datetime !== null
+                          ? "Read"
+                          : "Pending"}
                       </td>
-                      {/* <td
-                        className={
-                          response.sms_send_date === "Read "
-                            ? "statusDelivered border"
-                            : response.sms_send_date === "Not Read"
-                            ? "statusNotRead border"
-                            : "statusPending border"
-                        }
-                      >
-                        {response.sms_send_date === null ? "Pending" : "Read"}
-                      </td> */}
+
                       <td className="border">{response.Mobile_no}</td>
                       <td className="border">{response.Email_id}</td>
                       <td className="border">{response.Reference_no}</td>

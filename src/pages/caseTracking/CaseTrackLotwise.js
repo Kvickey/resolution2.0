@@ -193,21 +193,40 @@ const CaseTrackingLotWise = () => {
     CUST_NAME: item.Cust_name,
     REFERENCE_NO: item.Reference_no,
 
-    Appointment_Letter: item.Ref_date ? (
-      <a
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          handleOpenPDF(
-            `${API_BASE_URL}/Content/Cases/Ref/${item.Reference_no}.pdf`
-          );
-        }}
-      >
-        {formatDate(item.Ref_date)}
-      </a>
-    ) : (
-      "N/A"
-    ),
+    Appointment_Letter:
+      item.Ref_date &&
+      item.Ref_date !== "01/01/0001" &&
+      item.Ref_date !== "0001-01-01T00:00:00" ? (
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            handleOpenPDF(
+              `${API_BASE_URL}/Content/Cases/Ref/${item.Reference_no}.pdf`
+            );
+          }}
+        >
+          {formatDate(item.Ref_date)}
+        </a>
+      ) : (
+        "N/A"
+      ),
+
+    // Appointment_Letter: item.Ref_date ? (
+    //   <a
+    //     href="#"
+    //     onClick={(e) => {
+    //       e.preventDefault();
+    //       handleOpenPDF(
+    //         `${API_BASE_URL}/Content/Cases/Ref/${item.Reference_no}.pdf`
+    //       );
+    //     }}
+    //   >
+    //     {formatDate(item.Ref_date)}
+    //   </a>
+    // ) : (
+    //   "N/A"
+    // ),
 
     Acceptance_Letter: item.Acc_date ? (
       <a
@@ -365,8 +384,6 @@ const CaseTrackingLotWise = () => {
       ...rest,
     };
   });
-
-  
 
   console.log(updatedData);
   const headers = updatedData.length > 0 ? Object.keys(updatedData[0]) : [];
