@@ -221,7 +221,7 @@ const SOCService = () => {
       }
       const result = await response.json();
       console.log("Upload response:", result);
-      setWaDone(true);
+      setSMSDone(true);
       setTimeout(() => {
         toast.success("SMS Sent Successfully", {
           // position: toast.POSITION.BOTTOM_RIGHT,
@@ -237,12 +237,6 @@ const SOCService = () => {
       setLoading(false);
     }
   };
-
-  // const showToast = () => {
-  //   toast.success("Toast is working!", {
-  //     theme: "colored"
-  //   });
-  // };
 
   return (
     <div>

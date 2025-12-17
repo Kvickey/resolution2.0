@@ -208,7 +208,7 @@ const Sect17ApplicationServices = () => {
       }
       const result = await response.json();
       console.log("Upload response:", result);
-      setWaDone(true);
+      setSMSDone(true);
       setTimeout(() => {
         toast.success("SMS Sent Successfully", {
           // position: toast.POSITION.BOTTOM_RIGHT,

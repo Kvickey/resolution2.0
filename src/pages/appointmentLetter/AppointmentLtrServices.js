@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 import { FaMessage } from "react-icons/fa6";
+import { ProgressBar } from "react-bootstrap";
 
 const AppointmentLtrServices = () => {
   const [notServedLots, setNotServedLots] = useState([]);
@@ -20,6 +21,8 @@ const AppointmentLtrServices = () => {
   const [loading1, setLoading1] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [progressText, setProgressText] = useState("");
+  const [progress, setProgress] = useState(0); // 0 to 100
 
   useEffect(() => {
     const fetchNotServedLots = async () => {
@@ -81,7 +84,9 @@ const AppointmentLtrServices = () => {
 
   // Pagination logic ends Here
 
-  if (loading) return <LoadingSpinner />;
+  // if (loading) return <LoadingSpinner />;
+
+  // console.log(progressText);
 
   const handleData = async (lot, arb_id) => {
     console.log(lot);
@@ -129,138 +134,397 @@ const AppointmentLtrServices = () => {
   const headers = data.length > 0 ? Object.keys(data[0]) : [];
   console.log(headers);
 
+  // const handleMail = async () => {
+  //   const dataForMail = data.map((item) => ({
+  //     Ref_no: item.Reference_no,
+  //     Service_add: item.EMail_id,
+  //     Service_type_id: 3,
+  //     Service_id: item.Service_id,
+  //     File_path: item.File_path,
+  //     Process_id: 1,
+  //   }));
+  //   console.log(dataForMail);
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch(`${API_BASE_URL}/api/Services`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(dataForMail),
+  //     });
+  //     if (!response.ok) {
+  //       const errorText = await response.text();
+  //       throw new Error(
+  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+  //       );
+  //     }
+  //     const result = await response.json();
+  //     console.log("Upload response:", result);
+  //     setMailDone(true);
+  //     setTimeout(() => {
+  //       toast.success("Mail Sent Successfully", {
+  //         // position: toast.POSITION.BOTTOM_RIGHT,
+  //         theme: "colored",
+  //       });
+  //     }, 50);
+  //   } catch (error) {
+  //     console.error("Error uploading data:", error);
+  //     setTimeout(() => {
+  //       toast.error(`Error: ${error.message}`, { theme: "colored" });
+  //     }, 50);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const handleMail = async () => {
+  //   setLoading(true);
+  //   setProgress(0);
+  //   setProgressText("");
+
+  //   const total = data.length;
+
+  //   try {
+  //     for (let i = 0; i < total; i++) {
+  //       const item = data[i];
+
+  //       // Update UI: Sending X of Y
+  //       setProgressText(`Sending ${i + 1} of ${total}`);
+
+  //       // Progress %
+  //       const percent = Math.round(((i + 1) / total) * 100);
+  //       setProgress(percent);
+
+  //       // Single payload
+  //       const payload = {
+  //         Ref_no: item.Reference_no,
+  //         Service_add: item.EMail_id ?? "",
+  //         Service_type_id: 3,
+  //         Service_id: item.Service_id ?? 0,
+  //         File_path: item.File_path ?? "",
+  //         Process_id: 1,
+  //       };
+
+  //       console.log("Sending:", payload);
+
+  //       // API Call (ONE BY ONE)
+  //       const response = await fetch(`${API_BASE_URL}/api/OneService`, {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           // Add Auth here if needed:
+  //           // Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //         body: JSON.stringify(payload),
+  //       });
+
+  //       if (!response.ok) {
+  //         const err = await response.text();
+  //         throw new Error(
+  //           `Failed on record ${i + 1}: ${response.status} ${
+  //             response.statusText
+  //           }\n${err}`
+  //         );
+  //       }
+
+  //       const result = await response.json();
+  //       console.log("Response:", result);
+  //     }
+
+  //     // All done
+  //     setMailDone(true);
+
+  //     toast.success("All mails sent successfully!", {
+  //       theme: "colored",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     toast.error(error.message, { theme: "colored" });
+  //   } finally {
+  //     // Reset loader
+  //     setLoading(false);
+
+  //     // Optional reset
+  //     setTimeout(() => {
+  //       setProgress(0);
+  //       setProgressText("");
+  //     }, 500);
+  //   }
+  // };
+
   const handleMail = async () => {
-    const dataForMail = data.map((item) => ({
-      Ref_no: item.Reference_no,
-      Service_add: item.EMail_id,
-      Service_type_id: 3,
-      Service_id: item.Service_id,
-      File_path: item.File_path,
-      Process_id: 1,
-    }));
-    console.log(dataForMail);
     setLoading(true);
+    setProgress(0); // progress = current record number
+    setProgressText(""); // text "Sending X of Y"
+    const total = data.length;
+
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Services`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataForMail),
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-        );
-      }
-      const result = await response.json();
-      console.log("Upload response:", result);
-      setMailDone(true);
-      setTimeout(() => {
-        toast.success("Mail Sent Successfully", {
-          // position: toast.POSITION.BOTTOM_RIGHT,
-          theme: "colored",
+      for (let i = 0; i < total; i++) {
+        const item = data[i];
+
+        // UI update
+        const current = i + 1;
+        setProgress(current); // <--- IMPORTANT (your progress bar uses progress & total)
+        setProgressText(`Sending ${current} of ${total}`);
+
+        const payload = {
+          Ref_no: item.Reference_no,
+          Service_add: item.EMail_id,
+          Service_type_id: 3,
+          Service_id: item.Service_id,
+          File_path: item.File_path,
+          Process_id: 1,
+        };
+
+        console.log("Sending:", payload);
+
+        const response = await fetch(`${API_BASE_URL}/api/OneService`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
         });
-      }, 50);
+
+        if (!response.ok) {
+          const err = await response.text();
+          throw new Error(
+            `Failed on record ${current}: ${response.status} ${response.statusText}\n${err}`
+          );
+        }
+
+        const result = await response.json();
+        console.log("Response:", result);
+      }
+      // FINISHED
+      setMailDone(true);
+      toast.success("All mails sent successfully!", { theme: "colored" });
     } catch (error) {
-      console.error("Error uploading data:", error);
-      setTimeout(() => {
-        toast.error(`Error: ${error.message}`, { theme: "colored" });
-      }, 50);
+      console.error("Error:", error);
+      toast.error(error.message, { theme: "colored" });
     } finally {
       setLoading(false);
+
+      // Optional auto-reset
+      setTimeout(() => {
+        setProgress(0);
+        setProgressText("");
+      }, 100);
     }
   };
 
   const handleWhatsapp = async () => {
-    console.log(data);
-    const dataForWhatsapp = data.map((item) => ({
-      Ref_no: item.Reference_no,
-      Service_add: item.Mobile_no,
-      Service_type_id: 2,
-      Service_id: item.Service_id,
-      File_path: item.File_path,
-      Process_id: 1,
-    }));
-    console.log(dataForWhatsapp);
     setLoading(true);
+    setProgress(0);
+    setProgressText("");
+
+    const total = data.length;
+
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Services`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataForWhatsapp),
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-        );
-      }
-      const result = await response.json();
-      console.log("Upload response:", result);
-      setWaDone(true);
-      setTimeout(() => {
-        toast.success("Whatsapp Message Sent Successfully", {
-          // position: toast.POSITION.BOTTOM_RIGHT,
-          theme: "colored",
+      for (let i = 0; i < total; i++) {
+        const item = data[i];
+
+        // UI update
+        const current = i + 1;
+        setProgress(current);
+        setProgressText(`Sending ${current} of ${total}`);
+
+        const payload = {
+          Ref_no: item.Reference_no,
+          Service_add: item.Mobile_no ?? "",
+          Service_type_id: 2,
+          Service_id: item.Service_id ?? 0,
+          File_path: item.File_path ?? "",
+          Process_id: 1,
+        };
+
+        console.log("WhatsApp Sending:", payload);
+
+        const response = await fetch(`${API_BASE_URL}/api/OneService`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
         });
-      }, 50);
+
+        if (!response.ok) {
+          const err = await response.text();
+          throw new Error(
+            `WhatsApp failed on record ${current}: ${response.status} ${response.statusText}\n${err}`
+          );
+        }
+
+        const result = await response.json();
+        console.log("WhatsApp Response:", result);
+      }
+
+      setWaDone(true);
+      toast.success("All WhatsApp messages sent successfully!", {
+        theme: "colored",
+      });
     } catch (error) {
-      console.error("Error uploading data:", error);
-      setTimeout(() => {
-        toast.error(`Error: ${error.message}`, { theme: "colored" });
-      }, 50);
+      console.error("Error:", error);
+      toast.error(error.message, { theme: "colored" });
     } finally {
       setLoading(false);
+
+      setTimeout(() => {
+        setProgress(0);
+        setProgressText("");
+      }, 100);
     }
   };
 
+  // const handleWhatsapp = async () => {
+  //   console.log(data);
+  //   const dataForWhatsapp = data.map((item) => ({
+  //     Ref_no: item.Reference_no,
+  //     Service_add: item.Mobile_no,
+  //     Service_type_id: 2,
+  //     Service_id: item.Service_id,
+  //     File_path: item.File_path,
+  //     Process_id: 1,
+  //   }));
+  //   console.log(dataForWhatsapp);
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch(`${API_BASE_URL}/api/Services`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(dataForWhatsapp),
+  //     });
+  //     if (!response.ok) {
+  //       const errorText = await response.text();
+  //       throw new Error(
+  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+  //       );
+  //     }
+  //     const result = await response.json();
+  //     console.log("Upload response:", result);
+  //     setWaDone(true);
+  //     setTimeout(() => {
+  //       toast.success("Whatsapp Message Sent Successfully", {
+  //         // position: toast.POSITION.BOTTOM_RIGHT,
+  //         theme: "colored",
+  //       });
+  //     }, 50);
+  //   } catch (error) {
+  //     console.error("Error uploading data:", error);
+  //     setTimeout(() => {
+  //       toast.error(`Error: ${error.message}`, { theme: "colored" });
+  //     }, 50);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const handleSMS = async () => {
+  //   // console.log(data);
+  //   // alert("Cliced");
+  //   const dataForSMS = data.map((item) => ({
+  //     Ref_no: item.Reference_no,
+  //     Service_add: item.Mobile_no,
+  //     Service_type_id: 1,
+  //     Service_id: item.Service_id,
+  //     File_path: item.File_path,
+  //     Process_id: 1,
+  //   }));
+  //   console.log(dataForSMS);
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch(`${API_BASE_URL}/api/Services`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(dataForSMS),
+  //     });
+  //     if (!response.ok) {
+  //       const errorText = await response.text();
+  //       throw new Error(
+  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
+  //       );
+  //     }
+  //     const result = await response.json();
+  //     console.log("Upload response:", result);
+  //     setSMSDone(true);
+  //     setTimeout(() => {
+  //       toast.success("SMS Sent Successfully", {
+  //         // position: toast.POSITION.BOTTOM_RIGHT,
+  //         theme: "colored",
+  //       });
+  //     }, 50);
+  //   } catch (error) {
+  //     console.error("Error uploading data:", error);
+  //     setTimeout(() => {
+  //       toast.error(`Error: ${error.message}`, { theme: "colored" });
+  //     }, 50);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleSMS = async () => {
-    // console.log(data);
-    // alert("Cliced");
-    const dataForSMS = data.map((item) => ({
-      Ref_no: item.Reference_no,
-      Service_add: item.Mobile_no,
-      Service_type_id: 1,
-      Service_id: item.Service_id,
-      File_path: item.File_path,
-      Process_id: 1,
-    }));
-    console.log(dataForSMS);
     setLoading(true);
+    setProgress(0);
+    setProgressText("");
+
+    const total = data.length;
+
     try {
-      const response = await fetch(`${API_BASE_URL}/api/Services`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataForSMS),
-      });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-        );
-      }
-      const result = await response.json();
-      console.log("Upload response:", result);
-      setSMSDone(true);
-      setTimeout(() => {
-        toast.success("SMS Sent Successfully", {
-          // position: toast.POSITION.BOTTOM_RIGHT,
-          theme: "colored",
+      for (let i = 0; i < total; i++) {
+        const item = data[i];
+
+        // UI update
+        const current = i + 1;
+        setProgress(current);
+        setProgressText(`Sending ${current} of ${total}`);
+
+        const payload = {
+          Ref_no: item.Reference_no,
+          Service_add: item.Mobile_no ?? "",
+          Service_type_id: 1,
+          Service_id: item.Service_id ?? 0,
+          File_path: item.File_path ?? "",
+          Process_id: 1,
+        };
+
+        console.log("SMS Sending:", payload);
+
+        const response = await fetch(`${API_BASE_URL}/api/OneService`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
         });
-      }, 50);
+
+        if (!response.ok) {
+          const err = await response.text();
+          throw new Error(
+            `SMS failed on record ${current}: ${response.status} ${response.statusText}\n${err}`
+          );
+        }
+
+        const result = await response.json();
+        console.log("SMS Response:", result);
+      }
+
+      setSMSDone(true);
+      toast.success("All SMS sent successfully!", { theme: "colored" });
     } catch (error) {
-      console.error("Error uploading data:", error);
-      setTimeout(() => {
-        toast.error(`Error: ${error.message}`, { theme: "colored" });
-      }, 50);
+      console.error("Error:", error);
+      toast.error(error.message, { theme: "colored" });
     } finally {
       setLoading(false);
+
+      setTimeout(() => {
+        setProgress(0);
+        setProgressText("");
+      }, 100);
     }
   };
 
@@ -422,7 +686,7 @@ const AppointmentLtrServices = () => {
         </>
       )}
 
-      {showData && (
+      {showData && !loading && (
         <div className="mt-3">
           <button
             className={`${
@@ -488,30 +752,42 @@ const AppointmentLtrServices = () => {
         </div>
       )}
 
+      {loading && (
+        <div style={{ width: "300px", marginTop: "10px" }}>
+          <p style={{ fontWeight: "bold", color: "#172639" }}>{progressText}</p>
+
+          {/* <ProgressBar now={progress} label={`${progress}%`} /> */}
+        </div>
+      )}
+
       {/* Pagination Controls Starts Here */}
-      <div className="d-flex justify-content-center mt-3">
-        <Pagination>
-          <Pagination.Prev
-            onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          />
-          {Array.from({ length: totalPages }, (_, i) => (
-            <Pagination.Item
-              key={i + 1}
-              active={i + 1 === currentPage}
-              onClick={() => handlePageChange(i + 1)}
-            >
-              {i + 1}
-            </Pagination.Item>
-          ))}
-          <Pagination.Next
-            onClick={() =>
-              currentPage < totalPages && handlePageChange(currentPage + 1)
-            }
-            disabled={currentPage === totalPages}
-          />
-        </Pagination>
-      </div>
+      {showData && !loading && (
+        <div className="d-flex justify-content-center mt-3">
+          <Pagination>
+            <Pagination.Prev
+              onClick={() =>
+                currentPage > 1 && handlePageChange(currentPage - 1)
+              }
+              disabled={currentPage === 1}
+            />
+            {Array.from({ length: totalPages }, (_, i) => (
+              <Pagination.Item
+                key={i + 1}
+                active={i + 1 === currentPage}
+                onClick={() => handlePageChange(i + 1)}
+              >
+                {i + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next
+              onClick={() =>
+                currentPage < totalPages && handlePageChange(currentPage + 1)
+              }
+              disabled={currentPage === totalPages}
+            />
+          </Pagination>
+        </div>
+      )}
       {/* Pagination Controls Ends Here */}
 
       <ToastContainer />
