@@ -247,7 +247,7 @@ const SOCReports = () => {
                             : "statusSend border"
                         }
                       >
-                        {response.wa_status === null ? "Pending" : "Send"}
+                        {response.wa_status === null ? "Pending" : "Sent"}
                       </td>
                       <td
                         className={
@@ -277,7 +277,7 @@ const SOCReports = () => {
                         //     : "statusPending border"
                         // }
                       >
-                        {response.mail_status === null ? "Pending" : "Send"}
+                        {response.mail_status === null ? "Pending" : "Sent"}
                       </td>
                       <td
                         className={

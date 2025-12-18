@@ -380,7 +380,7 @@ const SecondHearingServices = () => {
           Service_type_id: 1,
           Service_id: item.Service_id,
           File_path: item.File_path,
-          Process_id: 2,
+          Process_id: 6,
         };
 
         console.log("SMS Sending:", payload);
