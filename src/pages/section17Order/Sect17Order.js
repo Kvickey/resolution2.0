@@ -40,6 +40,14 @@ const Sect17Order = () => {
     setCurrentPage(pageNumber);
   };
 
+  const [hearingType, setHearingType] = useState("");
+
+  const handleHearingChange = (e) => {
+    setHearingType(Number(e.target.value));
+  };
+
+  console.log(hearingType);
+
   useEffect(() => {
     // console.log(user);
     setArbId(user[0].Ref_id);
@@ -277,7 +285,7 @@ const Sect17Order = () => {
     try {
       // Fetch the PDF file from the API
       const response = await fetch(
-        `${API_BASE_URL}/api/Sec17Orderletter?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}&adv=${encodedName}`
+        `${API_BASE_URL}/api/Sec17Orderletter?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}&adv=${encodedName}&type=${hearingType}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -304,9 +312,10 @@ const Sect17Order = () => {
 
   const handleUploadSec17Order = async () => {
     setLoading(true);
+    const encodedName = encodeURIComponent(nameOfAdvocate);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/SaveSec17OrderCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}`
+        `${API_BASE_URL}/api/SaveSec17OrderCase?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Arb_id=${selectedArbitratorID}&adv=${encodedName}&type=${hearingType}`
       );
 
       if (!response.ok) {
@@ -447,7 +456,7 @@ const Sect17Order = () => {
 
       {showData && (
         <div className="row">
-          <div className="col-md-6">
+          {/* <div className="col-md-6">
             {!save && (
               <DatePicker
                 selected={selectedDate} // Set the selected date
@@ -477,8 +486,55 @@ const Sect17Order = () => {
                 style={{ fontSize: "12px" }}
               />
             )}
+          </div> */}
+          <div className="col-md-6">
+            {/* Date Picker */}
+            {!save && (
+              <DatePicker
+                selected={selectedDate}
+                onChange={handleDateChange}
+                placeholderText="Select a date"
+                dateFormat="dd/MM/yyyy"
+                className="form-control custom_input"
+                id="datePicker"
+                style={{
+                  width: "100%",
+                  fontSize: "12px",
+                  borderRadius: ".25rem",
+                  border: "1px solid #ced4da",
+                  boxSizing: "border-box",
+                }}
+              />
+            )}
+
+            {/* Advocate Name */}
+            {save && !showPDF && (
+              <Form.Control
+                type="text"
+                className="custom_input"
+                placeholder="Advocate Name"
+                onChange={handleNameChange}
+                value={nameOfAdvocate}
+                style={{ fontSize: "12px", marginBottom: "8px" }}
+              />
+            )}
           </div>
-          <div className="col-md-4"></div>
+
+          <div className="col-md-4">
+            {/* Hearing Type Dropdown */}
+            {save && !showPDF && (
+              <Form.Select
+                className="custom_input"
+                onChange={handleHearingChange}
+                value={hearingType}
+                style={{ fontSize: "12px" }}
+              >
+                <option value="">Select Hearing Type</option>
+                <option value={1}>First Hearing</option>
+                <option value={2}>Second Hearing</option>
+              </Form.Select>
+            )}
+          </div>
           <div className="col-md-2">
             {!save && (
               <button className="custBtn" onClick={handleSaveSec17Order}>

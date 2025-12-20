@@ -6,7 +6,8 @@
 // export const API_BASE_URL = 'https://api.resolutionexperts.in'
 
 //-------- Development ---------//
-export const API_BASE_URL = 'https://dev.api.resolutionexperts.in'
+export const API_BASE_URL = 'http://dev.api.resolutionexperts.in'
+// export const API_BASE_URL = 'https://dev.api.resolutionexperts.in'
 
 //-------- Local ---------//
 // export const API_BASE_URL = 'http://localhost:64177'
