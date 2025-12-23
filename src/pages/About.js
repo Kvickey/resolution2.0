@@ -21,7 +21,7 @@ function AboutUs() {
                         <div className='aboutUsText'>
 
                             <p className='mt-3'>
-                            Welcome to Resolution Expert Alliance, a distinguished and innovative Organization specializing in  Alternative Dispute Resolution (ADR) and Online  Dispute Resolution (ODR).  With a rich history of excellence and a forward-looking approach, we have established ourselves as leaders in the field, dedicated to reshaping the landscape of conflict resolution. Our organization operates at the intersection of law, technology, and collaboration, offering clients a comprehensive suite of services that prioritize efficiency, cost-effectiveness, and sustainable solutions.”
+                            Welcome to Resolution Experts Alliance Association, a distinguished and innovative organization specializing in Alternative Dispute Resolution (ADR) and Online Dispute Resolution (ODR). With a rich history of excellence and a forward-looking approach, Resolution Experts Alliance Association has established itself as a leader in the field, dedicated to reshaping the landscape of conflict resolution. Our organization operates at the intersection of law, technology, and collaboration, offering clients a comprehensive suite of services that prioritize efficiency, cost-effectiveness, and sustainable solutions.
                             </p>
 
 

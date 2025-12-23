@@ -261,7 +261,7 @@ const Sect17Order = () => {
       }
       console.log(response);
       const result = await response.json(); // Process the response
-      console.log("Upload response:", result);
+      // console.log("Upload response:", result);
       // toast.success("Data Uploaded Successfully", {
       //   // position: toast.POSITION.BOTTOM_RIGHT,
       //   theme: "colored",
@@ -394,18 +394,6 @@ const Sect17Order = () => {
                       <td className="text-center">
                         {indexOfFirstRow + index + 1}
                       </td>
-                      {/* <td className="text-center">
-                        {item.Assign_date
-                          ? new Date(item.Assign_date).toLocaleDateString(
-                              "en-GB",
-                              {
-                                year: "numeric",
-                                month: "short",
-                                day: "numeric",
-                              }
-                            )
-                          : ""}
-                      </td> */}
                       <td className="text-center">{item.Lots}</td>
                       <td className="text-center">{item.Arb_name}</td>
                       <td className="text-center">

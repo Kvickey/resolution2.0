@@ -26,7 +26,7 @@ function OurMission() {
                             <Card className='missionTextCard'>
                                 <Card.Body>
                                     <p>
-                                        At Resolution Experts Alliance, Our mission is to revolutionize the way disputes are resolved, empowering indivusals, businesses and organizations to navigate complex legal 
+                                        At Resolution Experts Alliance Association, Our mission is to revolutionize the way disputes are resolved, empowering indivusals, businesses and organizations to navigate complex legal 
                                         challenges with confidence and clearity.
                                     </p>
                                     <p>

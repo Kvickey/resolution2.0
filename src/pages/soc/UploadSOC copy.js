@@ -5,7 +5,6 @@ import * as XLSX from "xlsx";
 import { API_BASE_URL } from "../../utils/constants";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ClearForm from "../../components/Clearform";
-import { saveAs } from "file-saver";
 
 const UploadSOC = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -19,28 +18,6 @@ const UploadSOC = () => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [clearForm, setClearForm] = useState(false);
-
-
-const downloadErrorExcel = (errorRows) => {
-  if (!errorRows || errorRows.length === 0) return;
-
-  const worksheet = XLSX.utils.json_to_sheet(errorRows);
-  const workbook = XLSX.utils.book_new();
-
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Errors");
-
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "array",
-  });
-
-  const blob = new Blob([excelBuffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
-
-  saveAs(blob, `Reference_Validation_Errors_${Date.now()}.xlsx`);
-};
-
 
   // Function to move to a specific step in Stepper Component
   const handleStepChange = (step) => {
@@ -111,84 +88,59 @@ const downloadErrorExcel = (errorRows) => {
       setHeaderError("No Excel data available.");
       return;
     }
-  
     handleStepChange(1);
-  
-    // ✅ Header validation
+
+    // Step 1: Check headers
     const excelHeaders = Object.keys(excelData[0]);
     const expectedHeaders = MainHeaders.map((h) => h.name);
-  
+
     const areHeadersMatching =
       excelHeaders.length === expectedHeaders.length &&
       excelHeaders.every((header, index) => header === expectedHeaders[index]);
-  
+
     if (!areHeadersMatching) {
       setHeaderError(
-        `Excel headers must exactly match required format and order: ${expectedHeaders.join(", ")}`
+        `Excel headers must exactly match required format and order: ${expectedHeaders.join(
+          ", "
+        )}`
       );
       setVerifiedData(false);
       return;
     }
-  
-    setLoading(true);
-    setHeaderError("");
-    setVerifiedData(false);
-  
-    const errorRows = []; // 🔥 Collect all errors here
-  
+    // Step 2: Send each REFERENCE_NO in a POST request
     try {
+      setLoading(true);
+
       for (const row of excelData) {
         const referenceNo = row.REFERENCE_NO;
-  
-        try {
-          const response = await fetch(`${API_BASE_URL}/api/ValidateRef`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ reference_no: referenceNo }),
-          });
-  
-          if (!response.ok) {
-            let errorMsg = "Unknown server error";
-  
-            try {
-              const error = await response.json();
-              errorMsg = error?.message || JSON.stringify(error);
-            } catch (_) {}
-  
-            errorRows.push({
-              REFERENCE_NO: referenceNo,
-              ERROR_MESSAGE: errorMsg,
-              STATUS_CODE: response.status,
-            });
-          }
-        } catch (networkError) {
-          errorRows.push({
-            REFERENCE_NO: referenceNo,
-            ERROR_MESSAGE: "Network / Server not reachable",
-            STATUS_CODE: "NETWORK_ERROR",
-          });
+
+        const response = await fetch(`${API_BASE_URL}/api/ValidateRef`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ reference_no: referenceNo }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          console.error(`Error for REFERENCE_NO ${referenceNo}:`, error);
+        } else {
+          const result = await response.json();
+          console.log(`Success for REFERENCE_NO ${referenceNo}:`, result);
         }
       }
-  
-      // ✅ After all API calls
-      if (errorRows.length > 0) {
-        downloadErrorExcel(errorRows); // 🔥 Auto download
-        setHeaderError("Some references failed validation. Error file downloaded.");
-        setVerifiedData(false);
-      } else {
-        setVerifiedData(true);
-      }
+
+      setHeaderError("");
+      setVerifiedData(true);
     } catch (error) {
-      console.error("Unexpected error:", error);
-      setHeaderError("Unexpected error during verification.");
+      console.error("Network or server error:", error);
+      setHeaderError("Error sending data to server.");
       setVerifiedData(false);
     } finally {
-      setLoading(false);
+      setLoading(false); // ✅ Correct placement
     }
   };
-  
 
   // console.log(headerError);
 
@@ -254,6 +206,53 @@ const downloadErrorExcel = (errorRows) => {
     }
   };
 
+  // const handleUpload = async () => {
+  //   const data = excelData.map((item) => ({
+  //     Reference_no: item.REFERENCE_NO,
+  //   }));
+
+  //   // console.log(data);
+  //   // console.log(files);
+
+  //   const formData = new FormData();
+
+  //   // Append your file
+  //   formData.append("file", files);
+
+  //   formData.append("data", JSON.stringify(data));
+
+  //   for (let pair of formData.entries()) {
+  //     console.log(`${pair[0]}:`, pair[1]);
+  //   }
+
+  //   try {
+  //     const response = await fetch(
+  //       `${API_BASE_URL}/api/UploadSOC?PageInterval=2`,
+  //       {
+  //         method: "POST",
+  //         // headers: {
+  //         //   "Content-Type": "multipart/form-data",
+  //         // },
+  //         body: formData,
+  //       }
+  //     );
+  //     if (!response.ok) {
+  //       const error = await response.json();
+  //       console.error(`Error for REFERENCE_NO :`, error);
+  //     } else {
+  //       const result = await response.json();
+  //       console.log(`Success for REFERENCE_NO :`, result);
+  //     }
+
+  //     // If all succeeded or completed
+  //     setHeaderError("");
+  //     setVerifiedData(true);
+  //   } catch (error) {
+  //     console.error("Network or server error:", error);
+  //     setHeaderError("Error sending data to server.");
+  //     setVerifiedData(false);
+  //   }
+  // };
 
   return (
     <div className="container">
