@@ -6,6 +6,7 @@ import { API_BASE_URL } from "../../utils/constants";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import ClearForm from "../../components/Clearform";
 import { formatDate } from "../../utils/FormatDate";
+import { saveAs } from "file-saver";
 
 const Sect17Application = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -24,6 +25,26 @@ const Sect17Application = () => {
     setActiveStep(step);
   };
   // For the customStepper ends Here
+
+  const downloadErrorExcel = (errorRows) => {
+    if (!errorRows || errorRows.length === 0) return;
+
+    const worksheet = XLSX.utils.json_to_sheet(errorRows);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Errors");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    saveAs(blob, `Reference_Validation_Errors_${Date.now()}.xlsx`);
+  };
 
   if (loading) return <LoadingSpinner />;
 
@@ -96,7 +117,7 @@ const Sect17Application = () => {
 
     handleStepChange(1);
 
-    // Step 1: Check headers
+    // ✅ Header validation
     const excelHeaders = Object.keys(excelData[0]);
     const expectedHeaders = MainHeaders.map((h) => h.name);
 
@@ -114,45 +135,132 @@ const Sect17Application = () => {
       return;
     }
 
-    // Step 2: Send each REFERENCE_NO in a POST request
+    setLoading(true);
+    setHeaderError("");
+    setVerifiedData(false);
+
+    const errorRows = []; // 🔥 Collect errors
+
     try {
-      setLoading(true);
-      let allSuccessful = true; // ✅ Track overall success
-
       for (const row of excelData) {
-        const referenceNo = row.REFERENCE_NO;
+        const referenceNo = String(row.REFERENCE_NO || "").trim();
 
-        const response = await fetch(`${API_BASE_URL}/api/ValidateRef`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ reference_no: referenceNo }),
-        });
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/ValidateSec17App`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ Reference_no: referenceNo }),
+          });
 
-        if (!response.ok) {
-          allSuccessful = false; // mark failure
-          const error = await response.json();
-          console.error(`Error for REFERENCE_NO ${referenceNo}:`, error);
-        } else {
-          const result = await response.json();
-          console.log(`Success for REFERENCE_NO ${referenceNo}:`, result);
+          if (!response.ok) {
+            let errorMsg = "Unknown server error";
+
+            try {
+              const error = await response.json();
+              errorMsg = error?.message || JSON.stringify(error);
+            } catch (_) {}
+
+            errorRows.push({
+              REFERENCE_NO: referenceNo,
+              ERROR_MESSAGE: errorMsg,
+              STATUS_CODE: response.status,
+            });
+          }
+        } catch (networkError) {
+          errorRows.push({
+            REFERENCE_NO: referenceNo,
+            ERROR_MESSAGE: "Network / Server not reachable",
+            STATUS_CODE: "NETWORK_ERROR",
+          });
         }
       }
 
-      if (allSuccessful) {
-        setHeaderError("");
-        setVerifiedData(true); // ✅ Only if all were 200
-      } else {
-        setHeaderError("Some records failed verification. Please check logs.");
+      // ✅ Final decision
+      if (errorRows.length > 0) {
+        downloadErrorExcel(errorRows); // 🔥 Auto-download
+        setHeaderError(
+          "Some references failed validation. Error file downloaded."
+        );
         setVerifiedData(false);
+      } else {
+        setVerifiedData(true);
       }
     } catch (error) {
-      console.error("Network or server error:", error);
-      setHeaderError("Error sending data to server.");
+      console.error("Unexpected error:", error);
+      setHeaderError("Unexpected error during verification.");
       setVerifiedData(false);
     } finally {
       setLoading(false);
     }
   };
+
+  // const handleVerify = async () => {
+  //   if (excelData.length === 0) {
+  //     setHeaderError("No Excel data available.");
+  //     return;
+  //   }
+
+  //   handleStepChange(1);
+
+  //   // Step 1: Check headers
+  //   const excelHeaders = Object.keys(excelData[0]);
+  //   const expectedHeaders = MainHeaders.map((h) => h.name);
+
+  //   const areHeadersMatching =
+  //     excelHeaders.length === expectedHeaders.length &&
+  //     excelHeaders.every((header, index) => header === expectedHeaders[index]);
+
+  //   if (!areHeadersMatching) {
+  //     setHeaderError(
+  //       `Excel headers must exactly match required format and order: ${expectedHeaders.join(
+  //         ", "
+  //       )}`
+  //     );
+  //     setVerifiedData(false);
+  //     return;
+  //   }
+
+  //   // Step 2: Send each REFERENCE_NO in a POST request
+  //   try {
+  //     setLoading(true);
+  //     let allSuccessful = true; // ✅ Track overall success
+
+  //     for (const row of excelData) {
+  //       const referenceNo = row.REFERENCE_NO;
+
+  //       const response = await fetch(`${API_BASE_URL}/api/ValidateSec17App`, {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({ reference_no: referenceNo }),
+  //       });
+
+  //       if (!response.ok) {
+  //         allSuccessful = false; // mark failure
+  //         const error = await response.json();
+  //         console.error(`Error for REFERENCE_NO ${referenceNo}:`, error);
+  //       } else {
+  //         const result = await response.json();
+  //         console.log(`Success for REFERENCE_NO ${referenceNo}:`, result);
+  //       }
+  //     }
+
+  //     if (allSuccessful) {
+  //       setHeaderError("");
+  //       setVerifiedData(true); // ✅ Only if all were 200
+  //     } else {
+  //       setHeaderError("Some records failed verification. Please check logs.");
+  //       setVerifiedData(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("Network or server error:", error);
+  //     setHeaderError("Error sending data to server.");
+  //     setVerifiedData(false);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // console.log(headerError);
 

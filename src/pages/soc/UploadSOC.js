@@ -20,27 +20,25 @@ const UploadSOC = () => {
   const [loading, setLoading] = useState(false);
   const [clearForm, setClearForm] = useState(false);
 
+  const downloadErrorExcel = (errorRows) => {
+    if (!errorRows || errorRows.length === 0) return;
 
-const downloadErrorExcel = (errorRows) => {
-  if (!errorRows || errorRows.length === 0) return;
+    const worksheet = XLSX.utils.json_to_sheet(errorRows);
+    const workbook = XLSX.utils.book_new();
 
-  const worksheet = XLSX.utils.json_to_sheet(errorRows);
-  const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Errors");
 
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Errors");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
 
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "array",
-  });
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
 
-  const blob = new Blob([excelBuffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  });
-
-  saveAs(blob, `Reference_Validation_Errors_${Date.now()}.xlsx`);
-};
-
+    saveAs(blob, `Reference_Validation_Errors_${Date.now()}.xlsx`);
+  };
 
   // Function to move to a specific step in Stepper Component
   const handleStepChange = (step) => {
@@ -111,52 +109,55 @@ const downloadErrorExcel = (errorRows) => {
       setHeaderError("No Excel data available.");
       return;
     }
-  
+
     handleStepChange(1);
-  
+
     // ✅ Header validation
     const excelHeaders = Object.keys(excelData[0]);
     const expectedHeaders = MainHeaders.map((h) => h.name);
-  
+
     const areHeadersMatching =
       excelHeaders.length === expectedHeaders.length &&
       excelHeaders.every((header, index) => header === expectedHeaders[index]);
-  
+
     if (!areHeadersMatching) {
       setHeaderError(
-        `Excel headers must exactly match required format and order: ${expectedHeaders.join(", ")}`
+        `Excel headers must exactly match required format and order: ${expectedHeaders.join(
+          ", "
+        )}`
       );
       setVerifiedData(false);
       return;
     }
-  
+
     setLoading(true);
     setHeaderError("");
     setVerifiedData(false);
-  
+
     const errorRows = []; // 🔥 Collect all errors here
-  
+
     try {
+      // for (const row of excelData) {
+      //   const referenceNo = row.REFERENCE_NO;
       for (const row of excelData) {
-        const referenceNo = row.REFERENCE_NO;
-  
+        const referenceNo = String(row.REFERENCE_NO || "").trim();
         try {
-          const response = await fetch(`${API_BASE_URL}/api/ValidateRef`, {
+          const response = await fetch(`${API_BASE_URL}/api/ValidateSOC`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ reference_no: referenceNo }),
+            body: JSON.stringify({ Reference_no: referenceNo }),
           });
-  
+
           if (!response.ok) {
             let errorMsg = "Unknown server error";
-  
+
             try {
               const error = await response.json();
               errorMsg = error?.message || JSON.stringify(error);
             } catch (_) {}
-  
+
             errorRows.push({
               REFERENCE_NO: referenceNo,
               ERROR_MESSAGE: errorMsg,
@@ -171,11 +172,13 @@ const downloadErrorExcel = (errorRows) => {
           });
         }
       }
-  
+
       // ✅ After all API calls
       if (errorRows.length > 0) {
         downloadErrorExcel(errorRows); // 🔥 Auto download
-        setHeaderError("Some references failed validation. Error file downloaded.");
+        setHeaderError(
+          "Some references failed validation. Error file downloaded."
+        );
         setVerifiedData(false);
       } else {
         setVerifiedData(true);
@@ -188,7 +191,6 @@ const downloadErrorExcel = (errorRows) => {
       setLoading(false);
     }
   };
-  
 
   // console.log(headerError);
 
@@ -253,7 +255,6 @@ const downloadErrorExcel = (errorRows) => {
       setLoading(false); // ✅ Always stop loading
     }
   };
-
 
   return (
     <div className="container">
