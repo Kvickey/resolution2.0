@@ -252,7 +252,7 @@ const Sect17ApplicationReports = () => {
                       <td
                         className={
                           response.Wa_read_datetime === null
-                           ? "statusNotRead border"
+                            ? "statusNotRead border"
                             : "statusDelivered border"
                           // response.Wa_read_datetime === "Read "
                           //   ? "statusDelivered border"
@@ -281,16 +281,16 @@ const Sect17ApplicationReports = () => {
                       </td>
                       <td
                         className={
-                          response.Mail_read_datetime
-                           === null
+                          response.Mail_read_datetime === null
                             ? "statusNotRead border"
                             : "statusPending border"
-                            ?
-                            "statusDelivered border"
-                            : response.mail_send_date === "Not Read"
+                            ? "statusDelivered border"
+                            : response.Mail_read_datetime === "Not Read"
                         }
                       >
-                        {response.mail_send_date === null ? "Pending" : "Read"}
+                        {response.Mail_read_datetime === null
+                          ? "Pending"
+                          : "Read"}
                       </td>
 
                       {/* sms Reports */}
@@ -312,7 +312,7 @@ const Sect17ApplicationReports = () => {
                           : response.DeliveryStatus}
                       </td>
 
-                     <td
+                      <td
                         className={
                           response.Sms_read_datetime !== null
                             ? "statusDelivered border"
@@ -323,7 +323,7 @@ const Sect17ApplicationReports = () => {
                           ? "Read"
                           : "Pending"}
                       </td>
-                      
+
                       <td className="border">{response.Mobile_no}</td>
                       <td className="border">{response.Email_id}</td>
                       <td className="border">{response.Reference_no}</td>
