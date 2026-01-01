@@ -8,6 +8,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 import { FaMessage } from "react-icons/fa6";
 import { useAuth } from "../../components/AuthProvider";
+import { Container, Row, Col } from "react-bootstrap";
 
 const Sect17OrderServices = () => {
   const [notServedLots, setNotServedLots] = useState([]);
@@ -21,6 +22,7 @@ const Sect17OrderServices = () => {
   const [arbId, setArbId] = useState("");
   const [progressText, setProgressText] = useState("");
   const [progress, setProgress] = useState(0); // 0 to 100
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     if (user && user.length > 0) {
@@ -148,18 +150,19 @@ const Sect17OrderServices = () => {
 
   const handleMail = async () => {
     setLoading(true);
-    setProgress(0); // progress = current record number
-    setProgressText(""); // text "Sending X of Y"
-    const total = data.length;
+    setProgress(0);
+    setProgressText("");
+
+    const totalCount = data.length; // local
+    setTotal(totalCount); // 👈 save to state
 
     try {
-      for (let i = 0; i < total; i++) {
+      for (let i = 0; i < totalCount; i++) {
         const item = data[i];
 
-        // UI update
         const current = i + 1;
-        setProgress(current); // <--- IMPORTANT (your progress bar uses progress & total)
-        setProgressText(`Sending ${current} of ${total}`);
+        setProgress(current);
+        setProgressText(`Sending ${current} of ${totalCount}`);
 
         const payload = {
           Ref_no: item.Reference_no,
@@ -170,13 +173,9 @@ const Sect17OrderServices = () => {
           Process_id: 5,
         };
 
-        console.log("Sending:", payload);
-
         const response = await fetch(`${API_BASE_URL}/api/OneService`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
 
@@ -187,10 +186,9 @@ const Sect17OrderServices = () => {
           );
         }
 
-        const result = await response.json();
-        console.log("Response:", result);
+        await response.json();
       }
-      // FINISHED
+
       setMailDone(true);
       toast.success("All mails sent successfully!", { theme: "colored" });
     } catch (error) {
@@ -199,11 +197,11 @@ const Sect17OrderServices = () => {
     } finally {
       setLoading(false);
 
-      // Optional auto-reset
       setTimeout(() => {
         setProgress(0);
         setProgressText("");
-      }, 100);
+        setTotal(0); // 👈 reset
+      }, 200);
     }
   };
 
@@ -257,33 +255,29 @@ const Sect17OrderServices = () => {
     setProgress(0);
     setProgressText("");
 
-    const total = data.length;
+    const totalCount = data.length;
+    setTotal(totalCount);
 
     try {
-      for (let i = 0; i < total; i++) {
+      for (let i = 0; i < totalCount; i++) {
         const item = data[i];
-
-        // UI update
         const current = i + 1;
+
         setProgress(current);
-        setProgressText(`Sending ${current} of ${total}`);
+        setProgressText(`Sending ${current} of ${totalCount}`);
 
         const payload = {
           Ref_no: item.Reference_no,
-          Service_add: item.Mobile_no,
+          Service_add: item.Mobile_no ?? "",
           Service_type_id: 2,
-          Service_id: item.Service_id,
-          File_path: item.File_path,
+          Service_id: item.Service_id ?? 0,
+          File_path: item.File_path ?? "",
           Process_id: 5,
         };
 
-        console.log("WhatsApp Sending:", payload);
-
         const response = await fetch(`${API_BASE_URL}/api/OneService`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
 
@@ -294,8 +288,7 @@ const Sect17OrderServices = () => {
           );
         }
 
-        const result = await response.json();
-        console.log("WhatsApp Response:", result);
+        await response.json();
       }
 
       setWaDone(true);
@@ -303,7 +296,7 @@ const Sect17OrderServices = () => {
         theme: "colored",
       });
     } catch (error) {
-      console.error("Error:", error);
+      console.error(error);
       toast.error(error.message, { theme: "colored" });
     } finally {
       setLoading(false);
@@ -311,6 +304,7 @@ const Sect17OrderServices = () => {
       setTimeout(() => {
         setProgress(0);
         setProgressText("");
+        setTotal(0);
       }, 100);
     }
   };
@@ -365,23 +359,24 @@ const Sect17OrderServices = () => {
     setProgress(0);
     setProgressText("");
 
-    const total = data.length;
+    const totalCount = data.length; // save total to state
+    setTotal(totalCount);
 
     try {
-      for (let i = 0; i < total; i++) {
+      for (let i = 0; i < totalCount; i++) {
         const item = data[i];
-
-        // UI update
         const current = i + 1;
+
+        // Update progress UI
         setProgress(current);
-        setProgressText(`Sending ${current} of ${total}`);
+        setProgressText(`Sending ${current} of ${totalCount}`);
 
         const payload = {
           Ref_no: item.Reference_no,
-          Service_add: item.Mobile_no,
-          Service_type_id: 1,
-          Service_id: item.Service_id,
-          File_path: item.File_path,
+          Service_add: item.Mobile_no ?? "",
+          Service_type_id: 1, // SMS type
+          Service_id: item.Service_id ?? 0,
+          File_path: item.File_path ?? "",
           Process_id: 5,
         };
 
@@ -402,8 +397,8 @@ const Sect17OrderServices = () => {
           );
         }
 
-        const result = await response.json();
-        console.log("SMS Response:", result);
+        await response.json();
+        console.log("SMS Response:", item.Reference_no);
       }
 
       setSMSDone(true);
@@ -414,9 +409,11 @@ const Sect17OrderServices = () => {
     } finally {
       setLoading(false);
 
+      // Reset progress and total after a short delay
       setTimeout(() => {
         setProgress(0);
         setProgressText("");
+        setTotal(0);
       }, 100);
     }
   };
@@ -533,7 +530,7 @@ const Sect17OrderServices = () => {
                 : "custBtn"
             }`}
             onClick={handleMail}
-            disabled={mailDone}
+            disabled={mailDone || data[0].Mail_send_date !== null}
           >
             <IoMdMail className="me-3" />
             Mail
@@ -546,7 +543,7 @@ const Sect17OrderServices = () => {
                 : "custBtn"
             }`}
             onClick={handleSMS}
-            disabled={smsDone}
+            disabled={smsDone || data[0].Sms_send_date !== null}
           >
             <FaMessage className="me-3" />
             Message
@@ -580,13 +577,53 @@ const Sect17OrderServices = () => {
       {/* <button onClick={showToast}>Show Toast</button> */}
 
       {loading && (
-        <div style={{ width: "300px", marginTop: "10px" }}>
-          <p style={{ fontWeight: "bold", color: "#172639" }}>{progressText}</p>
+        <Row className="justify-content-center mt-4">
+          <Col xs={12} className="d-flex justify-content-center">
+            <div
+              style={{
+                width: "80%", // responsive width
+                maxWidth: "900px", // upper limit
+                padding: "16px",
+                borderRadius: "12px",
+                background: "#fff",
+                boxShadow: "0 8px 20px rgba(0,0,0,0.12)",
+              }}
+            >
+              <p
+                style={{
+                  marginBottom: "10px",
+                  fontWeight: 600,
+                  color: "#172639",
+                  textAlign: "center",
+                }}
+              >
+                {progressText || `Processing ${progress} of ${total}`}
+              </p>
 
-          {/* <ProgressBar now={progress} label={`${progress}%`} /> */}
-        </div>
+              <div
+                style={{
+                  width: "100%",
+                  height: "14px",
+                  backgroundColor: "#e9ecef",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    width: total
+                      ? `${Math.round((progress / total) * 100)}%`
+                      : "0%",
+                    height: "100%",
+                    backgroundColor: "#EAA637",
+                    transition: "width 0.3s ease",
+                  }}
+                />
+              </div>
+            </div>
+          </Col>
+        </Row>
       )}
-
       <ToastContainer />
     </div>
   );

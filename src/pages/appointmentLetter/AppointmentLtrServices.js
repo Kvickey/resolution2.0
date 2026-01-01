@@ -722,7 +722,7 @@ const AppointmentLtrServices = () => {
                     : "custBtn"
                 }`}
                 onClick={handleSMS}
-                disabled={smsDone || data[0].Sms_send_date !== null}
+                // disabled={smsDone || data[0].Sms_send_date !== null}
               >
                 <FaMessage className="me-3" />
                 Message
@@ -773,11 +773,11 @@ const AppointmentLtrServices = () => {
 
       {loading && (
         <Row className="justify-content-center mt-4">
-          <Col md={5} sm={8} xs={10}>
+          <Col xs={12} className="d-flex justify-content-center">
             <div
               style={{
-                maxWidth: "420px",
-                margin: "0 auto",
+                width: "80%", // responsive width
+                maxWidth: "900px", // upper limit
                 padding: "16px",
                 borderRadius: "12px",
                 background: "#fff",
