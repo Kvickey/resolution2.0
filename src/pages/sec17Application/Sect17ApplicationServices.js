@@ -555,16 +555,20 @@ const Sect17ApplicationServices = () => {
                 : "custBtn"
             }`}
             onClick={handleMail}
-            // disabled={mailDone}
+            disabled={mailDone || data[0].Mail_send_date !== null}
           >
             <IoMdMail className="me-3" />
             Mail
           </button>
 
           <button
-            className={`ms-3 ${smsDone ? "disabledBtn" : "custBtn"}`}
+            className={`ms-3 ${
+              smsDone || data[0].Sms_send_date !== null
+                ? "disabledBtn"
+                : "custBtn"
+            }`}
             onClick={handleSMS}
-            // disabled={smsDone}
+            disabled={ smsDone || data[0].Sms_send_date !== null}
           >
             <FaMessage className="me-3" />
             Message
