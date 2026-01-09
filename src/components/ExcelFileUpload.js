@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import * as XLSX from 'xlsx';
 import { headers } from '../utils/headers'; // your headers with validation rules
+import { blheaders } from '../utils/blheaders'; // your headers with validation rules
+import { plheaders } from '../utils/plheaders'; // your headers with validation rules
 
 const ExcelFileUpload = ({
   onFileChange,
@@ -13,6 +15,20 @@ const ExcelFileUpload = ({
   validationErrors,
   setValidationErrors,
 }) => {
+
+  // console.log(selectedProductID);
+
+  const PRODUCT_HEADERS_MAP = {
+    1: headers,
+    5: blheaders,
+    4: plheaders,
+  };
+  
+  const resolvedHeaders = React.useMemo(() => {
+    return PRODUCT_HEADERS_MAP[selectedProductID] || [];
+  }, [selectedProductID]);
+  
+  
   // Generates an Excel file containing validation errors for user download
   const generateErrorExcel = (errors) => {
     const errorData = [['Row', 'Column', 'Message']];
@@ -39,6 +55,8 @@ const ExcelFileUpload = ({
 
   // Validates that the Excel file headers exactly match expected headers
   const validateHeaders = (excelHeaders, expectedHeaders) => {
+    // console.log(expectedHeaders);
+    
     const errors = [];
     if (excelHeaders.length !== expectedHeaders.length) {
       errors.push({
@@ -166,7 +184,7 @@ const ExcelFileUpload = ({
       setIsDataPresent(true);
 
       const excelHeaders = Object.keys(jsonData[0]);
-      const expectedHeaders = headers.map((h) => h.name);
+      const expectedHeaders = resolvedHeaders.map((h) => h.name);
 
       // Validate headers
       const headerErrors = validateHeaders(excelHeaders, expectedHeaders);

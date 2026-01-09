@@ -253,14 +253,13 @@ const AccLtrReports = () => {
                             : "statusSend border"
                         }
                       >
-                        {response.wa_status === null ? "Pending" : "Send"}
+                        {response.wa_status === null ? "Not Sent" : "Sent"}
                       </td>
                       <td
                         className={
                           response.Wa_read_datetime === null
                             ? "statusNotRead border"
                             : "statusDelivered border"
-                         
                         }
                       >
                         {response.Wa_read_datetime === null
@@ -276,7 +275,7 @@ const AccLtrReports = () => {
                             : "statusDelivered border"
                         }
                       >
-                        {response.mail_status === null ? "Pending" : "Send"}
+                        {response.mail_status === null ? "Not Sent" : "Sent"}
                       </td>
                       <td
                         className={
@@ -311,7 +310,7 @@ const AccLtrReports = () => {
                           : response.DeliveryStatus}
                       </td>
 
-                    <td
+                      <td
                         className={
                           response.Sms_read_datetime !== null
                             ? "statusDelivered border"
@@ -323,7 +322,6 @@ const AccLtrReports = () => {
                           : "Pending"}
                       </td>
 
-                      
                       <td className="border">{response.Mobile_no}</td>
                       <td className="border">{response.Email_id}</td>
                       <td className="border">{response.Reference_no}</td>
@@ -334,33 +332,6 @@ const AccLtrReports = () => {
             </div>
           </div>
           {/* )} */}
-
-          {/* <div className="col-md-10">
-          {responses.length > 0 && (
-            <div>
-              <h3>Response Summary</h3>
-              <table className="table table-striped table-bordered table-hover mt-3 text-center">
-                <thead>
-                  <tr>
-                    <th>MOBILE_NO_1</th>
-                    <th>REFERENCE_NO</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {responses.map((response, index) => (
-                    <tr key={index}>
-                      <td>{response.MOBILE_NO_1}</td>
-                      <td>{response.REFERENCE_NO}</td>
-                      <td>{response.Status}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button onClick={downloadExcel}>Download Excel</button>
-            </div>
-          )}
-        </div> */}
         </div>
       )}
     </div>

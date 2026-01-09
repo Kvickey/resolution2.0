@@ -11,6 +11,7 @@ import CustomStepper from "../../components/CustomStepper";
 
 // Product-specific components
 import AxisCV from "./AxisCV";
+import AxisBlPl from "./AxisPlBl";
 import KotakCDR from "./KotakCDR";
 import KotakCC from "./KotakCC";
 
@@ -76,6 +77,11 @@ const UploadLot = () => {
     fetchProducts();
   }, [bankId]);
 
+  // console.log(selectedProductID);
+  // console.log(bankId);
+  
+  
+
   // 3️⃣ Handlers
   const handleBankChange = (e) => setBankId(e.target.value);
   const handleProductChange = (e) => setSelectedProductID(e.target.value);
@@ -110,6 +116,8 @@ const UploadLot = () => {
   // 5️⃣ Product component mapping
   const productComponents = {
     "1-1": AxisCV, // bankId=1, productId=1
+    "1-4": AxisBlPl, // bankId=1, productId=1
+    "1-5": AxisBlPl, // bankId=1, productId=1
     "2-2": KotakCDR, // bankId=2, productId=2
     "2-3": KotakCC, // bankId=2, productId=3
   };
