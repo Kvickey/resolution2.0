@@ -249,10 +249,8 @@ const AxisPlBl = ({
       });
 
       if (i === excelData.length - 1) {
-        await fetch(`${API_BASE_URL}/api/UploadData`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(createRecordObject(row, borrowers)),
+        await fetch(`${API_BASE_URL}/api/UploadData`, {   
+          headers: { "Content-Type": "application/json" }, 
         });
         setProg((p) => p + 1);
       }
