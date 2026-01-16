@@ -248,9 +248,17 @@ const AxisPlBl = ({
         Work_add: row.work_Address,
       });
 
+      // if (i === excelData.length - 1) {
+      //   await fetch(`${API_BASE_URL}/api/UploadData`, {
+      //     headers: { "Content-Type": "application/json" },
+      //   });
+      //   setProg((p) => p + 1);
+      // }
       if (i === excelData.length - 1) {
-        await fetch(`${API_BASE_URL}/api/UploadData`, {   
-          headers: { "Content-Type": "application/json" }, 
+        await fetch(`${API_BASE_URL}/api/UploadData`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(createRecordObject(row, borrowers)),
         });
         setProg((p) => p + 1);
       }

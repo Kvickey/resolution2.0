@@ -240,6 +240,30 @@ export const blheaders = [
     ],
   },
   {
+    name: "Loan_Agreement_Date",
+    validations: [
+      // { type: "notEmpty", message: "Loan_Agreement_Date cannot be empty" },
+    ],
+  },
+  {
+    name: "Appac",
+    validations: [
+      // { type: "notEmpty", message: "Appac cannot be empty" },
+    ],
+  },
+  {
+    name: "Party_Id",
+    validations: [
+      // { type: "notEmpty", message: "Party_Id cannot be empty" },
+    ],
+  },
+  {
+    name: "LOAN_AMOUNT_IN_RS_AGR_VALUE",
+    validations: [
+      // { type: "notEmpty", message: "LOAN_AMOUNT_IN_RS_AGR_VALUE cannot be empty" },
+    ],
+  },
+  {
     name: "TOSBALANCE",
     validations: [
       { type: "notEmpty", message: "TOSBALANCE cannot be empty" },
