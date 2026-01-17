@@ -37,7 +37,7 @@ const AxisPlBl = ({
   ---------------------------------------- */
 
   const createRecordObject = (row, borrowerArray) => {
-    // console.log("Borrower Array:", borrowerArray);
+    // console.log(row);
     return {
       Lot_no: v(row.Lot_No),
       Acc_no: v(row.ACC_NO),
@@ -71,7 +71,7 @@ const AxisPlBl = ({
       axis_loan: {
         product: v(row.PRODUCT),
         accno: v(row.ACC_NO),
-        bankName: "Axis Bank",
+        bankName: v(row.Bank_Name),
         accountNumber: v(row.BANK_Account_Number),
         bankHolderName: v(row.Bank_Holder_Name),
         ifscCode: v(row.IFSC_code),
@@ -121,6 +121,8 @@ const AxisPlBl = ({
      VERIFY API
   ---------------------------------------- */
   const verifyData = async (record, rowIndex) => {
+    // console.log(record);
+
     try {
       const res = await fetch(`${API_BASE_URL}/api/Validate`, {
         method: "POST",
