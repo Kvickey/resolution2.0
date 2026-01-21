@@ -20,8 +20,8 @@ const ExcelFileUpload = ({
 
   const PRODUCT_HEADERS_MAP = {
     1: headers,
-    5: blheaders,
-    4: plheaders,
+    4: blheaders,
+    // 4: plheaders,
   };
   
   const resolvedHeaders = React.useMemo(() => {
@@ -55,7 +55,7 @@ const ExcelFileUpload = ({
 
   // Validates that the Excel file headers exactly match expected headers
   const validateHeaders = (excelHeaders, expectedHeaders) => {
-    // console.log(expectedHeaders);
+    console.log(expectedHeaders);
     
     const errors = [];
     if (excelHeaders.length !== expectedHeaders.length) {
@@ -184,6 +184,7 @@ const ExcelFileUpload = ({
       setIsDataPresent(true);
 
       const excelHeaders = Object.keys(jsonData[0]);
+      console.log(excelHeaders);
       const expectedHeaders = resolvedHeaders.map((h) => h.name);
 
       // Validate headers
