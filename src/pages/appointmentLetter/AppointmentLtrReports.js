@@ -3,6 +3,7 @@ import { API_BASE_URL } from "../../utils/constants";
 import { Form } from "react-bootstrap";
 import "../ReferenceDraftReports.css";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import * as XLSX from "xlsx";
 
 const AppointmentLtrReports = () => {
   const [data, setData] = useState([]);
@@ -86,9 +87,9 @@ const AppointmentLtrReports = () => {
     setSelectedLotNo(selectedID);
   };
 
-  console.log(selectedClientID);
-  console.log(selectedProductID);
-  console.log(selectedLotNo);
+  // console.log(selectedClientID);
+  // console.log(selectedProductID);
+  // console.log(selectedLotNo);
 
   const handleData = async () => {
     setLoading(true); // Start loading before fetching data
@@ -125,6 +126,22 @@ const AppointmentLtrReports = () => {
   };
 
   console.log(data);
+
+  const exportToExcel = () => {
+    // Convert JSON to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(data);
+  
+    // Create workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "SMS_Report");
+  
+    // Download file
+    XLSX.writeFile(workbook, "sms_report.xlsx");
+  }
+  
+
+  const handleReport= async () => {};
+
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -189,6 +206,18 @@ const AppointmentLtrReports = () => {
             </div>
           </div>
         </>
+      )}
+
+      {showTable && (
+        <div className="row">
+          <div className="col-md-8"></div>
+          <div className="col-md-2">
+            <button className="custBtn" onClick={exportToExcel}>
+              Export Report
+            </button>
+          </div>
+          <div className="col-md-8"></div>
+        </div>
       )}
 
       {showTable && (
