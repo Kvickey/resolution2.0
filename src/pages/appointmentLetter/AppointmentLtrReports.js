@@ -125,7 +125,7 @@ const AppointmentLtrReports = () => {
     }
   };
 
-  console.log(data);
+  // console.log(data);
 
   const exportToExcel = () => {
     // Convert JSON to worksheet
@@ -140,7 +140,6 @@ const AppointmentLtrReports = () => {
   }
   
 
-  const handleReport= async () => {};
 
   if (loading) return <LoadingSpinner />;
 
@@ -210,13 +209,12 @@ const AppointmentLtrReports = () => {
 
       {showTable && (
         <div className="row">
-          <div className="col-md-8"></div>
-          <div className="col-md-2">
+          <div className="col-md-9"></div>
+          <div className="col-md-3">
             <button className="custBtn" onClick={exportToExcel}>
               Export Report
             </button>
           </div>
-          <div className="col-md-8"></div>
         </div>
       )}
 
