@@ -13,6 +13,7 @@ const AppointmentLtrReports = () => {
   const [selectedClientID, setSelectedClientID] = useState(null);
   const [selectedLotNo, setSelectedLotNo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [datapresent, setDatapresent] = useState(false);
   const [error, setError] = useState(null);
   const [showTable, setShowTable] = useState(false);
   const [clearForm, setClearForm] = useState(false);
@@ -40,6 +41,10 @@ const AppointmentLtrReports = () => {
 
     fetchClients();
   }, []);
+
+  useEffect(() => {
+    setDatapresent(Array.isArray(data) && data.length > 0);
+  }, [data]);
 
   // console.log(selectedClient);
 
@@ -103,21 +108,8 @@ const AppointmentLtrReports = () => {
       }
       const result = await response.json();
       const parsedData = Array.isArray(result) ? result : JSON.parse(result);
-
-      // const updatedData = parsedData.map((item) => {
-      //   const { assign_id, Arbitrator_id, Case_id, UPLODED_DATE, ...rest } =
-      //     item;
-      //   return {
-      //     ...rest,
-      //   };
-      // });
-      // console.log(updatedData);
-      // setAllData(parsedData);
-      // setData(updatedData);
       setData(parsedData);
-      // setTotalPages(Math.ceil(updatedData.length / itemsPerPage));
       setShowTable(true);
-      // handleStepChange(1)
     } catch (error) {
       setError(error);
     } finally {
@@ -127,19 +119,18 @@ const AppointmentLtrReports = () => {
 
   // console.log(data);
 
+
   const exportToExcel = () => {
     // Convert JSON to worksheet
     const worksheet = XLSX.utils.json_to_sheet(data);
-  
+
     // Create workbook
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "SMS_Report");
-  
-    // Download file
-    XLSX.writeFile(workbook, "sms_report.xlsx");
-  }
-  
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Service_Report");
 
+    // Download file
+    XLSX.writeFile(workbook, "Appointment Letter Service Report.xlsx");
+  };
 
   if (loading) return <LoadingSpinner />;
 
@@ -207,7 +198,7 @@ const AppointmentLtrReports = () => {
         </>
       )}
 
-      {showTable && (
+      {showTable && datapresent && (
         <div className="row">
           <div className="col-md-9"></div>
           <div className="col-md-3">

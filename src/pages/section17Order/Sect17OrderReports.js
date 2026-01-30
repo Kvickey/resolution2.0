@@ -3,6 +3,7 @@ import { API_BASE_URL } from "../../utils/constants";
 import { Form } from "react-bootstrap";
 import "../ReferenceDraftReports.css";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import * as XLSX from "xlsx";
 
 const Sect17OrderReports = () => {
   const [data, setData] = useState([]);
@@ -12,9 +13,14 @@ const Sect17OrderReports = () => {
   const [selectedClientID, setSelectedClientID] = useState(null);
   const [selectedLotNo, setSelectedLotNo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [datapresent, setDatapresent] = useState(false);
   const [error, setError] = useState(null);
   const [showTable, setShowTable] = useState(false);
   const [clearForm, setClearForm] = useState(false);
+
+  useEffect(() => {
+    setDatapresent(Array.isArray(data) && data.length > 0);
+  }, [data]);
 
   // To fetch Clients(Bank) DaTA
   useEffect(() => {
@@ -45,7 +51,7 @@ const Sect17OrderReports = () => {
   // API Call for Product data
   useEffect(() => {
     const fetchProduct = async () => {
-      setError(null); 
+      setError(null);
       try {
         const response = await fetch(
           `${API_BASE_URL}/api/products?client_id=${selectedClientID}`
@@ -125,6 +131,19 @@ const Sect17OrderReports = () => {
   };
 
   // console.log(data);
+
+  const exportToExcel = () => {
+    // Convert JSON to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    // Create workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Service_Report");
+
+    // Download file
+    XLSX.writeFile(workbook, "Section 17 Order Letter Service Report.xlsx");
+  };
+
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -191,6 +210,17 @@ const Sect17OrderReports = () => {
         </>
       )}
 
+      {showTable && datapresent && (
+        <div className="row">
+          <div className="col-md-9"></div>
+          <div className="col-md-3">
+            <button className="custBtn" onClick={exportToExcel}>
+              Export Report
+            </button>
+          </div>
+        </div>
+      )}
+
       {showTable && (
         <div className="row">
           {/* <h3>Appointment Letter Report</h3> */}
@@ -252,7 +282,7 @@ const Sect17OrderReports = () => {
                       <td
                         className={
                           response.Wa_read_datetime === null
-                           ? "statusNotRead border"
+                            ? "statusNotRead border"
                             : "statusDelivered border"
                           // response.Wa_read_datetime === "Read "
                           //   ? "statusDelivered border"
@@ -281,20 +311,20 @@ const Sect17OrderReports = () => {
                       </td>
                       <td
                         className={
-                          response.Mail_read_datetime
-                           === null
+                          response.Mail_read_datetime === null
                             ? "statusNotRead border"
                             : "statusPending border"
-                            ?
-                            "statusDelivered border"
+                            ? "statusDelivered border"
                             : response.mail_send_date === "Not Read"
                         }
                       >
-                        {response.Mail_read_datetime === null ? "Pending" : "Read"}
+                        {response.Mail_read_datetime === null
+                          ? "Pending"
+                          : "Read"}
                       </td>
 
-                          {/* sms Reports */}
-                          <td
+                      {/* sms Reports */}
+                      <td
                         className={
                           response.DeliveryStatus === "Delivered"
                             ? "statusDelivered border"
@@ -332,7 +362,6 @@ const Sect17OrderReports = () => {
               </table>
             </div>
           </div>
-         
         </div>
       )}
     </div>

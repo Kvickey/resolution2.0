@@ -3,6 +3,7 @@ import { API_BASE_URL } from "../../utils/constants";
 import { Form } from "react-bootstrap";
 import "../ReferenceDraftReports.css";
 import { useAuth } from "../../components/AuthProvider";
+import * as XLSX from "xlsx";
 
 const SecondHearingReports = () => {
   const [data, setData] = useState([]);
@@ -12,6 +13,7 @@ const SecondHearingReports = () => {
   const [selectedClientID, setSelectedClientID] = useState(null);
   const [selectedLotNo, setSelectedLotNo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [datapresent, setDatapresent] = useState(false);
   const [error, setError] = useState(null);
   const [showTable, setShowTable] = useState(false);
   const [clearForm, setClearForm] = useState(false);
@@ -23,6 +25,10 @@ const SecondHearingReports = () => {
       setArbId(user[0].Ref_id);
     }
   }, [user]);
+
+  useEffect(() => {
+    setDatapresent(Array.isArray(data) && data.length > 0);
+  }, [data]);
 
   // To fetch Clients(Bank) DaTA
   useEffect(() => {
@@ -132,6 +138,18 @@ const SecondHearingReports = () => {
 
   console.log(data);
 
+  const exportToExcel = () => {
+    // Convert JSON to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    // Create workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Service_Report");
+
+    // Download file
+    XLSX.writeFile(workbook, "Second Hearing Letter Service Report.xlsx");
+  };
+
   return (
     <div className="container">
       {!clearForm && !showTable && (
@@ -194,6 +212,17 @@ const SecondHearingReports = () => {
             </div>
           </div>
         </>
+      )}
+
+      {showTable && datapresent && (
+        <div className="row">
+          <div className="col-md-9"></div>
+          <div className="col-md-3">
+            <button className="custBtn" onClick={exportToExcel}>
+              Export Report
+            </button>
+          </div>
+        </div>
       )}
 
       {showTable && (
@@ -328,7 +357,7 @@ const SecondHearingReports = () => {
                         {response.sms_status === null ? "Pending" : "send"}
                       </td> */}
 
-                     <td
+                      <td
                         className={
                           response.Sms_read_datetime !== null
                             ? "statusDelivered border"
@@ -340,7 +369,6 @@ const SecondHearingReports = () => {
                           : "Pending"}
                       </td>
 
-                      
                       <td className="border">{response.Mobile_no}</td>
                       <td className="border">{response.Email_id}</td>
                       <td className="border">{response.Reference_no}</td>

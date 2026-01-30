@@ -3,6 +3,7 @@ import { API_BASE_URL } from "../../utils/constants";
 import { Form } from "react-bootstrap";
 import "../ReferenceDraftReports.css";
 import { useAuth } from "../../components/AuthProvider";
+import * as XLSX from "xlsx";
 
 const AccLtrReports = () => {
   const [data, setData] = useState([]);
@@ -12,6 +13,7 @@ const AccLtrReports = () => {
   const [selectedClientID, setSelectedClientID] = useState(null);
   const [selectedLotNo, setSelectedLotNo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [datapresent, setDatapresent] = useState(false);
   const [error, setError] = useState(null);
   const [showTable, setShowTable] = useState(false);
   const [clearForm, setClearForm] = useState(false);
@@ -23,6 +25,10 @@ const AccLtrReports = () => {
       setArbId(user[0].Ref_id);
     }
   }, [user]);
+
+  useEffect(() => {
+    setDatapresent(Array.isArray(data) && data.length > 0);
+  }, [data]);
 
   // To fetch Clients(Bank) DaTA
   useEffect(() => {
@@ -130,7 +136,19 @@ const AccLtrReports = () => {
     }
   };
 
-  console.log(data);
+  // console.log(data);
+
+  const exportToExcel = () => {
+    // Convert JSON to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    // Create workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Service_Report");
+
+    // Download file
+    XLSX.writeFile(workbook, "Acceptance Letter Service Report.xlsx");
+  };
 
   return (
     <div className="container">
@@ -194,6 +212,17 @@ const AccLtrReports = () => {
             </div>
           </div>
         </>
+      )}
+
+      {showTable && datapresent && (
+        <div className="row">
+          <div className="col-md-9"></div>
+          <div className="col-md-3">
+            <button className="custBtn" onClick={exportToExcel}>
+              Export Report
+            </button>
+          </div>
+        </div>
       )}
 
       {showTable && (

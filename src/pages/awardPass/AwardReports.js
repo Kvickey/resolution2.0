@@ -4,6 +4,7 @@ import { Form } from "react-bootstrap";
 import "../ReferenceDraftReports.css";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { useAuth } from "../../components/AuthProvider";
+import * as XLSX from "xlsx";
 
 const AwardReports = () => {
   const [data, setData] = useState([]);
@@ -13,18 +14,23 @@ const AwardReports = () => {
   const [selectedClientID, setSelectedClientID] = useState(null);
   const [selectedLotNo, setSelectedLotNo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [datapresent, setDatapresent] = useState(false);
   const [error, setError] = useState(null);
   const [showTable, setShowTable] = useState(false);
   const [clearForm, setClearForm] = useState(false);
-    const { user} = useAuth();
-    const [arbId, setArbId] = useState("");
-  
-    useEffect(() => {
-      // console.log(user);
-      setArbId(user[0].Ref_id);
-    }, [user]);
-  
-    console.log(arbId);
+  const { user } = useAuth();
+  const [arbId, setArbId] = useState("");
+
+  useEffect(() => {
+    // console.log(user);
+    setArbId(user[0].Ref_id);
+  }, [user]);
+
+  console.log(arbId);
+
+  useEffect(() => {
+    setDatapresent(Array.isArray(data) && data.length > 0);
+  }, [data]);
 
   // To fetch Clients(Bank) DaTA
   useEffect(() => {
@@ -135,6 +141,19 @@ const AwardReports = () => {
   };
 
   console.log(data);
+
+  const exportToExcel = () => {
+    // Convert JSON to worksheet
+    const worksheet = XLSX.utils.json_to_sheet(data);
+
+    // Create workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Service_Report");
+
+    // Download file
+    XLSX.writeFile(workbook, "Award Pass Service Report.xlsx");
+  };
+
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -199,6 +218,17 @@ const AwardReports = () => {
             </div>
           </div>
         </>
+      )}
+
+      {showTable && datapresent && (
+        <div className="row">
+          <div className="col-md-9"></div>
+          <div className="col-md-3">
+            <button className="custBtn" onClick={exportToExcel}>
+              Export Report
+            </button>
+          </div>
+        </div>
       )}
 
       {showTable && (
@@ -321,7 +351,7 @@ const AwardReports = () => {
                           ? "Delivered"
                           : response.DeliveryStatus}
                       </td>
-                
+
                       <td
                         className={
                           response.Sms_read_datetime !== null
@@ -350,4 +380,3 @@ const AwardReports = () => {
 };
 
 export default AwardReports;
-
