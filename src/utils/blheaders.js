@@ -57,9 +57,9 @@ export const blheaders = [
   },
   {
     name: "E_MAIL_ID",
-    validations: [
+    // validations: [
       // { type: "notEmpty", message: "E_MAIL_ID cannot be empty" },
-    ],
+    // ],
   },
   {
     name: "Communication_address",
@@ -82,31 +82,31 @@ export const blheaders = [
   },
   {
     name: "Bank_Name",
-    validations: [
-      { type: "notEmpty", message: "Bank_Name cannot be empty" },
-    ],
+    // validations: [
+    //   { type: "notEmpty", message: "Bank_Name cannot be empty" },
+    // ],
   },
   {
     name: "Account_Number",
-    validations: [
-      { type: "notEmpty", message: "Account_Number cannot be empty" },
-    ],
+    // validations: [
+    //   { type: "notEmpty", message: "Account_Number cannot be empty" },
+    // ],
   },
   {
     name: "Bank_Holder_Name",
-    validations: [
-      { type: "notEmpty", message: "Bank_Holder_Name cannot be empty" },
-    ],
+    // validations: [
+    //   { type: "notEmpty", message: "Bank_Holder_Name cannot be empty" },
+    // ],
   },
   {
     name: "IFSC_code",
-    validations: [{ type: "notEmpty", message: "IFSC_code cannot be empty" }],
+    // validations: [{ type: "notEmpty", message: "IFSC_code cannot be empty" }],
   },
   {
     name: "Bank_Address",
-    validations: [
-      { type: "notEmpty", message: "Bank_Address cannot be empty" },
-    ],
+    // validations: [
+    //   { type: "notEmpty", message: "Bank_Address cannot be empty" },
+    // ],
   },
   {
     name: "INTEREST_RATE",

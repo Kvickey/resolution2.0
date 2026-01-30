@@ -57,9 +57,9 @@ export const headers = [
   },
   {
     name: "E_MAIL_ID",
-    validations: [
-      { type: "notEmpty", message: "E_MAIL_ID cannot be empty" },
-    ],
+    // validations: [
+    //   { type: "notEmpty", message: "E_MAIL_ID cannot be empty" },
+    // ],
   },
   {
     name: "Communication_address",

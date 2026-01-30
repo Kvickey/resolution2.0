@@ -116,8 +116,8 @@ const UploadLot = () => {
   // 5️⃣ Product component mapping
   const productComponents = {
     "1-1": AxisCV, // bankId=1, productId=1
-    "1-4": AxisBlPl, // bankId=1, productId=1
-    "1-5": AxisBlPl, // bankId=1, productId=1
+    "1-4": AxisBlPl, // bankId=1, productId=4
+    // "1-5": AxisBlPl, // bankId=1, productId=5
     "2-2": KotakCDR, // bankId=2, productId=2
     "2-3": KotakCC, // bankId=2, productId=3
   };
