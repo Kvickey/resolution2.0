@@ -24,6 +24,9 @@ const ExcelFileUpload = ({
     return PRODUCT_HEADERS_MAP[selectedProductID] || [];
   }, [selectedProductID]);
 
+  console.log("Resolved Headers:", resolvedHeaders);
+
+
   // ---------------- ERROR EXCEL ----------------
   const generateErrorExcel = (errors) => {
     const errorData = [['Row', 'Column', 'Message']];

@@ -223,8 +223,6 @@ const Sect17OrderReports = () => {
 
       {showTable && (
         <div className="row">
-          {/* <h3>Appointment Letter Report</h3> */}
-          {/* {responses.length > 0 && ( */}
           <div className="table-container mt-3">
             <div className="table-wrapper">
               <table className="responsive-table">
@@ -284,11 +282,6 @@ const Sect17OrderReports = () => {
                           response.Wa_read_datetime === null
                             ? "statusNotRead border"
                             : "statusDelivered border"
-                          // response.Wa_read_datetime === "Read "
-                          //   ? "statusDelivered border"
-                          //   : response.Wa_read_datetime === "Not Read"
-                          //   ? "statusNotRead border"
-                          //   : "statusPending border"
                         }
                       >
                         {response.Wa_read_datetime === null
@@ -301,11 +294,6 @@ const Sect17OrderReports = () => {
                             ? "statusPending border"
                             : "statusDelivered border"
                         }
-                        // className={
-                        //   response.mail_status === "Read"
-                        //     ? "statusDelivered border"
-                        //     : "statusPending border"
-                        // }
                       >
                         {response.mail_status === null ? "Pending" : "Sent"}
                       </td>
