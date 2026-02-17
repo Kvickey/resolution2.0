@@ -276,7 +276,8 @@ const AxisPlBl = ({
     <div className="mt-3">
       {!loading && (
         <div className="d-flex justify-content-end gap-2">
-          {!verified && (
+          {excelData.length > 0 && !verified && errorResponses.length === 0 && (
+            // {!verified && (
             <button className="custBtn" onClick={handleVerify}>
               Verify
             </button>

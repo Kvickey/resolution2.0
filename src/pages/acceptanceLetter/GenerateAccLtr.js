@@ -99,6 +99,8 @@ const GenerateAccLtr = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const rowsPerPage = 10;
+  console.log("Component Mounted");
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -164,8 +166,8 @@ const GenerateAccLtr = () => {
   }, [arbId]);
 
   // console.log(accessTokenArray);
-  console.log(accessToken);
-  console.log(refreshToken);
+  // console.log(accessToken);
+  // console.log(refreshToken);
   // To get the access token start here
 
   useEffect(() => {
@@ -427,6 +429,8 @@ const GenerateAccLtr = () => {
 
   // TO Save the Records starts
   const handleSave = async () => {
+    console.log("handleSave triggered");
+
     console.log(distRecords);
     const dataToGenerateAL = distRecords.map((item) => ({
       Case_id: item.Case_id,
