@@ -115,6 +115,7 @@ import SOCService from "./pages/soc/SOCService";
 import SOCReports from "./pages/soc/SOCReports";
 import CreateZoomMeets from "./pages/zoomMeets/CreateZoomMeets";
 import ZoomMeetList from "./pages/zoomMeets/ZoomMeetList";
+import ServiceReports from "./pages/serviceReports/ServiceReports";
 
 
 const App = () => {
@@ -160,6 +161,7 @@ const App = () => {
             <Route path="lotwise" element={<CaseTrackingLotwise />} />
             <Route path="casewise" element={<CaseTrackingCasewise />} />
           </Route>
+          <Route path="servicereports" element={<ServiceReports />} />
         </Route>
 
         <Route path="/instdashboard" element={<InstDashboard />}>

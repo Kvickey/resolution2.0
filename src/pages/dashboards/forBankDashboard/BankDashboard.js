@@ -43,6 +43,11 @@ const BnkDashboard = () => {
         },
       ],
     },
+    {
+      name: "Service Reports",
+      icon: <FaHome />,
+      link: "/bankdashboard/servicereports",
+    },
   ];
 
   const handleMenuItemClick = (name) => {
