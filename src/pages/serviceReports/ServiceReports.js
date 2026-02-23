@@ -82,7 +82,7 @@ const ServiceReports = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=${processId}&Arb_id=${arbId}`
+        `${API_BASE_URL}/api/ServiceData?Lot_no=${selectedLotNo}&Client_id=${selectedClientID}&Product_id=${selectedProductID}&Process_id=${processId}`
       );
 
       const result = await response.json();
