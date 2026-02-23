@@ -8,6 +8,8 @@ import { IoMdMail } from "react-icons/io";
 import { FaMessage } from "react-icons/fa6";
 import { useAuth } from "../../components/AuthProvider";
 import { Container, Row, Col } from "react-bootstrap";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 
 const ThirdHearingService = () => {
   const [notServedLots, setNotServedLots] = useState([]);
@@ -91,71 +93,11 @@ const ThirdHearingService = () => {
     }
   };
 
-  // console.log(data);
+  console.log(data);
 
   const headers = data.length > 0 ? Object.keys(data[0]) : [];
   // console.log(headers);
 
-  // const handleMail = async () => {
-  //   setLoading(true);
-  //   setProgress(0); // progress = current record number
-  //   setProgressText(""); // text "Sending X of Y"
-  //   const total = data.length;
-
-  //   try {
-  //     for (let i = 0; i < total; i++) {
-  //       const item = data[i];
-
-  //       // UI update
-  //       const current = i + 1;
-  //       setProgress(current); // <--- IMPORTANT (your progress bar uses progress & total)
-  //       setProgressText(`Sending ${current} of ${total}`);
-
-  //       const payload = {
-  //         Ref_no: item.Reference_no,
-  //         Service_add: item.EMail_id,
-  //         Service_type_id: 3,
-  //         Service_id: item.Service_id,
-  //         File_path: item.File_path,
-  //         Process_id: 7,
-  //       };
-
-  //       console.log("Sending:", payload);
-
-  //       const response = await fetch(`${API_BASE_URL}/api/OneService`, {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(payload),
-  //       });
-
-  //       if (!response.ok) {
-  //         const err = await response.text();
-  //         throw new Error(
-  //           `Failed on record ${current}: ${response.status} ${response.statusText}\n${err}`
-  //         );
-  //       }
-
-  //       const result = await response.json();
-  //       console.log("Response:", result);
-  //     }
-  //     // FINISHED
-  //     setMailDone(true);
-  //     toast.success("All mails sent successfully!", { theme: "colored" });
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     toast.error(error.message, { theme: "colored" });
-  //   } finally {
-  //     setLoading(false);
-
-  //     // Optional auto-reset
-  //     setTimeout(() => {
-  //       setProgress(0);
-  //       setProgressText("");
-  //     }, 100);
-  //   }
-  // };
   const handleMail = async () => {
     setLoading(true);
     setProgress(0);
@@ -212,51 +154,6 @@ const ThirdHearingService = () => {
       }, 200);
     }
   };
-
-  // const handleWhatsapp = async () => {
-  //   console.log(data);
-  //   const dataForWhatsapp = data.map((item) => ({
-  //     Ref_no: item.Reference_no,
-  //     Service_add: item.Mobile_no,
-  //     Service_type_id: 2,
-  //     Service_id: item.Service_id,
-  //     File_path: item.File_path,
-  //     Process_id: 7,
-  //   }));
-  //   console.log(dataForWhatsapp);
-  //   setLoading(true);
-  //   try {
-  //     const response = await fetch(`${API_BASE_URL}/api/Services`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(dataForWhatsapp),
-  //     });
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(
-  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-  //       );
-  //     }
-  //     const result = await response.json();
-  //     console.log("Upload response:", result);
-  //     setWaDone(true);
-  //     setTimeout(() => {
-  //       toast.success("Whatsapp Message Sent Successfully", {
-  //         // position: toast.POSITION.BOTTOM_RIGHT,
-  //         theme: "colored",
-  //       });
-  //     }, 50);
-  //   } catch (error) {
-  //     console.error("Error uploading data:", error);
-  //     setTimeout(() => {
-  //       toast.error(`Error: ${error.message}`, { theme: "colored" });
-  //     }, 50);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleWhatsapp = async () => {
     setLoading(true);
@@ -316,51 +213,6 @@ const ThirdHearingService = () => {
       }, 100);
     }
   };
-
-  // const handleSMS = async () => {
-  //   // console.log(data);
-  //   const dataForSMS = data.map((item) => ({
-  //     Ref_no: item.Reference_no,
-  //     Service_add: item.Mobile_no,
-  //     Service_type_id: 1,
-  //     Service_id: item.Service_id,
-  //     File_path: item.File_path,
-  //     Process_id: 7,
-  //   }));
-  //   // console.log(dataForSMS);
-  //   setLoading(true);
-  //   try {
-  //     const response = await fetch(`${API_BASE_URL}/api/Services`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(dataForSMS),
-  //     });
-  //     if (!response.ok) {
-  //       const errorText = await response.text();
-  //       throw new Error(
-  //         `Failed to upload data: ${response.status} ${response.statusText} - ${errorText}`
-  //       );
-  //     }
-  //     const result = await response.json();
-  //     // console.log("Upload response:", result);
-  //     setSMSDone(true);
-  //     setTimeout(() => {
-  //       toast.success("SMS Sent Successfully", {
-  //         // position: toast.POSITION.BOTTOM_RIGHT,
-  //         theme: "colored",
-  //       });
-  //     }, 50);
-  //   } catch (error) {
-  //     console.error("Error uploading data:", error);
-  //     setTimeout(() => {
-  //       toast.error(`Error: ${error.message}`, { theme: "colored" });
-  //     }, 50);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleSMS = async () => {
     setLoading(true);
@@ -423,6 +275,35 @@ const ThirdHearingService = () => {
         setProgressText("");
         setTotal(0);
       }, 100);
+    }
+  };
+
+  const handleExport = async () => {
+    try {
+      const exportData = data.map((item, index) => ({
+        SR_NO: index + 1,
+        REFERENCE_NO: item.Reference_no,
+        CUST_NAME: item.Cust_name,
+        Soc_date: "01.01.2026",
+      }));
+
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Customers");
+
+      const excelBuffer = XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "array",
+      });
+
+      const blob = new Blob([excelBuffer], {
+        // ✅ renamed
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8",
+      });
+
+      saveAs(blob, "Customer_List.xlsx"); // ✅ use blob
+    } catch (error) {
+      console.error("Error exporting Excel:", error);
     }
   };
 
@@ -558,6 +439,10 @@ const ThirdHearingService = () => {
           >
             <FaMessage className="me-3" />
             Message
+          </button>
+
+          <button className={`ms-3 custBtn`} onClick={handleExport}>
+            Export
           </button>
 
           {/* For Showing the Data for service */}
