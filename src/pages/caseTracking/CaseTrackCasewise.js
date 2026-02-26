@@ -608,7 +608,7 @@ const CaseTrackingCaseWise = () => {
                           href="#"
                           onClick={() =>
                             handleOpenPDF(
-                              `${API_BASE_URL}/Content/Cases/ThirdHearing/${refNo}.pdf`
+                              `${API_BASE_URL}/Content/Cases/SecondHearing/${refNo}.pdf`
                             )
                           }
                           className="customAnchor"
@@ -658,7 +658,7 @@ const CaseTrackingCaseWise = () => {
                           href="#"
                           onClick={() =>
                             handleOpenPDF(
-                              `${API_BASE_URL}/Content/Cases/Soc/${refNo}.pdf`
+                              `${API_BASE_URL}/Content/Cases/ThirdHearing/${refNo}.pdf`
                             )
                           }
                           className="customAnchor"
@@ -707,7 +707,7 @@ const CaseTrackingCaseWise = () => {
                           href="#"
                           onClick={() =>
                             handleOpenPDF(
-                              `${API_BASE_URL}/Content/Cases/Soc/${refNo}.pdf`
+                              `${API_BASE_URL}/Content/Cases/AwardPass/${refNo}.pdf`
                             )
                           }
                           className="customAnchor"

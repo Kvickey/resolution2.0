@@ -36,9 +36,14 @@ const BnkDashboard = () => {
           link: "/bankdashboard/casetracking/lotwise",
           icon: <GrGroup />,
         },
+        // {
+        //   name: "Casewise",
+        //   link: "/bankdashboard/casetracking/casewise",
+        //   icon: <BsPersonCheck />,
+        // },
         {
           name: "Casewise",
-          link: "/bankdashboard/casetracking/casewise",
+          link: "/bankdashboard/casetracking/casewise1",
           icon: <BsPersonCheck />,
         },
       ],

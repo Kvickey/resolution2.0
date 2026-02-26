@@ -113,7 +113,7 @@ const GenerateAppointmentLtr = () => {
     }
   }, [draftNotCreatedData]); // Watch for changes in draftNotCreatedData
 
-    // console.log(getData);
+  // console.log(getData);
 
   //   for the getting data of selected lot to create refernce Draft starts
 

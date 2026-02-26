@@ -116,6 +116,7 @@ import SOCReports from "./pages/soc/SOCReports";
 import CreateZoomMeets from "./pages/zoomMeets/CreateZoomMeets";
 import ZoomMeetList from "./pages/zoomMeets/ZoomMeetList";
 import ServiceReports from "./pages/serviceReports/ServiceReports";
+import CaseTrackingCaseWise1 from "./pages/caseTracking/CaseTrackCasewise1";
 
 
 const App = () => {
@@ -160,6 +161,7 @@ const App = () => {
           <Route path="casetracking">
             <Route path="lotwise" element={<CaseTrackingLotwise />} />
             <Route path="casewise" element={<CaseTrackingCasewise />} />
+            <Route path="casewise1" element={<CaseTrackingCaseWise1 />} />
           </Route>
           <Route path="servicereports" element={<ServiceReports />} />
         </Route>

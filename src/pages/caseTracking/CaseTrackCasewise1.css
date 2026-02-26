@@ -1,0 +1,214 @@
+.pdf-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+}
+
+.pdf-card:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.02);
+}
+
+.pdf-icon {
+  font-size: 32px;
+  color: #dc3545;
+}
+
+.pdf-title {
+  font-weight: 600;
+}
+
+.pdf-sub {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+/* ===== CASE TIMELINE ===== */
+
+.case-row {
+  display: flex;
+  position: relative;
+  padding: 15px 0;
+}
+
+.timeline-col {
+  width: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.timeline-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.active-dot {
+  background-color: #198754;
+}
+
+.inactive-dot {
+  background-color: #adb5bd;
+}
+
+.timeline-line {
+  width: 2px;
+  flex-grow: 1;
+  background-color: #dee2e6;
+  margin-top: 2px;
+}
+
+/* ===== CONTENT ===== */
+
+.case-content {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 12px 18px;
+  transition: 0.2s ease;
+}
+
+.case-content:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.case-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.case-label {
+  color: #212529;
+}
+
+.case-date {
+  color: #495057;
+  font-size: 14px;
+}
+
+/* ===== PDF MINI CARD ===== */
+
+.pdf-mini-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  background-color: #f8f9fa;
+}
+
+.pdf-mini-card:hover {
+  background-color: #e9ecef;
+}
+
+.pdf-icon {
+  color: #dc3545;
+  font-size: 18px;
+}
+
+.no-doc {
+  color: #adb5bd;
+  font-size: 13px;
+}
+
+
+.case-header-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  font-weight: 600;
+}
+
+.case-label {
+  flex: 1;
+}
+
+.case-date {
+  color: #495057;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.pdf-inline-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #f8f9fa;
+  font-size: 13px;
+  transition: 0.2s ease;
+}
+
+.pdf-inline-btn:hover {
+  background-color: #e9ecef;
+}
+
+.pdf-inline-btn svg {
+  color: #dc3545;
+  font-size: 16px;
+}
+
+
+
+.case-header-inline {
+  display: flex;
+  align-items: center;
+}
+
+.case-col {
+  flex: 1;               /* Makes all 3 equal width */
+  display: flex;
+  align-items: center;
+}
+
+.case-label {
+  justify-content: flex-start;
+  font-weight: 600;
+}
+
+.case-doc {
+  justify-content: center;
+}
+
+.case-date {
+  justify-content: flex-end;
+  font-size: 14px;
+  color: #495057;
+}
+
+
+.pdf-table-icon {
+  color: #dc3545;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.2s ease;
+}
+
+.pdf-table-icon:hover {
+  transform: scale(1.2);
+  color: #a71d2a;
+}
+
+.custom-gap {
+  gap: 20px;
+  display: flex;
+}
