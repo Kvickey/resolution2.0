@@ -196,73 +196,6 @@ const Sect17Application = () => {
     }
   };
 
-  // const handleVerify = async () => {
-  //   if (excelData.length === 0) {
-  //     setHeaderError("No Excel data available.");
-  //     return;
-  //   }
-
-  //   handleStepChange(1);
-
-  //   // Step 1: Check headers
-  //   const excelHeaders = Object.keys(excelData[0]);
-  //   const expectedHeaders = MainHeaders.map((h) => h.name);
-
-  //   const areHeadersMatching =
-  //     excelHeaders.length === expectedHeaders.length &&
-  //     excelHeaders.every((header, index) => header === expectedHeaders[index]);
-
-  //   if (!areHeadersMatching) {
-  //     setHeaderError(
-  //       `Excel headers must exactly match required format and order: ${expectedHeaders.join(
-  //         ", "
-  //       )}`
-  //     );
-  //     setVerifiedData(false);
-  //     return;
-  //   }
-
-  //   // Step 2: Send each REFERENCE_NO in a POST request
-  //   try {
-  //     setLoading(true);
-  //     let allSuccessful = true; // ✅ Track overall success
-
-  //     for (const row of excelData) {
-  //       const referenceNo = row.REFERENCE_NO;
-
-  //       const response = await fetch(`${API_BASE_URL}/api/ValidateSec17App`, {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({ reference_no: referenceNo }),
-  //       });
-
-  //       if (!response.ok) {
-  //         allSuccessful = false; // mark failure
-  //         const error = await response.json();
-  //         console.error(`Error for REFERENCE_NO ${referenceNo}:`, error);
-  //       } else {
-  //         const result = await response.json();
-  //         console.log(`Success for REFERENCE_NO ${referenceNo}:`, result);
-  //       }
-  //     }
-
-  //     if (allSuccessful) {
-  //       setHeaderError("");
-  //       setVerifiedData(true); // ✅ Only if all were 200
-  //     } else {
-  //       setHeaderError("Some records failed verification. Please check logs.");
-  //       setVerifiedData(false);
-  //     }
-  //   } catch (error) {
-  //     console.error("Network or server error:", error);
-  //     setHeaderError("Error sending data to server.");
-  //     setVerifiedData(false);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // console.log(headerError);
 
   const handlePageInterval = (e) => {
     setPageInterval(e.target.value);
@@ -283,60 +216,74 @@ const Sect17Application = () => {
     );
   }
 
+  
   const handleUpload = async () => {
-    const data = excelData.map((item) => ({
-      Reference_no: item.REFERENCE_NO,
-      Sec_17_app_date: item.Sec_17_app_date
-        ? formatDate(convertExcelDate(item.Sec_17_app_date))
-        : "",
-    }));
+    console.log(excelData);
+
+    // const data = excelData.map((item) => ({
+    //   Reference_no: item.REFERENCE_NO,
+    //   Sec_17_app_date: item.Sec_17_app_date
+    //     ? formatDate(convertExcelDate(item.Sec_17_app_date))
+    //     : null, // ✅ IMPORTANT: send null instead of ""
+    // }));
+
+    const data = excelData.map((item) => {
+      console.log("Original date:", item.Sec_17_app_date);
+
+      // const converted = convertExcelDate(item.Sec_17_app_date);
+      // console.log("Converted:", converted);
+
+      // const formatted = formatDate(converted);
+      // console.log("Formatted:", formatted);
+
+      return {
+        Reference_no: item.REFERENCE_NO,
+        Sec_17_app_date: item.Sec_17_app_date,
+      };
+    });
+
+    console.log(data);
+
     const formData = new FormData();
-    handleStepChange(2);
-    // ✅ Make sure file exists
+
     if (!files) {
       alert("Please select a PDF file first.");
       return;
     }
 
-    console.log(data);
-
-    formData.append("file", files); // PDF file
-    formData.append("data", JSON.stringify(data)); // JSON string
-
-    for (let pair of formData.entries()) {
-      console.log(`${pair[0]}:`, pair[1]);
-    }
+    formData.append("file", files);
+    formData.append("data", JSON.stringify(data));
 
     try {
-      setLoading(true); // ✅ Start loading
+      setLoading(true);
 
       const response = await fetch(
         `${API_BASE_URL}/api/UploadSEC17?PageInterval=${pageInterval}`,
         {
           method: "POST",
-          // Do NOT set Content-Type manually when using FormData
           body: formData,
         }
       );
 
       if (!response.ok) {
-        const error = await response.json();
-        console.error("Error uploading:", error);
-      } else {
-        const result = await response.json();
-        console.log("Upload successful:", result);
+        const errorText = await response.text();
+        console.error("Error uploading:", errorText);
+        setHeaderError("Upload failed. Please try again.");
+        return; // ✅ STOP HERE
       }
 
+      const result = await response.json();
+      console.log("Upload successful:", result);
+
+      // ✅ Move forward ONLY on success
       setHeaderError("");
-      // setVerifiedData(true);
       handleStepChange(3);
       setClearForm(true);
     } catch (error) {
       console.error("Network or server error:", error);
       setHeaderError("Error sending data to server.");
-      // setVerifiedData(false);
     } finally {
-      setLoading(false); // ✅ Always stop loading
+      setLoading(false);
     }
   };
 
