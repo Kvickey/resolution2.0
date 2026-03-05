@@ -68,6 +68,9 @@ const CaseTrackingLotWise1 = () => {
     setData(parsed);
   };
 
+  console.log(data);
+  
+
   const formatDate = (dateTimeString) => {
     const dateString = dateTimeString.split("T")[0];
     const [year, month, day] = dateString.split("-");
@@ -114,7 +117,7 @@ const CaseTrackingLotWise1 = () => {
     ),
     First_Hearing: renderDateWithPDF(
       item.First_hearing_date,
-      "FirstHearing",
+      "Acc",
       item.Reference_no
     ),
     Second_Hearing: renderDateWithPDF(
